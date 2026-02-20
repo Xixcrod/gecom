@@ -1,0 +1,11 @@
+.gitignore
+README.md
+LICENSE
+media/
+.venv/
+migrations/
+!migrations/__init__.py
+*.pyc
+staticfiles/
+__pycache__/
+db.sqlite3
