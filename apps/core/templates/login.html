@@ -1,1 +1,46 @@
-<h1>Login</h1>
+{% load static %}
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+    <title>GECOM</title>
+    <link rel="stylesheet" href="{% static 'css/_variables.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'css/login.css' %}" /> -->
+    <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> -->
+</head>
+
+<body>
+    <div>
+        <h2>Inicio de sesión</h2>
+
+        {% if error %}
+        <div>{{ error }}</div>
+        {% endif %}
+
+        <form action="{% url 'login-process' %}" method="POST">
+            {% csrf_token %}
+
+            <input type="text" name="username" id="username" placeholder="Cédula" required />
+
+            <input type="password" name="password" id="password" placeholder="Contraseña" required />
+
+            <button type="submit">Login</button>
+
+            <div>
+                <a href="{% url 'recuperar_contrasena' %}">¿Has olvidado tú contraseña?</a>
+            </div>
+
+            {% if success == True %}
+            <div>
+                La contraseña ha sido recuperada correctamente, por favor revise su
+                correo.
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</body>
+
+</html>
