@@ -19,3 +19,6 @@ EXPOSE 8000
 
 # Command to run the appplication
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Instalar Node.js y NPM
+RUN apt-get update && apt-get install -y nodejs npm
