@@ -84,7 +84,7 @@ def recovering_password(request):
             return render(request, 'login.html', {'success': 'Se ha enviado un enlace de recuperación a tu correo.'})
 
         except User.DoesNotExist:
-            return render(request, 'login.html', {'error': 'Datos incorrectos.'})
+            return render(request, 'recuperar_contrasena.html', {'error': 'Datos incorrectos.'})
     
     return render(request, 'recuperar_contrasena.html')
 
