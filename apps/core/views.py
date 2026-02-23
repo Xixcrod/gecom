@@ -17,7 +17,7 @@ def nueva_contrasena(request):
 @login_required
 def signout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('login'), {'success': False})
+    return HttpResponseRedirect(reverse('login'))
 
 def dashboard(request):
     return render(request, 'dashboard.html')

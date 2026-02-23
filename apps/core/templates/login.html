@@ -33,10 +33,9 @@
                 <a href="{% url 'recuperar_contrasena' %}">¿Has olvidado tú contraseña?</a>
             </div>
 
-            {% if success == True %}
+            {% if success %}
             <div>
-                La contraseña ha sido recuperada correctamente, por favor revise su
-                correo.
+                {{ success }}
             </div>
             {% endif %}
         </form>

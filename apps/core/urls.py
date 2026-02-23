@@ -9,6 +9,6 @@ urlpatterns = [
     path('recuperar_contrasena/', views.recuperar_contrasena, name='recuperar_contrasena'),#Ruta para la página de recuperación de contraseña
     path('processing_password/', login.recovering_password, name="processing_password"), #Ruta para procesar la solicitud de recuperación de contraseña
     path('nueva_contrasena/', views.nueva_contrasena, name="nueva_contrasena"), #Ruta para la página de nueva contraseña
-    path('processing_new_password/', login.new_password, name="processing_new_password"), #Ruta para procesar la solicitud de nueva contraseña
+    path('restablecer/<uidb64>/<token>/', login.reset_password_confirm, name='reset_password_confirm'), #Ruta para confirmar el restablecimiento de contraseña con token
     path('dashboard/', views.dashboard, name="dashboard"), #Ruta de acceso de prueba
 ]

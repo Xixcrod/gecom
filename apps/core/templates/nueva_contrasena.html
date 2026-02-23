@@ -13,19 +13,26 @@
 </head>
 
 <body>
-    <div>
-        <h2>Recuperar Contraseña</h2>
+    <h2>Restablecer Contraseña Administrativa</h2>
+    <p>Ingresa tu nueva contraseña para acceder al sistema GECOM.</p>
 
-        <form action="{% url 'processing_new_password' %}" method="POST">
-            {% csrf_token %}
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% if error %}
+            <div>{{ error }}</div>
+        {% endif %}
 
-            <input type="password" name="password" id="password" placeholder="Contraseña" required />
-
-            <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirmar Contraseña" required />
-
-            <button type="submit">Generar Nueva Contraseña</button>
-
-            <a href="{% url 'login' %}" class="back-link">Volver al inicio de sesión</a>
-        </form>
-    </div>
+        <div>
+            <label>Nueva Contraseña:</label><br>
+            <input type="password" name="password" required minlength="8">
+        </div>
+        <br>
+        <div>
+            <label>Confirmar Contraseña:</label><br>
+            <input type="password" name="confirm_password" required minlength="8">
+        </div>
+        <br>
+        <button type="submit">Actualizar Contraseña</button>
+    </form>
 </body>

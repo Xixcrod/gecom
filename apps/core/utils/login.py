@@ -1,9 +1,12 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.urls import reverse
 
 # @login_excluded('dashboard')
 def loginProcess(request):
@@ -19,7 +22,7 @@ def loginProcess(request):
         password_input = request.POST.get('password')
 
         if not username_input or not password_input:
-            return render(request, 'login.html', {'error': "Por favor, completa todos los campos."})
+            return render(request, 'login.html', {  'error': "Por favor, completa todos los campos."})
 
         # Autenticación estándar de Django
         user = authenticate(request, username=username_input, password=password_input)
@@ -57,46 +60,62 @@ def recovering_password(request):
                 is_superuser=True
             )
 
-            # 2. Generar una contraseña aleatoria
-            new_password = get_random_string(length=10)
+            # 1. Generar token y ID codificado
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-            # 3. Guardar la nueva contraseña encriptada
-            # set_password se encarga del hashing automáticamente
-            user.set_password(new_password)
-            user.save()
 
-            # 4. Enviar el correo electrónico
-            asunto = 'Recuperación de Acceso Administrativo'
+            # 2. Construir la URL (asegúrate de tener esta ruta en urls.py)
+            protocol = 'https' if request.is_secure() else 'http'
+            domain = request.get_host()
+            link = reverse('reset_password_confirm', kwargs={'uidb64': uid, 'token': token})
+            url_completa = f"{protocol}://{domain}{link}"
+
+            # 3. Enviar el correo
+            asunto = 'Restablecer Contraseña Administrativa'
             mensaje = (
-                f'Hola {user.first_name or user.username},\n\n'
-                f'Se ha restablecido tu acceso al sistema.\n'
-                f'Tu nueva contraseña es: {new_password}\n\n'
-                f'Por seguridad, copia la contraseña y borra el correo después de usarla. Si no solicitaste este cambio, por favor contacta al soporte inmediatamente.'
+                f'Hola {user.username},\n\n'
+                f'Haz clic en el siguiente enlace para cambiar tu contraseña:\n{url_completa}\n\n'
+                f'Este enlace es de un solo uso y expirará pronto.'
             )
             
-            send_mail(
-                asunto,
-                mensaje,
-                settings.DEFAULT_FROM_EMAIL,
-                [email_input],
-                fail_silently=False,
-            )
+            send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, [email_input])
 
-            # 5. Éxito
-            return render(request, 'login.html', {
-                'success': True
-            })
+            return render(request, 'login.html', {'success': 'Se ha enviado un enlace de recuperación a tu correo.'})
 
         except User.DoesNotExist:
-            # 6. Error si no existe o no es superusuario
-            return render(request, 'login.html', {
-                'error': 'Los datos no coinciden con una cuenta de administrador activa.'
-            })
-
-        except Exception as e:
-            return render(request, 'login.html', {
-                'error': f'Error en el servidor de correo: {str(e)}'
-            })
-
-    # Si es GET, mostramos el formulario
+            return render(request, 'login.html', {'error': 'Datos incorrectos.'})
+    
     return render(request, 'recuperar_contrasena.html')
+
+
+
+# @login_excluded('dashboard')
+def reset_password_confirm(request, uidb64, token):
+    """
+    función para manejar la confirmación del restablecimiento de contraseña. Verifica el token y permite al usuario ingresar una nueva contraseña. De acuerdo si es GET o POST, muestra el formulario o procesa la nueva contraseña respectivamente.
+    """
+    try:
+        # Decodificar el ID del usuario
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    # Validar que el usuario existe y el token es válido
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            nueva_pass = request.POST.get('password')
+            confirm_pass = request.POST.get('confirm_password')
+
+            if nueva_pass == confirm_pass:
+                user.set_password(nueva_pass)
+                user.save()
+                return render(request, 'login.html', {'success': 'Contraseña actualizada correctamente.'})
+            else:
+                return render(request, 'nueva_contrasena.html', {'error': 'Las contraseñas no coinciden.'})
+        
+        # Si es GET, mostramos el formulario para escribir la clave
+        return render(request, 'nueva_contrasena.html')
+    else:
+        return render(request, 'login.html', {'error': 'El enlace ha expirado o es inválido.'})

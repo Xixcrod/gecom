@@ -156,3 +156,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 3600
 # El contador se reinicia cada vez que el usuario hace algo
 SESSION_SAVE_EVERY_REQUEST = True
+
+PASSWORD_RESET_TIMEOUT = 900  # El enlace expira en 15 minutos (900 segundos) para el token de restablecimiento de contraseña
