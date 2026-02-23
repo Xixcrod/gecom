@@ -31,7 +31,7 @@ def loginProcess(request):
             # VERIFICACIÓN CRÍTICA: Solo el Superusuario entra
             if user.is_superuser:
                 login(request, user)
-                return redirect('dashboard') # Redirección al panel administrativo
+                return redirect('index') # Redirección al panel administrativo
             else:
                 # Si por error existe un usuario normal, le denegamos el acceso
                 return render(request, 'login.html', {'error': "Acceso restringido solo para administradores."})

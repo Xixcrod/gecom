@@ -13,12 +13,13 @@
 
     <link rel="stylesheet" href="{% static 'css/_variables.css' %}" />
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
     <!-- <link rel="stylesheet" href="{% static 'css/footer.css' %}"> -->
     <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}">  -->
     {% block extra_css %}{% endblock extra_css %}
 </head>
 
-<body>
+<body class="bg-sky-500 min-h-screen relative">
     {% if user.is_authenticated %}
     <nav class="gcm-top-nav">
         <div class="gcm-nav-left">
@@ -36,15 +37,15 @@
 
     <aside id="gcm-sidebar-menu" class="gcm-sidebar">
         <div class="gcm-sidebar-header">
-            <img src="{% static 'img/logo.png' %}" alt="Logo PRISMA" class="gcm-logo-img" />
+            <img src="{% static 'img/logo.png' %}" alt="Logo GECOM" class="gcm-logo-img" />
         </div>
 
         <ul class="gcm-side-links">
-            <li><a href="{% url 'dashboard' %}">Inicio</a></li>
-            <li><a href="#">Periodo</a></li>
+            <li><a href="{% url 'index' %}">Inicio</a></li>
+            <li><a href="{% url 'periodo' %}">Periodo</a></li>
+            <li><a href="#">Carrera</a></li>
             <li><a href="#">Brigada</a></li>
             <li><a href="#">Asesor Académico</a></li>
-            <li><a href="#">Carrera</a></li>
         </ul>
     </aside>
 
