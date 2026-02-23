@@ -1,0 +1,31 @@
+{
+  "name": "gecom",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+  "dev": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+  "start": "concurrently \"npm run dev\" \"python manage.py runserver\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xixcrod/gecom.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xixcrod/gecom/issues"
+  },
+  "homepage": "https://github.com/Xixcrod/gecom#readme",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.24",
+    "concurrently": "^9.2.1",
+    "daisyui": "^5.5.19",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.2.0"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.0"
+  }
+}

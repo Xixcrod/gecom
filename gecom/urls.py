@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('apps.core.urls')),
     path('brigada/', include('apps.brigada.urls')),
     path('modules/', include('apps.modules.urls')),
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
 
 # This add the MEDIA_URL and MEDIA_ROOT to the urlpatterns when the app is in DEBUG
