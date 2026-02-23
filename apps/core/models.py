@@ -21,7 +21,7 @@ class Asesor(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
-    cedula = models.CharField(max_length=20, unique=True)
+    cedula = models.CharField(max_length=10, unique=True)
     telefono = models.CharField(max_length=20)
     correo = models.EmailField()
 
@@ -118,7 +118,7 @@ class Estudiante(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
-    cedula = models.CharField(max_length=20, unique=True)
+    cedula = models.CharField(max_length=10, unique=True)
     correo = models.EmailField()
     telefono = models.CharField(max_length=20)
     

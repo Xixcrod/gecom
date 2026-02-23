@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+    <title>GECOM</title>
+    <link rel="stylesheet" href="{% static 'css/_variables.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/nueva_contrasena.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> -->
+</head>
+
+<body>
+    <h2>Restablecer Contraseña Administrativa</h2>
+    <p>Ingresa tu nueva contraseña para acceder al sistema GECOM.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% if error %}
+            <div>{{ error }}</div>
+        {% endif %}
+
+        <div>
+            <label>Nueva Contraseña:</label><br>
+            <input type="password" name="password" required minlength="8">
+        </div>
+        <br>
+        <div>
+            <label>Confirmar Contraseña:</label><br>
+            <input type="password" name="confirm_password" required minlength="8">
+        </div>
+        <br>
+        <button type="submit">Actualizar Contraseña</button>
+    </form>
+</body>

@@ -1,0 +1,72 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+
+<head>
+    <!-- Configuración básica del documento HTML. -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+    <title>GECOM</title>
+
+    <!-- Enlaces a hojas de estilo CSS. -->
+
+    <link rel="stylesheet" href="{% static 'css/_variables.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'css/footer.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}">  -->
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+    <nav class="gcm-top-nav">
+        <div class="gcm-nav-left">
+            <button id="gcm-open-menu" class="gcm-menu-trigger">&#9776;</button>
+        </div>
+
+        <span class="gcm-section-indicator">
+            {% block titulo_seccion %}Inicio{% endblock %}
+        </span>
+
+        <div class="gcm-nav-right">
+            <a href="{% url 'logout' %}" class="gcm-logout-btn">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <aside id="gcm-sidebar-menu" class="gcm-sidebar">
+        <div class="gcm-sidebar-header">
+            <img src="{% static 'img/logo.png' %}" alt="Logo PRISMA" class="gcm-logo-img" />
+        </div>
+
+        <ul class="gcm-side-links">
+            <li><a href="{% url 'dashboard' %}">Inicio</a></li>
+            <li><a href="#">Periodo</a></li>
+            <li><a href="#">Brigada</a></li>
+            <li><a href="#">Asesor Académico</a></li>
+            <li><a href="#">Carrera</a></li>
+        </ul>
+    </aside>
+
+    <div id="gcm-overlay-layer" class="gcm-screen-overlay"></div>
+    {% endif %}
+
+    <div class="gcm-page-wrapper">
+        {% block content %} {% endblock content %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <footer style="
+        padding: 20px;
+        text-align: center;
+        border-top: 1px solid #eee;
+        color: #666;
+      ">
+        <p>&copy; 2025 PRISMA - Gestión Audiovisual</p>
+    </footer>
+    {% endif %}
+</body>
+
+<script src="{% static 'js/menu_desplegable.js' %}"></script>
+
+</html>
