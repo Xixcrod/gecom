@@ -1,0 +1,10 @@
+/* static/css/input.css */
+@import "tailwindcss";
+
+/* Importamos DaisyUI como un plugin de CSS */
+@plugin "daisyui";
+
+/* Aquí puedes configurar temas o variables si lo deseas */
+@theme {
+    /*--color-brand: #3b82f6;*/
+}

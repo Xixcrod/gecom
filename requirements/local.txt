@@ -1,0 +1,5 @@
+# Heredar dependencias base (Django, dotenv, etc.)
+-r base.txt
+
+# Herramientas de desarrollo
+django-browser-reload    # Para que la página se refresque sola al cambiar el HTML/CSS
