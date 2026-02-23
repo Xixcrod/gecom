@@ -1,33 +1,36 @@
+{% extends 'layouts/base.html' %}
 {% load static %}
+{% block extra_css %}{% endblock extra_css %}
+{% block titulo_seccion %}Periodos{% endblock %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'css/output.css' %}" rel="stylesheet">
-    <title>Periodo</title>
-</head>
+{% block content %}
+
 <body class="bg-[#0ea5e9] min-h-screen font-sans text-gray-800 flex flex-col">
-    
+
     <main class="w-full max-w-full mx-auto px-6 py-10 md:py-12 flex flex-col grow">
-        
+
         <div class="flex flex-col md:flex-row items-stretch gap-6 md:gap-8 w-full relative grow">
-            
-            <div id="contenedor-periodos" class="flex-1 w-full flex flex-col justify-between order-2 md:order-1 pl-0 md:pl-12">
-                
-                <div id="grid-periodos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 w-full content-start lg:min-h-[520px]">
-                    
+
+            <div id="contenedor-periodos"
+                class="flex-1 w-full flex flex-col justify-between order-2 md:order-1 pl-0 md:pl-12">
+
+                <div id="grid-periodos"
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 w-full content-start lg:min-h-[520px]">
+
                     {% for p in page_obj %}
-                    <div class="card bg-[#8b5cf6] border border-[#7c3aed] shadow-sm hover:bg-[#7c3aed] transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden cursor-pointer" onclick="document.getElementById('modal_editar_{{ p.id }}').showModal()">
-                        
+                    <div class="card bg-[#8b5cf6] border border-[#7c3aed] shadow-sm hover:bg-[#7c3aed] transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden cursor-pointer"
+                        onclick="document.getElementById('modal_editar_{{ p.id }}').showModal()">
+
                         <div class="card-body items-center justify-center text-center p-6 min-h-[7rem]">
                             <h2 class="card-title text-xl md:text-2xl font-medium text-white">{{ p.nombre }}</h2>
                         </div>
 
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        <div
+                            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white/80" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                         </div>
                     </div>
@@ -35,21 +38,26 @@
                     <dialog id="modal_editar_{{ p.id }}" class="modal">
                         <div class="modal-box bg-white text-gray-800 rounded-3xl">
                             <h3 class="font-bold text-xl text-[#8b5cf6] mb-4 text-center">Editar Periodo</h3>
-                            
+
                             <form method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" value="{{ p.id }}">
-                                
+
                                 <div class="form-control w-full">
                                     <label class="label">
                                         <span class="label-text font-medium text-gray-600">Nombre del periodo</span>
                                     </label>
-                                    <input type="text" name="nombre" value="{{ p.nombre }}" placeholder="Ej: I-2026-II-2026" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
+                                    <input type="text" name="nombre" value="{{ p.nombre }}"
+                                        placeholder="Ej: I-2026-II-2026"
+                                        class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl"
+                                        required />
                                 </div>
-                                
+
                                 <div class="modal-action mt-6 flex justify-between">
-                                    <button form="cerrar_editar_{{ p.id }}" class="btn btn-error text-white rounded-xl">Cancelar</button>
-                                    <button type="submit" class="btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none rounded-xl px-8">Actualizar</button>
+                                    <button form="cerrar_editar_{{ p.id }}"
+                                        class="btn btn-error text-white rounded-xl">Cancelar</button>
+                                    <button type="submit"
+                                        class="btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none rounded-xl px-8">Actualizar</button>
                                 </div>
                             </form>
                         </div>
@@ -64,74 +72,101 @@
                     </div>
                     {% endfor %}
 
-                </div> 
+                </div>
 
                 {% if page_obj.has_other_pages %}
                 <div class="flex justify-center mt-auto pt-8">
                     <div class="join bg-[#1e40af] shadow-xl rounded-md">
-                        
+
                         {% if page_obj.has_previous %}
-                            <a href="?page={{ page_obj.previous_page_number }}" class="link-paginador join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-blue-300 hover:bg-[#1e3a8a] hover:text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                            </a>
+                        <a href="?page={{ page_obj.previous_page_number }}"
+                            class="link-paginador join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-blue-300 hover:bg-[#1e3a8a] hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
                         {% else %}
-                            <button class="join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-[#3b82f6] cursor-not-allowed">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                            </button>
+                        <button
+                            class="join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-[#3b82f6] cursor-not-allowed">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
                         {% endif %}
 
                         {% for num in custom_page_range %}
-                            {% if page_obj.number == num %}
-                                <button class="join-item btn btn-sm bg-[#a855f7] border-[#a855f7] text-white hover:bg-[#a855f7] pointer-events-none">{{ num }}</button>
-                            {% else %}
-                                <a href="?page={{ num }}" class="link-paginador join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-blue-300 hover:bg-[#1e3a8a] hover:text-white transition-colors duration-200">{{ num }}</a>
-                            {% endif %}
+                        {% if page_obj.number == num %}
+                        <button
+                            class="join-item btn btn-sm bg-[#a855f7] border-[#a855f7] text-white hover:bg-[#a855f7] pointer-events-none">{{ num }}</button>
+                        {% else %}
+                        <a href="?page={{ num }}"
+                            class="link-paginador join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-blue-300 hover:bg-[#1e3a8a] hover:text-white transition-colors duration-200">{{ num }}</a>
+                        {% endif %}
                         {% endfor %}
 
                         {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}" class="link-paginador join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-blue-300 hover:bg-[#1e3a8a] hover:text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                            </a>
+                        <a href="?page={{ page_obj.next_page_number }}"
+                            class="link-paginador join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-blue-300 hover:bg-[#1e3a8a] hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
                         {% else %}
-                            <button class="join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-[#3b82f6] cursor-not-allowed">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                            </button>
+                        <button
+                            class="join-item btn btn-sm bg-[#1e40af] border-[#1e3a8a] text-[#3b82f6] cursor-not-allowed">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
                         {% endif %}
-                        
+
                     </div>
                 </div>
                 {% endif %}
-            </div> 
+            </div>
 
-            <div class="flex-none order-1 md:order-2 flex justify-end mb-4 md:mb-0 md:sticky md:top-[8.5rem] z-10 self-start md:mt-[8.5rem]">
-                <button 
-                    class="btn btn-circle bg-[#a855f7] hover:bg-[#9333ea] text-white border-none shadow-xl h-14 w-14 hover:scale-110 transition-transform duration-300" 
+            <div
+                class="flex-none order-1 md:order-2 flex justify-end mb-4 md:mb-0 md:sticky md:top-[8.5rem] z-10 self-start md:mt-[8.5rem]">
+                <button
+                    class="btn btn-circle bg-[#a855f7] hover:bg-[#9333ea] text-white border-none shadow-xl h-14 w-14 hover:scale-110 transition-transform duration-300"
                     onclick="modal_nuevo_periodo.showModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                 </button>
             </div>
 
-        </div> 
+        </div>
     </main>
 
     <dialog id="modal_nuevo_periodo" class="modal">
         <div class="modal-box bg-white text-gray-800 rounded-3xl">
             <h3 class="font-bold text-xl text-[#8b5cf6] mb-4 text-center">Añadir Nuevo Periodo</h3>
-            
+
             <form method="POST">
                 {% csrf_token %}
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text font-medium text-gray-600">Nombre del periodo</span>
                     </label>
-                    <input type="text" name="nombre" placeholder="Ej: I-2026-II-2026" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
+                    <input type="text" name="nombre" placeholder="Ej: I-2026-II-2026"
+                        class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl"
+                        required />
                 </div>
-                
+
                 <div class="modal-action mt-6 flex justify-between">
                     <button form="cerrar_nuevo" class="btn btn-error text-white rounded-xl">Cancelar</button>
-                    <button type="submit" class="btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none rounded-xl px-8">Guardar</button>
+                    <button type="submit"
+                        class="btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none rounded-xl px-8">Guardar</button>
                 </div>
             </form>
         </div>
@@ -139,7 +174,9 @@
             <button>cerrar</button>
         </form>
     </dialog>
-    
-    <script src="{% static 'js/periodo_scripts.js' %}"></script>
+
 </body>
-</html>
+
+<script src="{% static 'js/periodo_scripts.js' %}"></script>
+{% endblock content %}
+

@@ -7,6 +7,6 @@ migrations/
 db.sqlite3
 staticfiles/
 media/
-digest.txt
 .vscode/
 node_modules/
+digest.txt
