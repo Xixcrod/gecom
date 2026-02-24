@@ -22,24 +22,32 @@ def editar_periodo(periodo_id, nuevo_nombre):
             pass 
 
 def procesar_formulario_periodo(post_data):
-    """Maneja la lógica de decidir si se crea o se edita un periodo basándose en el POST."""
+    """Maneja la lógica armando la cadena a partir de los 4 selectores."""
     periodo_id = post_data.get('id')
-    nombre_ingresado = post_data.get('nombre')
     
-    if periodo_id:
-        editar_periodo(periodo_id, nombre_ingresado)
-    else:
-        crear_periodo(nombre_ingresado)
+    # Capturamos los campos individuales enviados desde el modal
+    desde_semestre = post_data.get('desde_semestre')
+    desde_anio = post_data.get('desde_anio')
+    hasta_semestre = post_data.get('hasta_semestre')
+    hasta_anio = post_data.get('hasta_anio')
+    
+    # Verificamos que todos los campos obligatorios vengan en el POST
+    if desde_semestre and desde_anio and hasta_semestre and hasta_anio:
+        # Armamos el string final tal como lo espera la base de datos (Ej: "I-2025-II-2025")
+        nombre_armado = f"{desde_semestre}-{desde_anio}-{hasta_semestre}-{hasta_anio}"
+        
+        if periodo_id:
+            editar_periodo(periodo_id, nombre_armado)
+        else:
+            crear_periodo(nombre_armado)
 
 def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
     """
-    Realiza la paginación y calcula el rango dinámico de 5 páginas (Estilo Carrusel).
-    Retorna un diccionario con 'page_obj' y 'custom_page_range' listo para enviarse al template.
+    Realiza la paginación, rango dinámico y 'desarma' los textos para el modal de edición.
     """
     lista_periodos = obtener_periodos()
     paginator = Paginator(lista_periodos, items_por_pagina)
     
-    # Validamos que el número de página sea un entero válido
     try:
         numero_pagina = int(numero_pagina_str) if numero_pagina_str else 1
     except ValueError:
@@ -47,7 +55,25 @@ def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
 
     page_obj = paginator.get_page(numero_pagina)
     
-    # Lógica Matemática para ventana de 5 páginas máximo
+    # =========================================================================
+    # NUEVO: Desarmamos el string guardado para que el HTML pueda pre-seleccionar
+    # =========================================================================
+    for p in page_obj:
+        partes = p.nombre.split('-')
+        # Si tiene el formato correcto de 4 partes, las separamos:
+        if len(partes) == 4:
+            p.desde_semestre = partes[0]
+            p.desde_anio = partes[1]
+            p.hasta_semestre = partes[2]
+            p.hasta_anio = partes[3]
+        else:
+            # Si hay un dato viejo o mal guardado, le pasamos valores por defecto
+            p.desde_semestre = 'I'
+            p.desde_anio = ''
+            p.hasta_semestre = 'II'
+            p.hasta_anio = ''
+            
+    # Lógica de ventana de 5 páginas
     current_page = page_obj.number
     total_pages = paginator.num_pages
     
@@ -62,7 +88,6 @@ def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
             
     custom_page_range = range(start_page, end_page + 1)
     
-    # Empaquetamos todo en un diccionario
     return {
         'page_obj': page_obj,
         'custom_page_range': custom_page_range

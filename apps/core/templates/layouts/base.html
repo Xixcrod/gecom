@@ -19,7 +19,7 @@
     {% block extra_css %}{% endblock extra_css %}
 </head>
 
-<body class="bg-sky-500 min-h-screen relative">
+<body class="bg-sky-500 min-h-screen">
     {% if user.is_authenticated %}
     <nav class="gcm-top-nav">
         <div class="gcm-nav-left">
@@ -62,7 +62,7 @@
         text-align: center;
         border-top: 1px solid #eee;
         color: #666;
-      ">
+        ">
         <p>&copy; 2025 PRISMA - Gestión Audiovisual</p>
     </footer>
     {% endif %}

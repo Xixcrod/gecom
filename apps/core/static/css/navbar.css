@@ -121,9 +121,8 @@
 
     /* CONTENIDO PRINCIPAL */
     .gcm-page-wrapper {
-        margin-top: 65px;
-        padding: 30px;
-        min-height: calc(100vh - 65px);
+        padding: 90px 0 30px 0;
+        min-height: calc(100vh - 90px);
     }
 
     .gcm-logout-btn {
