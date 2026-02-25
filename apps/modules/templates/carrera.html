@@ -20,7 +20,7 @@
                     <div class="card bg-[#8b5cf6] border border-[#7c3aed] shadow-sm hover:bg-[#7c3aed] transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden cursor-pointer"
                         onclick="document.getElementById('modal_editar_{{ c.id }}').showModal()">
 
-                        <div class="card-body items-center justify-center text-center p-8 min-h-[16rem]">
+                        <div class="card-body items-center justify-center text-center p-8 min-h-64">
                             <h2 class="card-title text-xl md:text-2xl font-medium text-white">{{ c.nombre_carrera }}
                             </h2>
                         </div>
@@ -47,10 +47,14 @@
                                     <label class="label">
                                         <span class="label-text font-medium text-gray-600">Nombre de la carrera</span>
                                     </label>
-                                    <input type="text" name="nombre_carrera" value="{{ c.nombre_carrera }}"
-                                        placeholder="Ej: Ingeniería de Sistemas"
-                                        class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl"
-                                        required />
+                                    <input type="text" 
+                                        name="nombre_carrera" 
+                                        value="{{ c.nombre_carrera }}" placeholder="Ej: Ingeniería de Sistemas" 
+                                        class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" 
+                                        required 
+                                        maxlength="200" 
+                                        pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s,\.]+$" 
+                                        title="Solo se permiten letras, espacios, comas y puntos. No ingrese números ni símbolos especiales." />
                                 </div>
 
                                 <div class="modal-action mt-6 flex justify-between">
@@ -76,7 +80,7 @@
             </div>
 
             <div
-                class="flex-none order-1 md:order-2 flex justify-end mb-4 md:mb-0 md:sticky md:top-[10.5rem] z-10 self-start md:mt-[10.5rem]">
+                class="flex-none order-1 md:order-2 flex justify-end mb-4 md:mb-0 md:sticky md:top-42 z-10 self-start md:mt-42">
                 <button
                     class="btn btn-circle bg-[#a855f7] hover:bg-[#9333ea] text-white border-none shadow-xl h-14 w-14 hover:scale-110 transition-transform duration-300"
                     onclick="modal_nueva_carrera.showModal()">
@@ -100,9 +104,14 @@
                     <label class="label">
                         <span class="label-text font-medium text-gray-600">Nombre de la carrera</span>
                     </label>
-                    <input type="text" name="nombre_carrera" placeholder="Ej: Ingeniería de Sistemas"
-                        class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl"
-                        required />
+                    <input type="text" 
+                        name="nombre_carrera" 
+                        value="{{ c.nombre_carrera }}" placeholder="Ej: Ingeniería de Sistemas" 
+                        class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" 
+                        required 
+                        maxlength="200" 
+                        pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s,\.]+$" 
+                        title="Solo se permiten letras, espacios, comas y puntos. No ingrese números ni símbolos especiales." />
                 </div>
 
                 <div class="modal-action mt-6 flex justify-between">
@@ -117,5 +126,26 @@
         </form>
     </dialog>
 </div>
+
+{% if messages %}
+    <div class="toast toast-top toast-end z-9999 mt-20">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %} text-white shadow-xl flex flex-row items-center gap-3 transition-opacity duration-500 rounded-2xl">
+            
+            {% if message.tags == 'error' %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            {% endif %}
+            
+            <span class="font-medium">{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% block extra_js %}
+<script src="{% static 'js/mensajes.js' %}"></script>
+{% endblock extra_js %}
 
 {% endblock content %}

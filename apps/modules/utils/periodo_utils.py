@@ -1,18 +1,43 @@
 # apps/modules/utils/periodo_utils.py
 from apps.core.models import Periodo
 from django.core.paginator import Paginator
+from django.contrib import messages
+
+def sort_periodos_key(periodo):
+    """
+    Función auxiliar para enseñar a Python a ordenar lógicamente.
+    Le da prioridad al año de finalización, luego al semestre final, luego al año inicial.
+    """
+    partes = periodo.nombre.split('-')
+    if len(partes) == 4:
+        try:
+            desde_sem = partes[0]
+            desde_anio = int(partes[1])
+            hasta_sem = partes[2]
+            hasta_anio = int(partes[3])
+            
+            # Convertimos números romanos a valores enteros para poder compararlos
+            sem_map = {'I': 1, 'II': 2, 'III': 3}
+            d_s = sem_map.get(desde_sem, 0)
+            h_s = sem_map.get(hasta_sem, 0)
+            
+            # Devuelve una tupla de pesos: (2027, 1, 2026, 2)
+            return (hasta_anio, h_s, desde_anio, d_s)
+        except ValueError:
+            pass
+    return (0, 0, 0, 0) # Fallback por si hay datos basura
 
 def obtener_periodos():
-    """Consulta y devuelve todos los periodos ordenados del más reciente al más antiguo."""
-    return Periodo.objects.all().order_by('-nombre')
+    """Consulta y devuelve los periodos ordenados cronológicamente desde el más reciente."""
+    periodos = list(Periodo.objects.all())
+    # reverse=True asegura que los más nuevos (ej. 2027) queden de primeros
+    return sorted(periodos, key=sort_periodos_key, reverse=True)
 
 def crear_periodo(nombre):
-    """Crea y guarda un nuevo periodo en la base de datos."""
     if nombre:
         Periodo.objects.create(nombre=nombre)
 
 def editar_periodo(periodo_id, nuevo_nombre):
-    """Busca un periodo por su ID y actualiza su nombre."""
     if periodo_id and nuevo_nombre:
         try:
             periodo = Periodo.objects.get(id=periodo_id)
@@ -21,30 +46,52 @@ def editar_periodo(periodo_id, nuevo_nombre):
         except Periodo.DoesNotExist:
             pass 
 
-def procesar_formulario_periodo(post_data):
-    """Maneja la lógica armando la cadena a partir de los 4 selectores."""
-    periodo_id = post_data.get('id')
+def procesar_formulario_periodo(request):
+    periodo_id = request.POST.get('id')
+    desde_semestre = request.POST.get('desde_semestre')
+    desde_anio = request.POST.get('desde_anio')
+    hasta_semestre = request.POST.get('hasta_semestre')
+    hasta_anio = request.POST.get('hasta_anio')
     
-    # Capturamos los campos individuales enviados desde el modal
-    desde_semestre = post_data.get('desde_semestre')
-    desde_anio = post_data.get('desde_anio')
-    hasta_semestre = post_data.get('hasta_semestre')
-    hasta_anio = post_data.get('hasta_anio')
-    
-    # Verificamos que todos los campos obligatorios vengan en el POST
     if desde_semestre and desde_anio and hasta_semestre and hasta_anio:
-        # Armamos el string final tal como lo espera la base de datos (Ej: "I-2025-II-2025")
-        nombre_armado = f"{desde_semestre}-{desde_anio}-{hasta_semestre}-{hasta_anio}"
-        
-        if periodo_id:
-            editar_periodo(periodo_id, nombre_armado)
-        else:
-            crear_periodo(nombre_armado)
+        try:
+            d_anio = int(desde_anio)
+            h_anio = int(hasta_anio)
+            
+            if 2000 <= d_anio <= 2100 and 2000 <= h_anio <= 2100:
+                # Validar incongruencias temporales
+                if d_anio > h_anio:
+                    messages.error(request, "Error: El año de inicio no puede ser mayor al de finalización.")
+                    return
+                
+                if d_anio == h_anio and desde_semestre in ['II', 'III'] and hasta_semestre == 'I':
+                    messages.error(request, "Error: El semestre final no puede ocurrir antes que el inicial.")
+                    return
+                if d_anio == h_anio and desde_semestre == 'III' and hasta_semestre == 'II':
+                    messages.error(request, "Error: El semestre final no puede ocurrir antes que el inicial.")
+                    return
+                
+                nombre_armado = f"{desde_semestre}-{d_anio}-{hasta_semestre}-{h_anio}"
+                
+                if periodo_id:
+                    if not Periodo.objects.filter(nombre=nombre_armado).exclude(id=periodo_id).exists():
+                        editar_periodo(periodo_id, nombre_armado)
+                        messages.success(request, "Periodo actualizado exitosamente.")
+                    else:
+                        messages.error(request, "Error: Este periodo ya se encuentra registrado.")
+                else:
+                    if not Periodo.objects.filter(nombre=nombre_armado).exists():
+                        crear_periodo(nombre_armado)
+                        messages.success(request, "Periodo creado exitosamente.")
+                    else:
+                        messages.error(request, "Error: Este periodo ya se encuentra registrado.")
+            else:
+                messages.error(request, "Error: Los años deben estar entre 2000 y 2100.")
+                        
+        except ValueError:
+            messages.error(request, "Error: Datos numéricos inválidos.")
 
 def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
-    """
-    Realiza la paginación, rango dinámico y 'desarma' los textos para el modal de edición.
-    """
     lista_periodos = obtener_periodos()
     paginator = Paginator(lista_periodos, items_por_pagina)
     
@@ -55,25 +102,19 @@ def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
 
     page_obj = paginator.get_page(numero_pagina)
     
-    # =========================================================================
-    # NUEVO: Desarmamos el string guardado para que el HTML pueda pre-seleccionar
-    # =========================================================================
     for p in page_obj:
         partes = p.nombre.split('-')
-        # Si tiene el formato correcto de 4 partes, las separamos:
         if len(partes) == 4:
             p.desde_semestre = partes[0]
             p.desde_anio = partes[1]
             p.hasta_semestre = partes[2]
             p.hasta_anio = partes[3]
         else:
-            # Si hay un dato viejo o mal guardado, le pasamos valores por defecto
             p.desde_semestre = 'I'
             p.desde_anio = ''
             p.hasta_semestre = 'II'
             p.hasta_anio = ''
             
-    # Lógica de ventana de 5 páginas
     current_page = page_obj.number
     total_pages = paginator.num_pages
     
