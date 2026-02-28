@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from .utils.periodo_utils import procesar_formulario_periodo, obtener_contexto_paginacion
 from .utils.carrera_utils import procesar_formulario_carrera, obtener_carreras
+from .utils.asesor_academico_utils import procesar_formulario_asesor, obtener_asesores_academicos
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -28,3 +29,16 @@ def carrera(request):
         'carreras': obtener_carreras()
     }
     return render(request, 'carrera.html', context)
+
+@login_required
+def asesores_academicos(request):
+    if request.method == 'POST':
+        procesar_formulario_asesor(request)
+        return redirect('asesores_academicos')
+        
+    # Pasamos la lista de asesores al contexto para usarla luego en la tabla/grid
+    context = {
+        'asesores': obtener_asesores_academicos()
+    }
+    
+    return render(request, 'asesores_academicos.html', context)
