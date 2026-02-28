@@ -1,0 +1,68 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'css/brigada_periodo.css' %}" /> 
+{% endblock extra_css %}
+{% block titulo_seccion %}Brigadas{% endblock %}
+
+{% block content %}
+
+<div class="main-layout">
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div id="contenedor-periodos" class="periods-section">
+                <div id="grid-periodos" class="periods-grid">
+                    {% for p in page_obj %}
+                    
+                    <a href="{% url 'brigadas' p.id %}" class="period-card">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ p.nombre }}</h2>
+                        </div>
+                    </a>
+
+                    {% empty %}
+                    <div class="empty-message">
+                        Aún no hay Periodos Registrados
+                    </div>
+                    {% endfor %}
+                </div> 
+
+                {% if page_obj.has_other_pages %}
+                <div class="pagination-wrapper">
+                    <div class="pagination-container">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}" class="page-link btn-nav">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            </a>
+                        {% else %}
+                            <button class="page-link btn-nav disabled" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                        {% endif %}
+
+                        {% for num in custom_page_range %}
+                            {% if page_obj.number == num %}
+                                <button class="page-link active">{{ num }}</button>
+                            {% else %}
+                                <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" class="page-link btn-nav">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </a>
+                        {% else %}
+                            <button class="page-link btn-nav disabled" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div> 
+        </div> 
+    </main> 
+</div>
+
+{% endblock content %}
