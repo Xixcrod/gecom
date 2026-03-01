@@ -3,3 +3,4 @@
 
 # Herramientas de desarrollo
 django-browser-reload    # Para que la página se refresque sola al cambiar el HTML/CSS
+Faker==40.5.1          # Para generar datos de prueba (fake data) en la base de datos
