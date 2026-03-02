@@ -31,7 +31,7 @@
                             {% for a in asesores %}
                                 {% if a.activo %}
                                 <div class="bg-white/95 rounded-2xl p-5 shadow-sm border border-white flex items-center justify-between hover:shadow-md transition-all duration-300 group">
-                                    <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-4 cursor-pointer flex-1" onclick='window.location.href="{% url "detalle_asesor" a.asesor.id %}"' title="Ver detalles del asesor">
                                         <div class="w-12 h-12 rounded-full bg-purple-100 text-[#8b5cf6] flex items-center justify-center font-bold text-lg group-hover:bg-[#8b5cf6] group-hover:text-white transition-colors duration-300 shadow-inner">
                                             {{ a.asesor.nombres|first|upper }}{{ a.asesor.apellidos|first|upper }}
                                         </div>
@@ -61,7 +61,7 @@
                             {% for a in asesores %}
                                 {% if not a.activo %}
                                 <div class="bg-white/70 rounded-2xl p-5 shadow-sm border border-transparent flex items-center justify-between hover:shadow-md transition-all duration-300 group">
-                                    <div class="flex items-center gap-4 opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <div class="flex items-center gap-4 opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer flex-1" onclick='window.location.href="{% url "detalle_asesor" a.asesor.id %}"' title="Ver detalles del asesor">
                                         <div class="w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg shadow-inner">
                                             {{ a.asesor.nombres|first|upper }}{{ a.asesor.apellidos|first|upper }}
                                         </div>
