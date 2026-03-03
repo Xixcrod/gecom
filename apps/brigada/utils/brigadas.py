@@ -3,20 +3,24 @@ from django.core.paginator import Paginator
 from apps.core.models import Brigada
 from django.db.models.functions import Cast # Importa Cast
 
-def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items_por_pagina=12):
-# 1. Filtro base por periodo
-    # Usamos annotate para crear una columna temporal 'nombre_int' que sea el nombre convertido a número
+def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items_por_pagina=16):
+    '''Función para obtener el contexto de brigadas con filtros de búsqueda y paginación.'''
+    # 1. Filtro base por periodo
     queryset = Brigada.objects.filter(periodo=periodo_id).annotate(
         nombre_int=Cast('nombre', output_field=IntegerField())
-    ).order_by('nombre_int') # Ahora ordenamos por esa columna numérica
+    ).order_by('nombre_int')
 
-    # 2. Filtros de búsqueda (Si existen)
+    # 2. Filtros de búsqueda inteligentes
     if query_search:
-        queryset = queryset.filter(
-            Q(nombre__icontains=query_search) | # Por nombre de brigada
-            Q(estudiantes__cedula__icontains=query_search) | # Por cédula de estudiante
-            Q(asesores__cedula__icontains=query_search) # Por cédula de asesor (vía ManyToMany)
-        ).distinct() # Importante: evita duplicados al buscar en relaciones
+        # Siempre buscamos por el nombre de la brigada
+        filtros = Q(nombre__icontains=query_search)
+        
+        # Solo agregamos la búsqueda por cédula si tiene 7 o más caracteres
+        if len(query_search) >= 7:
+            filtros |= Q(estudiantes__cedula__icontains=query_search) | \
+                       Q(asesores__cedula__icontains=query_search)
+        
+        queryset = queryset.filter(filtros).distinct()
 
     # 3. Paginación
     paginator = Paginator(queryset, items_por_pagina)
@@ -28,7 +32,7 @@ def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items
 
     page_obj = paginator.get_page(numero_pagina)
 
-    # 4. Rango de páginas (Tu lógica actual optimizada)
+    # 4. Rango de páginas
     current_page = page_obj.number
     total_pages = paginator.num_pages
     start_page = max(1, current_page - 2)
@@ -43,5 +47,5 @@ def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items
     return {
         'page_obj': page_obj,
         'custom_page_range': range(start_page, end_page + 1),
-        'query_search': query_search # Devolvemos el término para mantenerlo en el input
+        'query_search': query_search
     }
