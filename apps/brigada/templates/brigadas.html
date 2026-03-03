@@ -1,0 +1,151 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'css/brigadas.css' %}" /> 
+{% endblock extra_css %}
+
+{% block titulo_seccion %}Brigadas{% endblock %}
+
+{% block content %}
+
+<div class="main-layout">
+    
+    <button class="fab-add" onclick="toggleModal(true)" title="Agregar nueva brigada">
+        <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+    </button>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            
+            <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 style="color: white;">Brigadas: {{ periodo.nombre }}</h1>
+                
+                <form method="GET" class="search-form" style="display: flex; gap: 0.5rem;">
+                    <input type="text" name="q" value="{{ query_search|default:'' }}" 
+                           placeholder="Brigada, Cédula Est. o Asesor..." 
+                           style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; width: 300px;">
+                    <button type="submit" class="page-link active" style="border-radius: 0.5rem;">Buscar</button>
+                </form>
+            </div>
+
+            <div id="contenedor-brigadas" class="periods-section">
+                <div id="grid-brigadas" class="periods-grid">
+                    {% for b in page_obj %}
+                    <a href="" class="period-card">
+                        <div class="card-body">
+                            <h2 class="card-title">Brigada #{{ b.nombre }}</h2>
+                            <p style="color: #e5e7eb; margin-top: 0.5rem;">{{ b.estudiantes.count }} Estudiantes</p>
+                        </div>
+                        <div class="card-overlay">
+                            <svg class="icon-edit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <div class="empty-message" style="color: white; grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        No se encontraron brigadas con ese criterio.
+                    </div>
+                    {% endfor %}
+                </div> 
+
+                {% if page_obj.has_other_pages %}
+                <div class="pagination-wrapper">
+                    <div class="pagination-container">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}{% if query_search %}&q={{ query_search }}{% endif %}" class="page-link btn-nav">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            </a>
+                        {% endif %}
+
+                        {% for num in custom_page_range %}
+                            {% if page_obj.number == num %}
+                                <button class="page-link active">{{ num }}</button>
+                            {% else %}
+                                <a href="?page={{ num }}{% if query_search %}&q={{ query_search }}{% endif %}" class="page-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% if query_search %}&q={{ query_search }}{% endif %}" class="page-link btn-nav">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div> 
+        </div> 
+    </main> 
+</div>
+
+<div id="modalBrigada" class="modal-overlay" onclick="handleOutsideClick(event)">
+    <div class="modal-content">
+        <h2 style="color: white; margin-bottom: 0.5rem;">Nueva Brigada</h2>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Ingresa el número correspondiente a la nueva brigada.</p>
+        
+        <form method="POST" id="formNuevaBrigada">
+            {% csrf_token %}
+            <div class="form-group">
+                <label style="color: #e2e8f0; display: block; margin-bottom: 0.5rem;">Número de Brigada</label>
+                {{ form.nombre }}
+                
+                {% if form.nombre.errors %}
+                    <div style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem; background: rgba(239, 68, 68, 0.1); padding: 0.5rem; border-radius: 0.4rem;">
+                        {{ form.nombre.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn-search" style="flex: 1; justify-content: center;">Guardar Brigada</button>
+                <button type="button" onclick="toggleModal(false)" style="flex: 1; background: transparent; color: white; border: 1px solid #4b5563; border-radius: 0.5rem; cursor: pointer;">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Función para abrir/cerrar el modal
+    function toggleModal(show) {
+        const modal = document.getElementById('modalBrigada');
+        modal.style.display = show ? 'flex' : 'none';
+        
+        if (show) {
+            // Pone el foco automáticamente en el input al abrir
+            const input = modal.querySelector('input[name="nombre"]');
+            if (input) input.focus();
+        }
+    }
+
+    // Cerrar modal al hacer clic fuera de la caja blanca
+    function handleOutsideClick(event) {
+        const modal = document.getElementById('modalBrigada');
+        if (event.target === modal) {
+            toggleModal(false);
+        }
+    }
+
+    // Si el formulario tiene errores al recargar, abrimos el modal automáticamente
+    {% if form.nombre.errors %}
+        toggleModal(true);
+    {% endif %}
+    
+    // Auto-ocultar alertas después de 4 segundos con un efecto suave
+    window.onload = function() {
+        const alerts = document.querySelectorAll('.alert-msg');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => alert.remove(), 500);
+            }, 4000);
+        });
+    };
+</script>
+
+{% endblock content %}
