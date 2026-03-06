@@ -9,8 +9,9 @@
 
 {% block content %}
 
+<a href="{% url 'brigada_periodo' %}">Regresar a Periodos</a>
+
 <div class="main-layout">
-    
     <button class="fab-add" onclick="toggleModal(true)" title="Agregar nueva brigada">
         <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -19,7 +20,6 @@
 
     <main class="main-content">
         <div class="content-wrapper">
-            
             <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h1 style="color: white;">Brigadas: {{ periodo.nombre }}</h1>
                 
@@ -34,7 +34,7 @@
             <div id="contenedor-brigadas" class="periods-section">
                 <div id="grid-brigadas" class="periods-grid">
                     {% for b in page_obj %}
-                    <a href="" class="period-card">
+                    <a href="{% url 'brigada_detalles' brigada_id=b.id %}" class="period-card">
                         <div class="card-body">
                             <h2 class="card-title">Brigada #{{ b.nombre }}</h2>
                             <p style="color: #e5e7eb; margin-top: 0.5rem;">{{ b.estudiantes.count }} Estudiantes</p>
@@ -48,7 +48,7 @@
                     </a>
                     {% empty %}
                     <div class="empty-message" style="color: white; grid-column: 1 / -1; text-align: center; padding: 3rem;">
-                        No se encontraron brigadas con ese criterio.
+                        No se encontraron brigadas.
                     </div>
                     {% endfor %}
                 </div> 
@@ -86,66 +86,32 @@
 <div id="modalBrigada" class="modal-overlay" onclick="handleOutsideClick(event)">
     <div class="modal-content">
         <h2 style="color: white; margin-bottom: 0.5rem;">Nueva Brigada</h2>
-        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Ingresa el número correspondiente a la nueva brigada.</p>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Ingresa el número correspondiente.</p>
         
-        <form method="POST" id="formNuevaBrigada">
+        <form method="POST" action="{% url 'crear_brigada' periodo.id %}" id="formNuevaBrigada">
             {% csrf_token %}
             <div class="form-group">
                 <label style="color: #e2e8f0; display: block; margin-bottom: 0.5rem;">Número de Brigada</label>
                 {{ form.nombre }}
                 
-                {% if form.nombre.errors %}
-                    <div style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem; background: rgba(239, 68, 68, 0.1); padding: 0.5rem; border-radius: 0.4rem;">
-                        {{ form.nombre.errors.0 }}
-                    </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if 'error' in message.tags %}
+                            <div style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem; background: rgba(239, 68, 68, 0.1); padding: 0.5rem; border-radius: 0.4rem;">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button type="submit" class="btn-search" style="flex: 1; justify-content: center;">Guardar Brigada</button>
-                <button type="button" onclick="toggleModal(false)" style="flex: 1; background: transparent; color: white; border: 1px solid #4b5563; border-radius: 0.5rem; cursor: pointer;">Cancelar</button>
+                <button type="submit" class="btn-search" style="flex: 1; justify-content: center;">Guardar</button>
+                <button type="button" onclick="toggleModal(false)" style="flex: 1; background: transparent; color: white; border: 1px solid #4b5563; border-radius: 0.5rem;">Cancelar</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-    // Función para abrir/cerrar el modal
-    function toggleModal(show) {
-        const modal = document.getElementById('modalBrigada');
-        modal.style.display = show ? 'flex' : 'none';
-        
-        if (show) {
-            // Pone el foco automáticamente en el input al abrir
-            const input = modal.querySelector('input[name="nombre"]');
-            if (input) input.focus();
-        }
-    }
-
-    // Cerrar modal al hacer clic fuera de la caja blanca
-    function handleOutsideClick(event) {
-        const modal = document.getElementById('modalBrigada');
-        if (event.target === modal) {
-            toggleModal(false);
-        }
-    }
-
-    // Si el formulario tiene errores al recargar, abrimos el modal automáticamente
-    {% if form.nombre.errors %}
-        toggleModal(true);
-    {% endif %}
-    
-    // Auto-ocultar alertas después de 4 segundos con un efecto suave
-    window.onload = function() {
-        const alerts = document.querySelectorAll('.alert-msg');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                alert.style.opacity = '0';
-                alert.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => alert.remove(), 500);
-            }, 4000);
-        });
-    };
-</script>
-
+<script src="{% static 'js/modal_brigada.js' %}"></script>
 {% endblock content %}

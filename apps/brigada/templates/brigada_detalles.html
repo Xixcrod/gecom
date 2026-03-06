@@ -1,0 +1,124 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block extra_css %}  
+{% endblock extra_css %}
+{% block titulo_seccion %}Brigadas{% endblock %}
+
+{% block content %}
+<h2>Brigada:{{ brigada.nombre }} - Periodo:{{ brigada.periodo.nombre }}</h2>
+
+<!-- Botón para regresar a la lista de brigadas -->
+<a href="{% url 'brigadas' brigada.periodo.id %}">Regresar a Brigadas</a>
+
+{% csrf_token %}
+<div class="card" id="card-asesores" 
+     data-url-academico="{% url 'asignar_academico' brigada.id %}"
+     data-url-comunitario="{% url 'guardar_comunitario' brigada.id %}">
+    
+    <h3>Asesores de la Brigada</h3>
+
+    <hr>
+    <div class="asesor-section">
+        <h4>Asesor Académico</h4>
+        {% if asesor_academico %}
+            <div id="info-academico">
+                <p><strong>{{ asesor_academico.asesor.nombres }} {{ asesor_academico.asesor.apellidos }}</strong> - {{ asesor_academico.profesion }}</p>
+                <p>Cédula: {{ asesor_academico.asesor.cedula }} | Tel: {{ asesor_academico.asesor.telefono }}</p>
+                <button onclick="toggleSelectorAcademico()" class="btn-editar">Cambiar Asesor</button>
+            </div>
+        {% else %}
+            <p id="no-academico-msg">No asignado</p>
+        {% endif %}
+
+        <div id="selector-academico-div" style="display: {% if asesor_academico %}none{% else %}block{% endif %}; transition: all 0.3s ease;">
+            <select id="select-academico">
+                <option value="">Seleccione un Asesor Activo...</option>
+                {% for acc in academicos_activos %}
+                    <option value="{{ acc.asesor.id }}">{{ acc.asesor.nombres }} {{ acc.asesor.apellidos }} ({{ acc.profesion }})</option>
+                {% endfor %}
+            </select>
+            <button onclick="guardarAcademico('{{ brigada.id }}')" class="btn-guardar">Asignar / Guardar</button>
+            {% if asesor_academico %}
+                <button onclick="toggleSelectorAcademico()" class="btn-cancelar">Cancelar</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+    <div class="asesor-section">
+        <h4>Asesor Comunitario</h4>
+        {% if asesor_comunitario %}
+            <div id="info-comunitario">
+                <p><strong>{{ asesor_comunitario.asesor.nombres }} {{ asesor_comunitario.asesor.apellidos }}</strong></p>
+                <p>Cédula: {{ asesor_comunitario.asesor.cedula }} | Tel: {{ asesor_comunitario.asesor.telefono }} | Correo: {{ asesor_comunitario.asesor.correo }}</p>
+                <button onclick="abrirModalComunitario('{{ asesor_comunitario.asesor.id }}', '{{ asesor_comunitario.asesor.nombres }}', '{{ asesor_comunitario.asesor.apellidos }}', '{{ asesor_comunitario.asesor.cedula }}', '{{ asesor_comunitario.asesor.telefono }}', '{{ asesor_comunitario.asesor.correo }}')" class="btn-editar">Modificar</button>
+            </div>
+        {% else %}
+            <div onclick="abrirModalComunitario('', '', '', '', '', '')" style="cursor: pointer; border: 2px dashed #ccc; padding: 15px; text-align: center; border-radius: 8px;">
+                <p>No existe asesor comunitario asignado. <br><strong>Haz click aquí para crear y asignar uno.</strong></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div id="modalComunitario" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 25px; border-radius: 8px; width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+        <h3 id="modal-titulo" style="margin-top: 0;">Asesor Comunitario</h3>
+        <input type="hidden" id="com_id">
+        
+        <div style="margin-bottom: 10px;">
+            <label>Nombres:</label><br>
+            <input type="text" id="com_nombres" style="width: 100%;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>Apellidos:</label><br>
+            <input type="text" id="com_apellidos" style="width: 100%;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>Cédula:</label><br>
+            <input type="text" id="com_cedula" style="width: 100%;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>Teléfono:</label><br>
+            <input type="text" id="com_telefono" style="width: 100%;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label>Correo:</label><br>
+            <input type="email" id="com_correo" style="width: 100%;">
+        </div>
+        
+        <div style="text-align: right;">
+            <button onclick="cerrarModalComunitario()" class="btn-cancelar">Cancelar</button>
+            <button onclick="guardarComunitario('{{ brigada.id }}')" class="btn-guardar">Guardar Asesor</button>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Proyecto -->
+<div class="card">
+    <h3>Proyecto</h3>
+    {% if proyecto %}
+        <a href="">
+            <p><strong>Nombre:</strong> {{ proyecto.nombre_proyecto }}</p>
+            <p><strong>Comunidad:</strong> {{ proyecto.comunidad }}</p>
+            <p><strong>Fecha de Inicio:</strong> {{ proyecto.fecha_inicio }}</p>
+            <p><strong>Fecha de Fin:</strong> {{ proyecto.fecha_culminacion }}</p>
+            <p><strong>Estado:</strong> {% if proyecto.aprobado %}Aprobado{% else %}Pendiente{% endif %}</p>
+        </a>
+    {% else %}
+        <p>⚠️ No hay proyecto asignado.</p>
+    {% endif %}
+</div>
+
+<!-- Sección de Estudiantes (Bucle único) -->
+<div class="card">
+    <h3>Lista de Estudiantes</h3>
+    <ul>
+        {% for e in estudiantes %}
+            <li>{{ e.nombres }} {{ e.apellidos }} {{e.cedula}} ({{ e.carrera.nombre_carrera }}) <a href="">Ver detalles</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script src="{% static 'js/asesores.js' %}"></script>
+{% endblock content%}

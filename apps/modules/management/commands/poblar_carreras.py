@@ -6,9 +6,10 @@ class Command(BaseCommand):
     help = 'Puebla la base de datos con las carreras oficiales de la UNEFM'
 
     def handle(self, *args, **kwargs):
+        # Limpiamos la tabla para tener un inicio en limpio
         Carrera.objects.all().delete()
         
-        # Lista de carreras de la UNEFM
+        # Lista estática con la oferta académica oficial de la universidad
         carreras_unefm = [
             "Medicina",
             "Ciencias Veterinarias",
@@ -27,6 +28,7 @@ class Command(BaseCommand):
             "PNF Nutrición y Dietética"
         ]
         
+        # Iteramos sobre la lista y creamos un registro por cada carrera
         for nombre in carreras_unefm:
             Carrera.objects.create(nombre_carrera=nombre)
             

@@ -22,6 +22,7 @@ def sort_periodos_key(periodo):
             h_s = sem_map.get(hasta_sem, 0)
             
             # Devuelve una tupla de pesos: (2027, 1, 2026, 2)
+            # Python usará esta tupla para determinar el orden exacto
             return (hasta_anio, h_s, desde_anio, d_s)
         except ValueError:
             pass
@@ -34,10 +35,15 @@ def obtener_periodos():
     return sorted(periodos, key=sort_periodos_key, reverse=True)
 
 def crear_periodo(nombre):
+    """Crea y guarda un nuevo registro de Periodo en la base de datos."""
     if nombre:
         Periodo.objects.create(nombre=nombre)
 
 def editar_periodo(periodo_id, nuevo_nombre):
+    """
+    Actualiza el nombre de un periodo existente buscándolo por su ID.
+    Maneja silenciosamente la excepción si el periodo no existe.
+    """
     if periodo_id and nuevo_nombre:
         try:
             periodo = Periodo.objects.get(id=periodo_id)
@@ -47,6 +53,11 @@ def editar_periodo(periodo_id, nuevo_nombre):
             pass 
 
 def procesar_formulario_periodo(request):
+    """
+    Procesa los datos enviados desde el formulario (POST).
+    Se encarga de armar el nombre del periodo, validar que las fechas tengan sentido 
+    cronológico y delegar la acción a crear_periodo o editar_periodo según corresponda.
+    """
     periodo_id = request.POST.get('id')
     desde_semestre = request.POST.get('desde_semestre')
     desde_anio = request.POST.get('desde_anio')
@@ -59,11 +70,12 @@ def procesar_formulario_periodo(request):
             h_anio = int(hasta_anio)
             
             if 2000 <= d_anio <= 2100 and 2000 <= h_anio <= 2100:
-                # Validar incongruencias temporales
+                # Validar incongruencias temporales (Ej: Inicia en 2025 y termina en 2024)
                 if d_anio > h_anio:
                     messages.error(request, "Error: El año de inicio no puede ser mayor al de finalización.")
                     return
                 
+                # Validar incongruencias semestrales en el mismo año
                 if d_anio == h_anio and desde_semestre in ['II', 'III'] and hasta_semestre == 'I':
                     messages.error(request, "Error: El semestre final no puede ocurrir antes que el inicial.")
                     return
@@ -71,14 +83,18 @@ def procesar_formulario_periodo(request):
                     messages.error(request, "Error: El semestre final no puede ocurrir antes que el inicial.")
                     return
                 
+                # Ensambla el string final (Ej: 'I-2024-II-2024')
                 nombre_armado = f"{desde_semestre}-{d_anio}-{hasta_semestre}-{h_anio}"
                 
+                # Flujo de Edición
                 if periodo_id:
+                    # Verifica que el nuevo nombre no choque con otro periodo ya existente
                     if not Periodo.objects.filter(nombre=nombre_armado).exclude(id=periodo_id).exists():
                         editar_periodo(periodo_id, nombre_armado)
                         messages.success(request, "Periodo actualizado exitosamente.")
                     else:
                         messages.error(request, "Error: Este periodo ya se encuentra registrado.")
+                # Flujo de Creación
                 else:
                     if not Periodo.objects.filter(nombre=nombre_armado).exists():
                         crear_periodo(nombre_armado)
@@ -92,6 +108,11 @@ def procesar_formulario_periodo(request):
             messages.error(request, "Error: Datos numéricos inválidos.")
 
 def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
+    """
+    Prepara los datos paginados y calcula el rango visible de los botones de paginación.
+    Además, inyecta atributos temporales a cada objeto Periodo para facilitar
+    su renderizado en el formulario del frontend.
+    """
     lista_periodos = obtener_periodos()
     paginator = Paginator(lista_periodos, items_por_pagina)
     
@@ -102,6 +123,8 @@ def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
 
     page_obj = paginator.get_page(numero_pagina)
     
+    # Descompone el nombre de cada periodo de la página actual 
+    # en sus 4 partes para usarlas directamente en los inputs del HTML
     for p in page_obj:
         partes = p.nombre.split('-')
         if len(partes) == 4:
@@ -115,12 +138,14 @@ def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
             p.hasta_semestre = 'II'
             p.hasta_anio = ''
             
+    # Lógica matemática para crear la "ventana" de botones de paginación (Ej: [1] [2] [3] 4 5)
     current_page = page_obj.number
     total_pages = paginator.num_pages
     
     start_page = max(1, current_page - 2)
     end_page = min(total_pages, current_page + 2)
     
+    # Ajusta la ventana si estamos en los extremos (al principio o al final)
     if end_page - start_page < 4:
         if start_page == 1:
             end_page = min(total_pages, start_page + 4)
@@ -129,6 +154,7 @@ def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
             
     custom_page_range = range(start_page, end_page + 1)
     
+    # Retorna un diccionario listo para ser inyectado en el context de la vista
     return {
         'page_obj': page_obj,
         'custom_page_range': custom_page_range

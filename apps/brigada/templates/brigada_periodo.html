@@ -11,6 +11,7 @@
     <main class="main-content">
         <div class="content-wrapper">
             <div id="contenedor-periodos" class="periods-section">
+                <!-- Sección de periodos -->
                 <div id="grid-periodos" class="periods-grid">
                     {% for p in page_obj %}
                     
@@ -27,6 +28,7 @@
                     {% endfor %}
                 </div> 
 
+                <!-- Paginación -->
                 {% if page_obj.has_other_pages %}
                 <div class="pagination-wrapper">
                     <div class="pagination-container">
