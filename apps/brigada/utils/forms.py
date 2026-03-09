@@ -1,5 +1,5 @@
 from django import forms
-from apps.core.models import Brigada
+from apps.core.models import Brigada, Proyecto
 
 class BrigadaForm(forms.ModelForm):
     class Meta:

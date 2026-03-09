@@ -5,10 +5,35 @@
 {% block titulo_seccion %}Brigadas{% endblock %}
 
 {% block content %}
-<h2>Brigada:{{ brigada.nombre }} - Periodo:{{ brigada.periodo.nombre }}</h2>
+<div class="d-flex align-items-center">
+    <h2 id="titulo-brigada">Brigada: {{ brigada.nombre }} - Periodo: {{ brigada.periodo.nombre }}</h2>
+    <button onclick="abrirModalModificar('{{ brigada.id }}', '{{ brigada.nombre }}')" class="btn btn-primary">
+        <i class="fas fa-edit"></i> Modificar Brigada
+    </button>
+</div>
+
+<div id="customModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Modificar Número de Brigada</h3>
+            <span class="close-btn" onclick="cerrarModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Ingrese el nuevo nombre:</p>
+            <input type="text" id="inputNuevoNombre" placeholder="Solo números (ej. 105)">
+            <input type="hidden" id="hiddenBrigadaId">
+            <div id="error-msg" class="error-text"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn-guardar" onclick="enviarModificacion()">Guardar Cambios</button>
+        </div>
+    </div>
+</div>
+
 
 <!-- Botón para regresar a la lista de brigadas -->
-<a href="{% url 'brigadas' brigada.periodo.id %}">Regresar a Brigadas</a>
+<a href="{% url 'brigadas' brigada.periodo.id %}">Regresar</a>
 
 {% csrf_token %}
 <div class="card" id="card-asesores" 
@@ -22,8 +47,17 @@
         <h4>Asesor Académico</h4>
         {% if asesor_academico %}
             <div id="info-academico">
-                <p><strong>{{ asesor_academico.asesor.nombres }} {{ asesor_academico.asesor.apellidos }}</strong> - {{ asesor_academico.profesion }}</p>
+                <p><strong>{{ asesor_academico.asesor.nombres }} {{ asesor_academico.asesor.apellidos }}
                 <p>Cédula: {{ asesor_academico.asesor.cedula }} | Tel: {{ asesor_academico.asesor.telefono }}</p>
+                <p>Correo: {{ asesor_academico.asesor.correo }}</p>
+                </strong> - {{ asesor_academico.profesion }}</p>
+                </strong> - {{ asesor_academico.dependencia }}</p>
+                </strong> - {{ asesor_academico.cargo }}</p>
+                </strong> - {% if asesor_academico.activo %}
+                    Activo
+                {% else %}
+                    Inactivo
+                {% endif %}</p>
                 <button onclick="toggleSelectorAcademico()" class="btn-editar">Cambiar Asesor</button>
             </div>
         {% else %}
@@ -62,7 +96,7 @@
 </div>
 
 <div id="modalComunitario" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 25px; border-radius: 8px; width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+    <div style="background: rgb(216, 46, 46); padding: 25px; border-radius: 8px; width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
         <h3 id="modal-titulo" style="margin-top: 0;">Asesor Comunitario</h3>
         <input type="hidden" id="com_id">
         
@@ -95,30 +129,143 @@
 </div>
 
 <!-- Sección de Proyecto -->
-<div class="card">
-    <h3>Proyecto</h3>
-    {% if proyecto %}
+<div class="proyecto-tarjeta">
+    <div class="proyecto-tarjeta-header">
+        <h3 class="proyecto-titulo">Proyecto</h3>
+        {% if not proyecto %}
+            <button type="button" class="proyecto-btn-abrir" id="btnAbrirProyecto">
+                + Agregar Proyecto
+            </button>
+        {% endif %}
+    </div>
+
+    <div class="proyecto-tarjeta-body">
+        {% if proyecto %}
         <a href="">
-            <p><strong>Nombre:</strong> {{ proyecto.nombre_proyecto }}</p>
-            <p><strong>Comunidad:</strong> {{ proyecto.comunidad }}</p>
-            <p><strong>Fecha de Inicio:</strong> {{ proyecto.fecha_inicio }}</p>
-            <p><strong>Fecha de Fin:</strong> {{ proyecto.fecha_culminacion }}</p>
-            <p><strong>Estado:</strong> {% if proyecto.aprobado %}Aprobado{% else %}Pendiente{% endif %}</p>
+            <div class="proyecto-contenedor-datos">
+                <p><strong>Nombre:</strong> {{ proyecto.nombre_proyecto }}</p>
+                <p><strong>Comunidad:</strong> {{ proyecto.comunidad }}</p>
+                <p><strong>Inicio:</strong> {{ proyecto.fecha_inicio }}</p>
+                <p><strong>Fin:</strong> {{ proyecto.fecha_culminacion|default:"En ejecución" }}</p>
+                {% if proyecto.aprobado is True %}
+                <p><strong>Estado:</strong> Aprobado</p>
+                {% else %}
+                <p><strong>Estado:</strong> Pendiente</p>
+                {% endif %}
+            </div>
         </a>
-    {% else %}
-        <p>⚠️ No hay proyecto asignado.</p>
-    {% endif %}
+        {% else %}
+            <p class="proyecto-mensaje-vacio">⚠️ No hay proyecto asignado.</p>
+        {% endif %}
+    </div>
 </div>
+
+<dialog id="proyectoModalManual" class="proyecto-modal">
+    <div class="proyecto-modal-contenido">
+        <form action="{% url 'guardar_proyecto' brigada.id %}" method="POST">
+            {% csrf_token %}
+            <div class="proyecto-modal-header">
+                <h3>Nuevo Proyecto - {{ brigada.nombre }}</h3>
+                <button type="button" class="proyecto-btn-cerrar-x" id="btnCerrarX">&times;</button>
+            </div>
+            
+            <div class="proyecto-modal-body">
+                <div class="proyecto-grupo">
+                    <label>Nombre del Proyecto</label>
+                    <input type="text" name="nombre_proyecto" required>
+                </div>
+                <div class="proyecto-grupo">
+                    <label>Comunidad</label>
+                    <input type="text" name="comunidad" required>
+                </div>
+                <div class="proyecto-fila">
+                    <div class="proyecto-grupo">
+                        <label>Fecha Inicio</label>
+                        <input type="date" name="fecha_inicio" required>
+                    </div>
+                    <div class="proyecto-grupo">
+                        <label>Fecha Fin (Opcional)</label>
+                        <input type="date" name="fecha_culminacion">
+                    </div>
+                </div>
+            </div>
+
+            <div class="proyecto-modal-footer">
+                <button type="button" class="proyecto-btn-cancelar" id="btnCancelar">Cancelar</button>
+                <button type="submit" class="proyecto-btn-guardar">Guardar Proyecto</button>
+            </div>
+        </form>
+    </div>
+</dialog>
 
 <!-- Sección de Estudiantes (Bucle único) -->
 <div class="card">
-    <h3>Lista de Estudiantes</h3>
-    <ul>
+    <h3>
+        Lista de Estudiantes 
+        <button id="estudiante-btn-nuevo" class="estudiante-btn">Añadir Estudiante</button>
+    </h3>
+    <ul id="estudiante-lista">
         {% for e in estudiantes %}
             <li>{{ e.nombres }} {{ e.apellidos }} {{e.cedula}} ({{ e.carrera.nombre_carrera }}) <a href="">Ver detalles</a></li>
         {% endfor %}
     </ul>
 </div>
 
+<div id="estudiante-modal" class="estudiante-modal-overlay" style="display: none;">
+    <div class="estudiante-modal-content">
+        <span id="estudiante-btn-cerrar" class="estudiante-close">&times;</span>
+        <h2>Nuevo Estudiante</h2>
+        
+        <form id="estudiante-form">
+            {% csrf_token %}
+            <input type="hidden" name="brigada_id" value="{{ brigada.id }}">
+
+            <div class="estudiante-form-group">
+                <label>Nombres:</label>
+                <input type="text" name="nombres" class="estudiante-input" required>
+            </div>
+
+            <div class="estudiante-form-group">
+                <label>Apellidos:</label>
+                <input type="text" name="apellidos" class="estudiante-input" required>
+            </div>
+
+            <div class="estudiante-form-group">
+                <label>Cédula:</label>
+                <input type="text" name="cedula" class="estudiante-input" required>
+            </div>
+
+            <div class="estudiante-form-group">
+                <label>Correo:</label>
+                <input type="email" name="correo" class="estudiante-input" required>
+            </div>
+
+            <div class="estudiante-form-group">
+                <label>Teléfono:</label>
+                <input type="text" name="telefono" class="estudiante-input" required>
+            </div>
+
+            <div class="estudiante-form-group">
+                <label>Carrera:</label>
+                <select name="carrera_id" class="estudiante-input" required>
+                    <option value="">Seleccione una carrera...</option>
+                    {% for c in carreras %}
+                        <option value="{{ c.id }}">{{ c.nombre_carrera }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+
+            <div id="estudiante-error" class="estudiante-alert-error" style="display: none;"></div>
+
+            <button type="submit" class="estudiante-btn estudiante-btn-submit">Guardar Estudiante</button>
+        </form>
+    </div>
+</div>
+
 <script src="{% static 'js/asesores.js' %}"></script>
+<script src="{% static 'js/modal_modificar_brigada.js' %}"></script>
+<script src="{% static 'js/modal_agregar_proyecto.js' %}"></script>
+<script src="{% static 'js/crear_estudiante.js' %}"></script>
 {% endblock content%}

@@ -82,7 +82,7 @@ class Proyecto(models.Model):
     nombre_proyecto = models.CharField(max_length=255)
     comunidad = models.CharField(max_length=255)
     fecha_inicio = models.DateField()
-    fecha_culminacion = models.DateField()
+    fecha_culminacion = models.DateField(null=True, blank=True)
     aprobado = models.BooleanField(default=False)
     
     brigada = models.ForeignKey(Brigada, on_delete=models.CASCADE, related_name='proyectos')

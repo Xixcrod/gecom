@@ -41,7 +41,8 @@
 
                             <form method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="id" value="{{ c.id }}">
+                                <input type="hidden" name="accion" value="editar">
+                                <input type="hidden" name="carrera_id" value="{{ c.id }}">
 
                                 <div class="form-control w-full">
                                     <label class="label">
@@ -100,6 +101,7 @@
 
             <form method="POST">
                 {% csrf_token %}
+                <input type="hidden" name="accion" value="crear">
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text font-medium text-gray-600">Nombre de la carrera</span>
