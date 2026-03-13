@@ -13,6 +13,7 @@ class Periodo(models.Model):
 class Carrera(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombre_carrera = models.CharField(max_length=200)
+    icono = models.ImageField(upload_to='carreras/iconos/', blank=True, null=True)
 
     def __str__(self):
         return self.nombre_carrera

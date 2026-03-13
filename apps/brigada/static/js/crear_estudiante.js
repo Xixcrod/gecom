@@ -4,79 +4,94 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnCerrar = document.getElementById('estudiante-btn-cerrar');
     const form = document.getElementById('estudiante-form');
     const divError = document.getElementById('estudiante-error');
-    const listaEstudiantes = document.getElementById('estudiante-lista');
 
-    // --- Manejo del Modal ---
-    btnAbrir.addEventListener('click', () => {
-        modal.style.display = 'flex';
-        divError.style.display = 'none'; 
-        form.reset(); 
-    });
+    // --- 1. Manejo del Modal ---
+    if (btnAbrir) {
+        btnAbrir.addEventListener('click', () => {
+            modal.style.display = 'flex'; // Aseguramos que sea flex para centrar el contenido
+            if (divError) divError.style.display = 'none'; 
+            form.reset(); 
+        });
+    }
 
-    btnCerrar.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+    if (btnCerrar) {
+        btnCerrar.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
 
+    // Cerrar al hacer clic en el fondo oscuro
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.style.display = 'none';
         }
     });
 
-    // --- Envío del formulario vía Fetch ---
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault(); 
+    // --- 2. Envío del formulario vía Fetch ---
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); 
 
-        const formData = new FormData(form);
-        divError.style.display = 'none';
+            const formData = new FormData(form);
+            if (divError) divError.style.display = 'none';
 
-        // DEBUG: Revisa esto en la consola (F12)
-        const brigadaId = formData.get('brigada_id');
-        const carreraId = formData.get('carrera_id');
+            // Obtenemos los IDs necesarios para la URL
+            const brigadaId = formData.get('brigada_id');
+            const carreraId = formData.get('carrera_id');
 
-        // Si alguno es null o vacío, lanzamos el mensaje de error
-        if (!brigadaId || brigadaId === "None" || !carreraId) {
-            divError.textContent = 'Asegúrate de seleccionar una carrera válida.';
-            divError.style.display = 'block';
-            return;
-        }
-
-        const url = `/brigada/${brigadaId}/${carreraId}/estudiante/agregar/`;
-        console.log("Enviando a URL:", url);
-
-        try {
-            // Deshabilitar botón para evitar doble clic
-            const btnSubmit = form.querySelector('button[type="submit"]');
-            if(btnSubmit) btnSubmit.disabled = true;
-
-            const response = await fetch(url, { 
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    // Importante: No olvides el CSRF Token si no está en el FormData
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value 
-                }
-            });
-
-            const data = await response.json();
-
-            if (!response.ok || !data.exito) {
-                // CASO ERROR: Mostramos el mensaje en el modal sin cerrarlo
-                divError.textContent = data.mensaje || 'Error al guardar.';
-                divError.style.display = 'block';
-                if(btnSubmit) btnSubmit.disabled = false;
-            } else {
-                // CASO ÉXITO: Cerramos y recargamos para que aparezca el mensaje de Django
-                modal.style.display = 'none';
-                window.location.reload(); 
+            // Validación rápida en cliente
+            if (!brigadaId || !carreraId) {
+                mostrarError('Por favor, selecciona una carrera válida.');
+                return;
             }
 
-        } catch (error) {
-            divError.textContent = 'Error de conexión con el servidor.';
+            // Construcción de la URL (Asegúrate que coincida con tu urls.py)
+            const url = `/brigada/${brigadaId}/${carreraId}/estudiante/agregar/`;
+
+            try {
+                const btnSubmit = form.querySelector('button[type="submit"]');
+                if(btnSubmit) btnSubmit.disabled = true;
+
+                const response = await fetch(url, { 
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        // Extraemos el CSRF token del formulario
+                        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value 
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.exito) {
+                    // ÉXITO: Recargamos para ver los cambios y mensajes de Django
+                    modal.style.display = 'none';
+                    window.location.reload(); 
+                } else {
+                    // ERROR DEL SERVIDOR (Validación, etc.)
+                    mostrarError(data.mensaje || 'Error al guardar el estudiante.');
+                    if(btnSubmit) btnSubmit.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Error en Fetch:", error);
+                mostrarError('Error de conexión con el servidor.');
+                const btnSubmit = form.querySelector('button[type="submit"]');
+                if(btnSubmit) btnSubmit.disabled = false;
+            }
+        });
+    }
+
+    // Función auxiliar para mostrar errores de forma limpia
+    function mostrarError(mensaje) {
+        if (divError) {
+            divError.textContent = mensaje;
             divError.style.display = 'block';
-            const btnSubmit = form.querySelector('button[type="submit"]');
-            if(btnSubmit) btnSubmit.disabled = false;
+            divError.style.color = '#e74c3c';
+            divError.style.marginTop = '10px';
+        } else {
+            alert(mensaje);
         }
-    });
+    }
 });

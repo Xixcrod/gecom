@@ -224,14 +224,23 @@ def procesar_proyecto(request, brigada_id):
         ).first()
 
         if not enlace_academico:
-            messages.error(request, 'No se puede crear el proyecto: La brigada no tiene un Asesor Académico asignado.')
-            return redirect('brigada_detalles', brigada_id=brigada.id)
+            return JsonResponse({
+                'success': False,
+                'message': 'No se puede crear el proyecto: La brigada no tiene un Asesor Académico asignado.'
+            }, status=400)
 
         # 2. Captura manual de datos desde el formulario HTML
         nombre = request.POST.get('nombre_proyecto')
         comunidad = request.POST.get('comunidad')
         f_inicio = request.POST.get('fecha_inicio')
         f_fin = request.POST.get('fecha_culminacion') # Puede venir vacío ''
+
+        # Validación básica de campos requeridos para el JSON
+        if not all([nombre, comunidad, f_inicio]):
+            return JsonResponse({
+                'success': False,
+                'message': 'Faltan campos obligatorios (Nombre, Comunidad o Fecha de Inicio).'
+            }, status=400)
 
         # 3. Creación del objeto Proyecto
         try:
@@ -251,12 +260,21 @@ def procesar_proyecto(request, brigada_id):
                 proyecto.fecha_culminacion = f_fin
 
             proyecto.save()
-            messages.success(request, 'Proyecto registrado exitosamente.')
+            return JsonResponse({
+            'success': True,
+            'message': 'Proyecto registrado exitosamente.',
+            })
             
         except AsesorAcademico.DoesNotExist:
-            messages.error(request, 'El asesor asignado no tiene un perfil académico completo.')
+            return JsonResponse({
+                'success': False,
+                'message': 'El asesor asignado no tiene un perfil académico completo.'
+            }, status=400)
         except Exception as e:
-            messages.error(request, f'Error al guardar: {e}')
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al guardar en la base de datos: {str(e)}'
+            }, status=500)
 
     return redirect('brigada_detalles', brigada_id=brigada_id)
 
