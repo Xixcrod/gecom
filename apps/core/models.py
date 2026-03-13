@@ -13,6 +13,7 @@ class Periodo(models.Model):
 class Carrera(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombre_carrera = models.CharField(max_length=200)
+    icono = models.ImageField(upload_to='carreras/iconos/', blank=True, null=True)
 
     def __str__(self):
         return self.nombre_carrera
@@ -82,7 +83,7 @@ class Proyecto(models.Model):
     nombre_proyecto = models.CharField(max_length=255)
     comunidad = models.CharField(max_length=255)
     fecha_inicio = models.DateField()
-    fecha_culminacion = models.DateField()
+    fecha_culminacion = models.DateField(null=True, blank=True)
     aprobado = models.BooleanField(default=False)
     
     brigada = models.ForeignKey(Brigada, on_delete=models.CASCADE, related_name='proyectos')

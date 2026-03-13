@@ -19,6 +19,3 @@ def signout(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
 
-def dashboard(request):
-    return render(request, 'dashboard.html')
-

@@ -1,0 +1,151 @@
+/* Configuración General y tipografía para igualar tu diseño */
+.contenedor-fondo-azul {
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.titulo-rojo {
+    color: #ff3333;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Cabecera Principal */
+.cabecera-brigada {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+#titulo-brigada {
+    color: #111;
+    font-size: 2.2rem;
+    margin: 0;
+}
+.link-regresar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* =========================================================
+   TARJETAS Y COLUMNAS
+   ========================================================= */
+.asesores-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.asesor-columna {
+    position: relative;
+    width: 45%;
+}
+
+.seccion-central {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.contenedor-tarjeta-lateral {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    display: flex;
+    align-items: center;
+}
+
+/* Estilos Comunes de Tarjetas */
+.tarjeta-morada, .tarjeta-amarilla, .tarjeta-verde {
+    border: 2px solid #000;
+    border-radius: 12px;
+    padding: 20px;
+    color: #000;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    width: 100%;
+}
+.tarjeta-morada p { margin: 5px 0; font-size: 1.1rem; }
+
+/* Colores específicos de la imagen */
+.tarjeta-morada { background-color: #9d72ff; }
+.tarjeta-amarilla { background-color: #ffd93d; }
+.tarjeta-verde { background-color: #a8f0b6; padding: 10px; }
+
+/* Diseño interno del Proyecto */
+.proyecto-distribucion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.titulo-proy { font-size: 1.5rem; }
+.comunidad-proy { font-size: 1.2rem; }
+.fechas-proy {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 20px;
+}
+
+/* Lista de Estudiantes como Tabla */
+#estudiante-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#estudiante-lista li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-size: 1.1rem;
+}
+#estudiante-lista li:last-child { border-bottom: none; }
+.est-nombre { flex: 2; }
+.est-cedula { flex: 1; }
+.est-carrera { flex: 1; }
+.est-link { color: #111; font-style: italic; text-decoration: underline; flex: 1; text-align: right; }
+
+/* =========================================================
+   BOTONES E ICONOS LATERALES
+   ========================================================= */
+.btn-lapiz, .btn-mas {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2rem;
+    color: #0d47a1; /* Azul oscuro para los iconos */
+}
+.btn-lateral {
+    position: absolute;
+    right: -40px; /* Posiciona el icono a la derecha, fuera de la tarjeta */
+    top: 50%;
+    transform: translateY(-50%);
+}
+.asesor-columna .btn-lateral {
+    right: -35px; /* Ajuste especial para los asesores */
+    top: 40px;
+}
+
+/* Estilos Base para Modales (Para que no se rompan) */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none; align-items: center; justify-content: center; z-index: 2000;
+}
+.modal-content {
+    background-color: #fff; border-radius: 8px; width: 90%; max-width: 500px;
+    font-family: Arial, sans-serif; /* Fuente limpia para formularios */
+}
+.modal-body { padding: 20px; }
+.modal-body input, .modal-body select {
+    width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box;
+}
+.modal-footer { padding: 15px; display: flex; justify-content: flex-end; gap: 10px; background: #eee; }
+.btn-guardar { background: #1a73e8; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+.btn-cancelar { background: #d32f2f; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+.close-btn { font-size: 24px; cursor: pointer; float: right; margin-top: -10px; }

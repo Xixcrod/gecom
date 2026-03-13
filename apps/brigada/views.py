@@ -1,10 +1,10 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from .utils.brigada_periodo import obtener_contexto_paginacion
 from django.contrib.auth.decorators import login_required
-from apps.core.models import Periodo, Brigada
+from apps.core.models import Periodo
 from .utils.brigadas import obtener_contexto_brigadas
-from django.contrib import messages
 from .utils.forms import BrigadaForm
+from .utils.brigada_detalles import obtener_contexto_brigada_detalles
 
 # Create your views here.s
 @login_required
@@ -16,33 +16,25 @@ def brigada_periodo(request):
 
 @login_required
 def brigadas(request, periodo_id):
-    '''Vista para mostrar las brigadas de un periodo específico, con búsqueda, paginador y creación de nuevas brigadas.'''
+    '''Vista para mostrar las brigadas de un periodo específico, con búsqueda y paginador.'''
     periodo = get_object_or_404(Periodo, id=periodo_id)
     query = request.GET.get('q', '')
     page = request.GET.get('page', 1)
-    
-    # Manejo del Formulario Modal (POST)
-    form = BrigadaForm()
-    if request.method == 'POST':
-        form = BrigadaForm(request.POST)
-        if form.is_valid():
-            nombre_nuevo = form.cleaned_data['nombre']
-            # Validación de existencia en el periodo actual
-            if Brigada.objects.filter(periodo=periodo, nombre=nombre_nuevo).exists():
-                messages.error(request, f"La Brigada #{nombre_nuevo} ya existe en este periodo.")
-            else:
-                nueva_b = form.save(commit=False)
-                nueva_b.periodo = periodo
-                nueva_b.save()
-                messages.success(request, f"Brigada #{nombre_nuevo} creada correctamente.")
-                return redirect('brigadas', periodo_id=periodo.id)
 
-    # Lógica original de contexto
+    # función auxiliar para obtener la lógica de búsqueda y paginación
     contexto = obtener_contexto_brigadas(periodo_id, query, page)
+    
+    # Inyectamos el formulario vacío para el modal y los datos del periodo
     contexto.update({
         'periodo': periodo,
-        'form': form,
+        'form': BrigadaForm(),  # Formulario limpio listo para el modal
         'query_search': query,
     })
     
     return render(request, 'brigadas.html', contexto)
+
+@login_required
+def brigada_detalles(request, brigada_id):
+    '''Vista para mostrar los detalles de una brigada específica.'''
+    context = obtener_contexto_brigada_detalles(brigada_id)
+    return render(request, 'brigada_detalles.html', context)
