@@ -99,7 +99,7 @@
         <div class="contenedor-tarjeta-lateral">
             <div class="tarjeta-amarilla">
                 {% if proyecto %}
-                <a href="" style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                <a href="{% url 'proyecto_documentos' brigada.id proyecto.id %}" style="text-decoration: none; color: inherit; display: block; width: 100%;">
                     <div class="proyecto-distribucion">
                         <div class="titulo-proy"><strong>{{ proyecto.nombre_proyecto }}</strong></div>
                         <div class="comunidad-proy">{{ proyecto.comunidad }}</div>

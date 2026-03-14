@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .utils.brigada_periodo import obtener_contexto_paginacion
 from django.contrib.auth.decorators import login_required
-from apps.core.models import Periodo
+from apps.core.models import Periodo, GrupoDocumentos, Brigada, Proyecto
 from .utils.brigadas import obtener_contexto_brigadas
 from .utils.forms import BrigadaForm
 from .utils.brigada_detalles import obtener_contexto_brigada_detalles
@@ -38,3 +38,16 @@ def brigada_detalles(request, brigada_id):
     '''Vista para mostrar los detalles de una brigada específica.'''
     context = obtener_contexto_brigada_detalles(brigada_id)
     return render(request, 'brigada_detalles.html', context)
+
+@login_required
+def proyecto_documentos(request, brigada_id, proyecto_id):
+    '''Vista para mostrar los documentos de un proyecto específico dentro de una brigada.'''
+    brigada = get_object_or_404(Brigada, id=brigada_id)
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    documents = GrupoDocumentos.objects.filter(proyecto = proyecto).first()  # Obtener el primer grupo de documentos asociado al proyecto
+    context = {
+        'documents': documents,
+        'brigada': brigada,
+        'proyecto': proyecto,
+    }
+    return render(request, 'proyecto_documentos.html', context)
