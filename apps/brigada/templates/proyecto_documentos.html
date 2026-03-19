@@ -1,0 +1,102 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/proyecto_documentos.css' %}">
+{% endblock extra_css %}
+
+{% block titulo_seccion %}Brigadas{% endblock %}
+
+{% block content %}
+<div id="metadata-proyecto" data-id="{{ proyecto.id }}"></div>
+
+<h2>Documentos del Proyecto: {{ proyecto.nombre }}</h2>
+<div><a href="{% url 'brigada_detalles' brigada.id %}"> ← Regresar</a></div>
+
+<hr>
+
+<section>
+    <div class="doc-card">
+        <div>
+            <h3>Planilla de Inscripción</h3>
+            {% if documents.planilla_inscripcion %}
+                <a href="{{ documents.planilla_inscripcion.url }}" target="_blank">📄 Ver archivo actual</a>
+            {% else %}
+                <small style="color: gray;">No cargado</small>
+            {% endif %}
+        </div>
+        <button class="{% if documents.planilla_inscripcion %}btn-modificar{% else %}btn-subir{% endif %}" 
+                onclick="abrirModal('planilla_inscripcion', 'Planilla de Inscripción', '{{ documents.planilla_inscripcion|yesno:'1,0' }}')">
+            {% if documents.planilla_inscripcion %}Modificar{% else %}Subir{% endif %}
+        </button>
+    </div>
+
+    <div class="doc-card">
+        <div>
+            <h3>Control de Horas</h3>
+            {% if documents.control_horas %}
+                <a href="{{ documents.control_horas.url }}" target="_blank">📄 Ver archivo actual</a>
+            {% else %}
+                <small style="color: gray;">No cargado</small>
+            {% endif %}
+        </div>
+        <button class="{% if documents.control_horas %}btn-modificar{% else %}btn-subir{% endif %}" 
+                onclick="abrirModal('control_horas', 'Control de Horas', '{{ documents.control_horas|yesno:'1,0' }}')">
+            {% if documents.control_horas %}Modificar{% else %}Subir{% endif %}
+        </button>
+    </div>
+
+    <div class="doc-card">
+        <div>
+            <h3>Anteproyecto</h3>
+            {% if documents.anteproyecto %}
+                <a href="{{ documents.anteproyecto.url }}" target="_blank">📄 Ver archivo actual</a>
+            {% else %}
+                <small style="color: gray;">No cargado</small>
+            {% endif %}
+        </div>
+        <button class="{% if documents.anteproyecto %}btn-modificar{% else %}btn-subir{% endif %}" 
+                onclick="abrirModal('anteproyecto', 'Anteproyecto', '{{ documents.anteproyecto|yesno:'1,0' }}')">
+            {% if documents.anteproyecto %}Modificar{% else %}Subir{% endif %}
+        </button>
+    </div>
+
+    <div class="doc-card">
+        <div>
+            <h3>Informe Final</h3>
+            {% if documents.informe_final %}
+                <a href="{{ documents.informe_final.url }}" target="_blank">📄 Ver archivo actual</a>
+            {% else %}
+                <small style="color: gray;">No cargado</small>
+            {% endif %}
+        </div>
+        <button class="{% if documents.informe_final %}btn-modificar{% else %}btn-subir{% endif %}" 
+                onclick="abrirModal('informe_final', 'Informe Final', '{{ documents.informe_final|yesno:'1,0' }}')">
+            {% if documents.informe_final %}Modificar{% else %}Subir{% endif %}
+        </button>
+    </div>
+</section>
+
+<div id="modalDocumento" class="modal-sistema">
+    <div class="modal-contenido">
+        <div class="header-modal">
+            <h3 id="modalTitulo">Cargar Documento</h3>
+        </div>
+        
+        <form id="formDocumento" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p id="instruccionModal">Seleccione el archivo PDF (Máx 5MB):</p>
+            <input type="file" name="documento" id="inputArchivo" accept="application/pdf" required style="width: 100%;">
+            
+            <div id="errorAlerta" class="error-msg"></div>
+
+            <div class="footer-modal">
+                <button type="button" onclick="cerrarModal()" style="background:#6c757d; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Cancelar</button>
+                <button type="submit" id="btnConfirmar" class="btn-subir">Confirmar Envío</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/proyecto_documentos.js' %}"></script>
+{% endblock content %}

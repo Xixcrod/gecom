@@ -1,0 +1,35 @@
+/* Estilos del Modal */
+    .modal-sistema {
+        display: none; 
+        position: fixed;
+        z-index: 1000;
+        left: 0; top: 0; width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.6);
+        backdrop-filter: blur(2px);
+    }
+    .modal-contenido {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 25px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 450px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .header-modal { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+    .footer-modal { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+    
+    /* Estética de las tarjetas de documentos */
+    .doc-card {
+        margin-bottom: 20px; 
+        padding: 15px; 
+        border: 1px solid #ddd; 
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .btn-subir { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    .btn-modificar { background: #ffc107; color: black; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    .error-msg { color: #dc3545; font-size: 0.9em; margin-top: 15px; display: none; padding: 10px; background: #f8d7da; border-radius: 5px; border: 1px solid #f5c6cb; }

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .utils import brigada_detalles, brigadas
+from .utils import brigada_detalles, brigadas, proyecto_documentos
 
 urlpatterns = [
     path('', views.brigada_periodo, name="brigada_periodo"), #Ruta principal de la aplicación que lleva a la vista de los periodos de brigada
@@ -12,4 +12,6 @@ urlpatterns = [
     path('<uuid:brigada_id>/asignar-academico/', brigada_detalles.asignar_asesor_academico, name='asignar_academico'), #Ruta para asignar un asesor académico a una brigada específica
     path('<uuid:brigada_id>/proyecto/nuevo/', brigada_detalles.procesar_proyecto, name='guardar_proyecto'), #Ruta para procesar la creación de un nuevo proyecto dentro de una brigada específica
     path('<uuid:brigada_id>/<uuid:carrera_id>/estudiante/agregar/', brigada_detalles.guardar_estudiante_ajax, name='guardar_estudiante'), #Ruta para procesar la creación de un nuevo estudiante dentro de una brigada y carrera específica
+    path('<uuid:brigada_id>/proyecto/<uuid:proyecto_id>/', views.proyecto_documentos, name='proyecto_documentos'),
+    path('proyecto/<uuid:proyecto_id>/subir-documento/<str:tipo_documento>/', proyecto_documentos.subir_documento_proyecto, name='subir_documento_proyecto'), #Ruta para subir un documento a un proyecto específico dentro de una brigada
 ]
