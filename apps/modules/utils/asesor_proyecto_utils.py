@@ -1,23 +1,60 @@
 # apps/modules/utils/asesor_proyecto_utils.py
-from apps.core.models import Proyecto
+from django.contrib import messages
+from django.shortcuts import get_object_or_404
+from apps.core.models import Proyecto, GrupoDocumentos
+from apps.brigada.utils.proyecto_documentos import procesar_y_validar_pdf
 
 def obtener_proyectos_por_asesor_academico(asesor_id):
     """
     Recupera la lista de proyectos en los que participa un asesor académico específico.
-    
-    Parámetros:
-    - asesor_id: UUID del modelo base (Asesor) que actúa como llave primaria del AsesorAcademico.
-    
-    Retorna:
-    - QuerySet de Proyectos ordenados de forma descendente por periodo.
     """
-    # Filtramos directamente por el campo ForeignKey 'asesor_academico' del modelo Proyecto.
-    # Usamos select_related para precargar los datos de la Brigada y el Periodo,
-    # permitiendo acceder a proyecto.brigada.periodo.nombre en el HTML sin generar consultas extra.
-    proyectos = Proyecto.objects.filter(
+    return Proyecto.objects.filter(
         asesor_academico_id=asesor_id
     ).select_related(
-        'brigada', 'brigada__periodo'
+        'brigada', 'brigada__periodo', 'documentos'
+    ).prefetch_related(
+        # PRECARGAMOS LOS ESTUDIANTES PARA EL MODAL SIN GENERAR CONSULTAS EXTRA
+        'brigada__estudiantes', 'brigada__estudiantes__carrera'
     ).order_by('-brigada__periodo__nombre') 
+
+def procesar_documento_asesor(request):
+    """
+    Procesa la subida de la Constancia o el Certificado.
+    Reutiliza el escáner de seguridad de PyPDF y guarda el archivo dinámicamente.
+    """
+    proyecto_id = request.POST.get('proyecto_id')
+    tipo_documento = request.POST.get('tipo_documento') # constancia_asesor o certificado_asesor
+    archivo = request.FILES.get('documento')
+
+    campos_validos = ['constancia_asesor', 'certificado_asesor']
+
+    if tipo_documento not in campos_validos:
+        messages.error(request, "Error: Tipo de documento no reconocido para el asesor.")
+        return
+
+    if not archivo:
+        messages.error(request, "Error: No se seleccionó ningún archivo PDF.")
+        return
+
+    # Escáner de seguridad
+    es_valido, resultado = procesar_y_validar_pdf(archivo)
+    if not es_valido:
+        messages.error(request, f"Error en el PDF: {resultado}")
+        return
+
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     
-    return proyectos
+    # TRUCO DE SEGURIDAD Y ENRUTAMIENTO AUTOMÁTICO:
+    if hasattr(proyecto, tipo_documento):
+        setattr(proyecto, tipo_documento, resultado)
+        proyecto.save()
+    else:
+        grupo_docs, created = GrupoDocumentos.objects.get_or_create(proyecto=proyecto)
+        setattr(grupo_docs, tipo_documento, resultado)
+        grupo_docs.save()
+
+    nombres_legibles = {
+        'constancia_asesor': 'Constancia de Asesor',
+        'certificado_asesor': 'Certificado de Asesor'
+    }
+    messages.success(request, f"{nombres_legibles[tipo_documento]} guardada/o exitosamente.")

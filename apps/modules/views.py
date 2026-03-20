@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .utils.periodo_utils import procesar_formulario_periodo, obtener_contexto_paginacion
 from .utils.carrera_utils import procesar_formulario_carrera, obtener_carreras
 from .utils.asesor_academico_utils import procesar_formulario_asesor, obtener_asesores_academicos, obtener_asesor_por_id
-from .utils.asesor_proyecto_utils import obtener_proyectos_por_asesor_academico
+from .utils.asesor_proyecto_utils import obtener_proyectos_por_asesor_academico, procesar_documento_asesor
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -67,10 +67,15 @@ def asesores_academicos(request):
 def detalle_asesor(request, asesor_id):
     """
     Maneja la vista del Perfil Detallado de un asesor específico.
-    Recibe el UUID del asesor a través de la URL (asesor_id).
-    Consulta su información base y busca de forma relacional todos los proyectos
-    de servicio comunitario a los que este asesor está vinculado.
     """
+    # ====== AGREGAR ESTE BLOQUE POST ======
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        if accion == 'subir_doc_asesor':
+            procesar_documento_asesor(request)
+            return redirect('detalle_asesor', asesor_id=asesor_id)
+    # ======================================
+
     context = {
         'asesor': obtener_asesor_por_id(asesor_id),
         'proyectos': obtener_proyectos_por_asesor_academico(asesor_id)
