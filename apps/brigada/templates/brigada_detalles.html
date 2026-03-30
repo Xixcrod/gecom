@@ -133,7 +133,7 @@
                             <span class="est-nombre">{{ e.nombres }} {{ e.apellidos }}</span>
                             <span class="est-cedula">{{ e.cedula }}</span>
                             <span class="est-carrera">{{ e.carrera.nombre_carrera }}</span>
-                            <a href="" class="est-link">Ver detalles...</a>
+                            <a href="{% url 'estudiante_detalles' e.id %}"  class="est-link">Ver detalles...</a>
                         </li>
                     {% endfor %}
                     {% if estudiantes|length == 0 %}

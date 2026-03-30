@@ -1,0 +1,62 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/estudiante_detalles.css' %}">  
+{% endblock extra_css %}
+
+{% block titulo_seccion %}Brigadas{% endblock %}
+
+{% block content %}
+<div id="metadata-estudiante" data-id="{{ estudiante.id }}" style="display: none;"></div>
+
+<h2>Detalles del Estudiante</h2>
+
+<p><strong>Nombre:</strong> {{ estudiante.nombres }} {{ estudiante.apellidos }}</p>
+<p><strong>Cédula:</strong> {{ estudiante.cedula }}</p>
+<p><strong>Carrera:</strong> {{ estudiante.carrera.nombre_carrera }}</p>
+<p><strong>Correo Electrónico:</strong> {{ estudiante.correo }}</p>
+<p><strong>Teléfono:</strong> {{ estudiante.telefono }}</p>
+
+<h2>Certificado</h2>
+<p><strong>Fecha de entrega:</strong> {{ certificado.fecha_retiro|default:"Pendiente" }}</p>
+<p><strong>Fecha de actualización:</strong> {{ certificado.fecha_actualizacion|default:"No ha sido modificado" }}</p>
+
+<div class="doc-card">
+    <div>
+        <strong>Archivo del Certificado</strong>
+        {% if certificado.archivo %}
+            <br><a href="{{ certificado.archivo.url }}" target="_blank">Descargar Certificado Actual</a>
+        {% else %}
+            <br><span style="color: gray;">Sin certificado cargado</span>
+        {% endif %}
+    </div>
+    <div>
+        {% if certificado.archivo %}
+            <button class="btn-modificar" onclick="abrirModal('Certificado', '1')">Modificar</button>
+        {% else %}
+            <button class="btn-subir" onclick="abrirModal('Certificado', '0')">Subir</button>
+        {% endif %}
+    </div>
+</div>
+
+<div id="modalDocumento" class="modal-sistema">
+    <div class="modal-contenido">
+        <div class="header-modal">
+            <h3 id="modalTitulo">Subir Documento</h3>
+        </div>
+        <form id="formDocumento" enctype="multipart/form-data">
+            {% csrf_token %} 
+            <input type="file" name="documento" accept="application/pdf" required>
+            <div id="errorAlerta" class="error-msg"></div>
+            
+            <div class="footer-modal">
+                <button type="button" onclick="cerrarModal()" style="padding: 8px 15px;">Cancelar</button>
+                <button type="submit" id="btnConfirmar" class="btn-subir">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/estudiante_detalles.js' %}"></script>
+{% endblock content %}

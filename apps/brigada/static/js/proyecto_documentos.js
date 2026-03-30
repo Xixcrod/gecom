@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         btnConfirmar.disabled = true;
         const textoOriginal = btnConfirmar.innerText;
-        btnConfirmar.innerText = "Validando PDF...";
+        btnConfirmar.innerText = "Subiendo archivo...";
         errorAlerta.style.display = 'none';
 
         // URL dinámica usando el ID capturado
@@ -36,12 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(form);
 
+         const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
                 body: formData,
                 headers: { 
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken
                 }
             });
 

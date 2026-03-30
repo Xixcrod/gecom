@@ -75,11 +75,12 @@ def procesar_y_validar_pdf(archivo):
         pdf_limpio.seek(0)
         
         tamano_nuevo = pdf_limpio.getbuffer().nbytes
+        nombre_del_campo = getattr(archivo, 'field_name', 'documento')
         
         # Crear un nuevo objeto de archivo de Django
         archivo_final = InMemoryUploadedFile(
             file=pdf_limpio,
-            field_name=archivo.field_name,
+            field_name=nombre_del_campo,
             name=nombre_unico,
             content_type='application/pdf',
             size=tamano_nuevo,
@@ -90,6 +91,7 @@ def procesar_y_validar_pdf(archivo):
     except pypdf.errors.PdfReadError:
         return False, "No se pudo leer el PDF. Puede estar encriptado o dañado."
     except Exception as e:
+        print(f"DEBUGGIN ERROR: {e}")
         return False, f"Error interno al procesar el documento."
 
 
