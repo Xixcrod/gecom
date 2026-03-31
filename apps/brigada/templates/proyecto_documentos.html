@@ -10,10 +10,52 @@
 {% block content %}
 <div id="metadata-proyecto" data-id="{{ proyecto.id }}"></div>
 
-<h2>Documentos del Proyecto: {{ proyecto.nombre }}</h2>
+<h2>Documentos del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
 <div><a href="{% url 'brigada_detalles' brigada.id %}"> ← Regresar</a></div>
-
+<button class="btn-modificar" onclick="abrirModalEditarProyecto()">Editar Proyecto</button>
 <hr>
+
+<div id="modalEditarProyecto" class="modal-sistema" style="display: none;">
+    <div class="modal-contenido">
+        <div class="header-modal">
+            <h3>Editar Datos del Proyecto</h3>
+        </div>
+        <form id="formEditarProyecto">
+            {% csrf_token %} 
+            
+            <p>
+                <label>Nombre del Proyecto:</label><br>
+                <input type="text" name="nombre_proyecto" value="{{ proyecto.nombre_proyecto }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Comunidad:</label><br>
+                <input type="text" name="comunidad" value="{{ proyecto.comunidad }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Fecha de Inicio:</label><br>
+                <input type="date" name="fecha_inicio" value="{{ proyecto.fecha_inicio|date:'Y-m-d' }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Fecha de Culminación (Opcional):</label><br>
+                <input type="date" name="fecha_culminacion" value="{{ proyecto.fecha_culminacion|date:'Y-m-d' }}" style="width: 100%;">
+            </p>
+            <p>
+                <label>Estado del Proyecto:</label><br>
+                <select name="aprobado" required style="width: 100%;">
+                    <option value="false" {% if not proyecto.aprobado %}selected{% endif %}>En Progreso / No Aprobado</option>
+                    <option value="true" {% if proyecto.aprobado %}selected{% endif %}>Aprobado</option>
+                </select>
+            </p>
+
+            <div id="errorAlertaEditarProyecto" class="error-msg" style="color:red; margin-bottom: 10px; font-weight: bold;"></div>
+            
+            <div class="footer-modal">
+                <button type="button" onclick="cerrarModalEditarProyecto()" style="padding: 8px 15px;">Cancelar</button>
+                <button type="submit" class="btn-subir" style="padding: 8px 15px;">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <section>
     <div class="doc-card">
@@ -98,5 +140,6 @@
     </div>
 </div>
 
+<script src="{% static 'js/modal_modificar_proyecto.js' %}"></script>
 <script src="{% static 'js/proyecto_documentos.js' %}"></script>
 {% endblock content %}

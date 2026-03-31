@@ -11,6 +11,7 @@
 <div id="metadata-estudiante" data-id="{{ estudiante.id }}" style="display: none;"></div>
 
 <h2>Detalles del Estudiante</h2>
+<div><a href="{% url 'brigada_detalles' brigada.id %}"> ← Regresar</a></div>
 
 <p><strong>Nombre:</strong> {{ estudiante.nombres }} {{ estudiante.apellidos }}</p>
 <p><strong>Cédula:</strong> {{ estudiante.cedula }}</p>
@@ -21,6 +22,58 @@
 <h2>Certificado</h2>
 <p><strong>Fecha de entrega:</strong> {{ certificado.fecha_retiro|default:"Pendiente" }}</p>
 <p><strong>Fecha de actualización:</strong> {{ certificado.fecha_actualizacion|default:"No ha sido modificado" }}</p>
+
+<button class="btn-modificar" onclick="abrirModalEditar()">Editar Datos</button>
+
+<div id="modalEditarEstudiante" class="modal-sistema" style="display: none;">
+    <div class="modal-contenido">
+        <div class="header-modal">
+            <h3>Editar Datos del Estudiante</h3>
+        </div>
+        <form id="formEditarEstudiante">
+            {% csrf_token %} 
+            
+            <p>
+                <label>Nombres:</label><br>
+                <input type="text" name="nombres" value="{{ estudiante.nombres }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Apellidos:</label><br>
+                <input type="text" name="apellidos" value="{{ estudiante.apellidos }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Cédula:</label><br>
+                <input type="text" name="cedula" value="{{ estudiante.cedula }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Correo Electrónico:</label><br>
+                <input type="email" name="correo" value="{{ estudiante.correo }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Teléfono:</label><br>
+                <input type="text" name="telefono" value="{{ estudiante.telefono }}" required style="width: 100%;">
+            </p>
+            <p>
+                <label>Carrera:</label><br>
+                <select name="carrera_id" required style="width: 100%;">
+                    <option value="">Seleccione una carrera...</option>
+                    {% for carrera in carreras %}
+                        <option value="{{ carrera.id }}" {% if estudiante.carrera.id == carrera.id %}selected{% endif %}>
+                            {{ carrera.nombre_carrera }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <div id="errorAlertaEditar" class="error-msg" style="color: red; margin-bottom: 10px;"></div>
+            
+            <div class="footer-modal">
+                <button type="button" onclick="cerrarModalEditar()" style="padding: 8px 15px;">Cancelar</button>
+                <button type="submit" class="btn-subir" style="padding: 8px 15px;">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="doc-card">
     <div>
@@ -58,5 +111,6 @@
     </div>
 </div>
 
-<script src="{% static 'js/estudiante_detalles.js' %}"></script>
+<script src="{% static 'js/modal_modificar_estudiante.js' %}"></script>
+<script src="{% static 'js/estudiante_certificado.js' %}"></script>
 {% endblock content %}

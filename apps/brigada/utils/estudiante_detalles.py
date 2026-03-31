@@ -9,7 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from apps.core.models import Estudiante, Certificado 
+from apps.core.models import Estudiante, Certificado, Carrera
+from django.http import JsonResponse
 
 # Configuraciones
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 * 1024 KB * 1024 Bytes
@@ -126,3 +127,67 @@ def subir_certificado_estudiante(request, estudiante_id):
     certificado.save()
 
     return HttpResponse("Certificado procesado y guardado con éxito.", status=200)
+
+def editar_estudiante(request, estudiante_id):
+    # Verificar que la petición sea AJAX y sea POST
+    if request.method == 'POST':
+        estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+
+        # Extraer los datos del formulario y limpiar espacios en blanco
+        nombres = request.POST.get('nombres', '').strip()
+        apellidos = request.POST.get('apellidos', '').strip()
+        cedula = request.POST.get('cedula', '').strip()
+        correo = request.POST.get('correo', '').strip()
+        telefono = request.POST.get('telefono', '').strip()
+        carrera_id = request.POST.get('carrera_id', '').strip()
+
+        # --- VALIDACIONES ---
+
+        # 1. Validar que no haya campos vacíos
+        if not all([nombres, apellidos, cedula, correo, telefono, carrera_id]):
+            return JsonResponse({
+                'success': False, 
+                'error': 'Por favor, completa todos los campos obligatorios.'
+            })
+
+        # 2. Validar que la cédula no esté en uso por OTRO estudiante
+        if Estudiante.objects.filter(cedula=cedula).exclude(id=estudiante.id).exists():
+            return JsonResponse({
+                'success': False, 
+                'error': f'La cédula {cedula} ya está registrada a nombre de otro estudiante.'
+            })
+
+        # 3. Validar que la carrera exista
+        try:
+            carrera = Carrera.objects.get(id=carrera_id)
+        except Carrera.DoesNotExist:
+            return JsonResponse({
+                'success': False, 
+                'error': 'La carrera seleccionada no es válida.'
+            })
+
+        # --- ACTUALIZACIÓN ---
+        
+        try:
+            estudiante.nombres = nombres
+            estudiante.apellidos = apellidos
+            estudiante.cedula = cedula
+            estudiante.correo = correo
+            estudiante.telefono = telefono
+            estudiante.carrera = carrera
+            estudiante.save()
+
+            return JsonResponse({
+                'success': True, 
+                'message': '¡Datos actualizados correctamente!'
+            })
+            
+        except Exception as e:
+            # Capturar cualquier otro error de base de datos
+            return JsonResponse({
+                'success': False, 
+                'error': f'Ocurrió un error interno al guardar: {str(e)}'
+            })
+
+    # Si no es POST
+    return JsonResponse({'success': False, 'error': 'Método no permitido.'})

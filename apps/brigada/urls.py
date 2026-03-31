@@ -14,6 +14,8 @@ urlpatterns = [
     path('<uuid:brigada_id>/<uuid:carrera_id>/estudiante/agregar/', brigada_detalles.guardar_estudiante_ajax, name='guardar_estudiante'), #Ruta para procesar la creación de un nuevo estudiante dentro de una brigada y carrera específica
     path('<uuid:brigada_id>/proyecto/<uuid:proyecto_id>/', views.proyecto_documentos, name='proyecto_documentos'),
     path('proyecto/<uuid:proyecto_id>/subir-documento/<str:tipo_documento>/', proyecto_documentos.subir_documento_proyecto, name='subir_documento_proyecto'), #Ruta para subir un documento a un proyecto específico dentro de una brigada
-    path('estudiante/<uuid:estudiante_id>/detalles/', views.estudiante_detalles, name='estudiante_detalles'), #Ruta para mostrar los detalles de un estudiante específico
+    path('proyecto/editar_proyecto/<uuid:proyecto_id>/', proyecto_documentos.editar_proyecto, name='editar_proyecto'), #Ruta para editar los detalles de un proyecto específico dentro de una brigada
+    path('<uuid:brigada_id>/estudiante/<uuid:estudiante_id>/detalles/', views.estudiante_detalles, name='estudiante_detalles'), #Ruta para mostrar los detalles de un estudiante específico
     path('estudiante/<uuid:estudiante_id>/subir-certificado/', estudiante_detalles.subir_certificado_estudiante, name='subir_certificado_estudiante'), #Ruta para subir el certificado de un estudiante específico
+    path('estudiante/editar/<uuid:estudiante_id>/', estudiante_detalles.editar_estudiante, name='editar_estudiante'), #Ruta para modificar los datos de un estudiante específico
 ]

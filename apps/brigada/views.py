@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .utils.brigada_periodo import obtener_contexto_paginacion
 from django.contrib.auth.decorators import login_required
-from apps.core.models import Periodo, GrupoDocumentos, Brigada, Proyecto, Certificado, Estudiante
+from apps.core.models import Periodo, GrupoDocumentos, Brigada, Proyecto, Certificado, Estudiante, Carrera
 from .utils.brigadas import obtener_contexto_brigadas
 from .utils.forms import BrigadaForm
 from .utils.brigada_detalles import obtener_contexto_brigada_detalles
@@ -52,14 +52,18 @@ def proyecto_documentos(request, brigada_id, proyecto_id):
     }
     return render(request, 'proyecto_documentos.html', context)
 
-def estudiante_detalles(request, estudiante_id):
+def estudiante_detalles(request, brigada_id, estudiante_id):
     '''Vista para mostrar los detalles de un estudiante específico.'''
 
+    brigada = get_object_or_404(Brigada, id=brigada_id)
     estudiante = get_object_or_404(Estudiante, id=estudiante_id)  # Obtener el estudiante específico
     certificado = Certificado.objects.filter(estudiante=estudiante).first()  # Obtener el certificado asociado al estudiante
+    carreras = Carrera.objects.all() # Obtener todas las carreras para el modal de modificación de estudiante
     
     context = {
         'estudiante': estudiante,
         'certificado': certificado,
+        'brigada': brigada,
+        'carreras': carreras,
     }
     return render(request, 'estudiante_detalles.html', context)

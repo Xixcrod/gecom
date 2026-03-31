@@ -5,10 +5,11 @@ import pypdf #Manipulación y gestión de archivos PDF sin necesidad de software
 from io import BytesIO #
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from apps.core.models import Proyecto, GrupoDocumentos
+from datetime import datetime
 
 # Configuraciones
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 * 1024 KB * 1024 Bytes
@@ -125,3 +126,69 @@ def subir_documento_proyecto(request, proyecto_id, tipo_documento):
     grupo_docs.save()
 
     return HttpResponse("Documento subido y validado con éxito.", status=200)
+
+
+@login_required
+@require_POST
+def editar_proyecto(request, proyecto_id):
+    if request.method == 'POST':
+        proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+
+        # Extraer datos
+        nombre_proyecto = request.POST.get('nombre_proyecto', '').strip()
+        comunidad = request.POST.get('comunidad', '').strip()
+        fecha_inicio_str = request.POST.get('fecha_inicio', '').strip()
+        fecha_culminacion_str = request.POST.get('fecha_culminacion', '').strip()
+        aprobado_str = request.POST.get('aprobado', 'false').lower()
+
+        # --- VALIDACIONES ---
+
+        # 1. Campos obligatorios
+        if not nombre_proyecto or not comunidad or not fecha_inicio_str:
+            return JsonResponse({
+                'success': False, 
+                'error': 'El nombre del proyecto, la comunidad y la fecha de inicio son obligatorios.'
+            })
+
+        # 2. Validación y conversión de fechas
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            fecha_culminacion = None
+            
+            if fecha_culminacion_str:
+                fecha_culminacion = datetime.strptime(fecha_culminacion_str, '%Y-%m-%d').date()
+                
+                # Validar coherencia temporal
+                if fecha_culminacion < fecha_inicio:
+                    return JsonResponse({
+                        'success': False, 
+                        'error': 'La fecha de culminación no puede ser anterior a la fecha de inicio.'
+                    })
+        except ValueError:
+            return JsonResponse({
+                'success': False, 
+                'error': 'El formato de las fechas no es válido.'
+            })
+
+        # --- ACTUALIZACIÓN ---
+        try:
+            proyecto.nombre_proyecto = nombre_proyecto
+            proyecto.comunidad = comunidad
+            proyecto.fecha_inicio = fecha_inicio
+            proyecto.fecha_culminacion = fecha_culminacion
+            proyecto.aprobado = (aprobado_str == 'true')
+            
+            proyecto.save()
+
+            return JsonResponse({
+                'success': True, 
+                'message': '¡Los datos del proyecto se han actualizado exitosamente!'
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'error': f'Ocurrió un error al guardar: {str(e)}'
+            })
+
+    return JsonResponse({'success': False, 'error': 'Método no permitido.'})
