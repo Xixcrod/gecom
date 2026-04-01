@@ -6,6 +6,7 @@ from apps.core.models import Borrador
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 
 def obtener_borradores():
@@ -120,3 +121,31 @@ def subir_nuevo_borrador(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'error': f'Ocurrió un error en el servidor: {str(e)}'})
+    
+
+@login_required
+@require_POST
+def eliminar_borrador(request, uuid_borrador):
+    '''Función para eliminar un borrador específico.'''
+    try:
+        # 1. Buscar el borrador. Si no existe, lanza 404
+        borrador = get_object_or_404(Borrador, id=uuid_borrador)
+        
+        # 2. Eliminar el archivo físico del sistema de archivos
+        # Comprobamos que el archivo exista antes de intentar borrarlo
+        if borrador.archivo and os.path.isfile(borrador.archivo.path):
+            os.remove(borrador.archivo.path)
+            
+        # 3. Eliminar el registro de la base de datos
+        borrador.delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Borrador eliminado correctamente.'
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error interno al eliminar: {str(e)}'
+        })

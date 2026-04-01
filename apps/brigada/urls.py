@@ -20,4 +20,5 @@ urlpatterns = [
     path('estudiante/editar/<uuid:estudiante_id>/', estudiante_detalles.editar_estudiante, name='editar_estudiante'), #Ruta para modificar los datos de un estudiante específico
     path('draftbox/', views.draftbox, name='draftbox'), #Ruta para mostrar la página de Draftbox
     path('draftbox/subir/', draftbox.subir_nuevo_borrador, name='subir_nuevo_borrador'), #Ruta para manejar la subida de un nuevo borrador desde el modal en Draftbox
+    path('draftbox/eliminar/<uuid:uuid_borrador>/', draftbox.eliminar_borrador, name='eliminar_borrador'), #Ruta para eliminar un borrador específico desde Draftbox
 ]
