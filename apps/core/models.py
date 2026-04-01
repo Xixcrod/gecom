@@ -2,7 +2,23 @@ import uuid
 from django.db import models
 
 # --- MODELOS BASE ---
+class Borrador(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    nombre = models.CharField(max_length=100)
+    archivo = models.FileField(upload_to='draftbox/')
 
+    TIPO_CHOICES = [
+        ('DOCS', 'Documentos (Word, PDF, RTF)'),
+        ('DATA', 'Datos (Excel, CSV)'),
+        ('PRES', 'Presentaciones (PPTX)'),
+        ('IMG', 'Imágenes (JPG, PNG, SVG)'),
+        ('COMP', 'Comprimidos (ZIP, RAR)'),
+    ]
+    categoria = models.CharField(max_length=10, choices=TIPO_CHOICES)
+
+    def __str__(self):
+        return self.nombre
+    
 class Periodo(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombre = models.CharField(max_length=100)

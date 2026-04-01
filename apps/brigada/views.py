@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .utils.brigada_periodo import obtener_contexto_paginacion
+from .utils.draftbox import obtener_borradores
 from django.contrib.auth.decorators import login_required
 from apps.core.models import Periodo, GrupoDocumentos, Brigada, Proyecto, Certificado, Estudiante, Carrera
 from .utils.brigadas import obtener_contexto_brigadas
@@ -52,6 +53,7 @@ def proyecto_documentos(request, brigada_id, proyecto_id):
     }
     return render(request, 'proyecto_documentos.html', context)
 
+@login_required
 def estudiante_detalles(request, brigada_id, estudiante_id):
     '''Vista para mostrar los detalles de un estudiante específico.'''
 
@@ -67,3 +69,10 @@ def estudiante_detalles(request, brigada_id, estudiante_id):
         'carreras': carreras,
     }
     return render(request, 'estudiante_detalles.html', context)
+
+
+@login_required
+def draftbox(request):
+    '''Vista para mostrar la página de Draftbox.'''
+    context = obtener_borradores()
+    return render(request, 'draftbox.html', context)

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .utils import brigada_detalles, brigadas, proyecto_documentos, estudiante_detalles
+from .utils import brigada_detalles, brigadas, proyecto_documentos, estudiante_detalles, draftbox
 
 urlpatterns = [
     path('', views.brigada_periodo, name="brigada_periodo"), #Ruta principal de la aplicación que lleva a la vista de los periodos de brigada
@@ -18,4 +18,6 @@ urlpatterns = [
     path('<uuid:brigada_id>/estudiante/<uuid:estudiante_id>/detalles/', views.estudiante_detalles, name='estudiante_detalles'), #Ruta para mostrar los detalles de un estudiante específico
     path('estudiante/<uuid:estudiante_id>/subir-certificado/', estudiante_detalles.subir_certificado_estudiante, name='subir_certificado_estudiante'), #Ruta para subir el certificado de un estudiante específico
     path('estudiante/editar/<uuid:estudiante_id>/', estudiante_detalles.editar_estudiante, name='editar_estudiante'), #Ruta para modificar los datos de un estudiante específico
+    path('draftbox/', views.draftbox, name='draftbox'), #Ruta para mostrar la página de Draftbox
+    path('draftbox/subir/', draftbox.subir_nuevo_borrador, name='subir_nuevo_borrador'), #Ruta para manejar la subida de un nuevo borrador desde el modal en Draftbox
 ]

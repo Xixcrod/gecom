@@ -1,0 +1,69 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block titulo_seccion %}Draftbox{% endblock %}
+
+{% block content %}
+
+<button class="btn-subir" onclick="abrirModalBorrador()">Subir Borrador</button>
+
+
+    {% if borradores %}
+        <ul>
+            {% for borrador in borradores %}
+                <li>
+                    <a href="{{ borrador.archivo.url }}" target="_blank">{{ borrador.nombre }}</a> 
+                    <small style="color: gray;">({{ borrador.get_categoria_display }})</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay borradores disponibles.</p>
+    {% endif %}
+
+
+    <div id="modalBorrador" class="modal-sistema" style="display: none;">
+        <div class="modal-contenido">
+            <div class="header-modal">
+                <h3>Subir Nuevo Borrador</h3>
+            </div>
+            
+            <form id="formBorrador" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <p>
+                    <label>Nombre del Borrador:</label><br>
+                    <input type="text" name="nombre" required style="width: 100%;" placeholder="Ej: Flyer para evento de brigada">
+                </p>
+                
+                <p>
+                    <label>Categoría:</label><br>
+                    <select name="categoria" id="selectCategoria" required style="width: 100%;">
+                        <option value="">Seleccione una categoría...</option>
+                        <option value="DOCS">Documentos (Word, PDF, RTF)</option>
+                        <option value="DATA">Datos (Excel, CSV)</option>
+                        <option value="PRES">Presentaciones (PPTX)</option>
+                        <option value="IMG">Imágenes (JPG, PNG, SVG)</option>
+                        <option value="COMP">Comprimidos (ZIP, RAR)</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label>Archivo (Máx 30MB):</label><br>
+                    <input type="file" name="archivo" required style="width: 100%;">
+                </p>
+
+                <div id="errorAlertaBorrador" class="error-msg" style="display:none; color:red; margin-bottom: 10px; font-weight: bold;"></div>
+
+                <div class="footer-modal" style="margin-top: 20px;">
+                    <button type="button" onclick="cerrarModalBorrador()" style="padding: 8px 15px; background: gray; color: white; border: none; cursor: pointer;">Cancelar</button>
+                    <button type="submit" class="btn-subir" style="padding: 8px 15px;">Guardar Borrador</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+<script src="{% static 'js/modal_subir_borrador.js' %}"></script>
+
+{% endblock content %}
