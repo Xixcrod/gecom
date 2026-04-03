@@ -13,73 +13,102 @@
             
             <div id="contenedor-asesores" class="flex-1 w-full flex justify-center order-2 md:order-1">
                 <div class="w-full max-w-5xl bg-white/30 backdrop-blur-md border border-white/40 shadow-2xl rounded-[2.5rem] p-6 md:p-8 flex flex-col max-h-[80vh]">
-                    
-                    <div class="flex justify-center w-full mb-6 shrink-0">
+
+                    <div class="flex flex-col md:flex-row justify-between items-center w-full mb-6 shrink-0 gap-4">
+                        
                         <div class="bg-white/50 p-1.5 rounded-2xl inline-flex gap-1 shadow-inner backdrop-blur-sm">
-                            <button id="btn-activos" class="px-6 py-2 rounded-xl text-sm font-semibold bg-white text-[#8b5cf6] shadow-sm transition-all duration-300" onclick="cambiarPestana('activos')">
+                            <button id="btn-activos" 
+                                class="px-6 py-2 rounded-xl text-sm font-semibold transition-all duration-300 {% if tab_actual != 'inactivos' %}bg-white text-[#8b5cf6] shadow-sm{% else %}bg-transparent text-gray-600 hover:text-gray-800{% endif %}" 
+                                onclick="irAPestana('activos')">
                                 Habilitados
                             </button>
-                            <button id="btn-inactivos" class="px-6 py-2 rounded-xl text-sm font-semibold bg-transparent text-gray-600 hover:text-gray-800 transition-all duration-300" onclick="cambiarPestana('inactivos')">
+                            <button id="btn-inactivos" 
+                                class="px-6 py-2 rounded-xl text-sm font-semibold transition-all duration-300 {% if tab_actual == 'inactivos' %}bg-white text-[#8b5cf6] shadow-sm{% else %}bg-transparent text-gray-600 hover:text-gray-800{% endif %}" 
+                                onclick="irAPestana('inactivos')">
                                 Deshabilitados
                             </button>
+                        </div>
+                        
+                        <div class="w-full md:w-auto flex-1 flex justify-end">
+                            <form method="GET" class="relative w-full max-w-md group" id="search-form">
+                                <input type="hidden" name="tab" id="search-tab-input" value="{{ tab_actual|default:'activos' }}">
+
+                                <input type="text" name="q" value="{{ query_search }}" 
+                                        placeholder="Buscar por nombre, apellido o cédula..." 
+                                        class="w-full pl-12 pr-4 py-2.5 bg-white/50 backdrop-blur-sm border border-white/60 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#8b5cf6]/50 focus:bg-white transition-all shadow-sm">
+
+                                <button type="submit" title="Buscar" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#8b5cf6] group-focus-within:text-[#8b5cf6] transition-colors cursor-pointer bg-transparent border-none p-0 outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
                     </div>
 
                     <div class="overflow-y-auto flex-1 pr-3 custom-scrollbar">
                         
-                        <div id="lista-activos" class="grid grid-cols-1 lg:grid-cols-2 gap-4 content-start transition-opacity duration-300">
+                        <div id="lista-activos" class="{% if tab_actual == 'inactivos' %}hidden{% else %}grid{% endif %} grid-cols-1 lg:grid-cols-2 gap-4 content-start">
                             {% for a in asesores %}
                                 {% if a.activo %}
-                                <div class="bg-white/95 rounded-2xl p-5 shadow-sm border border-white flex items-center justify-between hover:shadow-md transition-all duration-300 group">
-                                    <div class="flex items-center gap-4 cursor-pointer flex-1" onclick='window.location.href="{% url "detalle_asesor" a.asesor.id %}"' title="Ver detalles del asesor">
-                                        <div class="w-12 h-12 rounded-full bg-purple-100 text-[#8b5cf6] flex items-center justify-center font-bold text-lg group-hover:bg-[#8b5cf6] group-hover:text-white transition-colors duration-300 shadow-inner">
-                                            {{ a.asesor.nombres|first|upper }}{{ a.asesor.apellidos|first|upper }}
+                                    <div class="bg-white/95 rounded-2xl p-5 shadow-sm border border-white flex items-center justify-between hover:shadow-md transition-all duration-300 group">
+                                        <div class="flex items-center gap-4 cursor-pointer flex-1" onclick='window.location.href="{% url "detalle_asesor" a.asesor.id %}"' title="Ver detalles del asesor">
+                                            <div class="w-12 h-12 rounded-full bg-purple-100 text-[#8b5cf6] flex items-center justify-center font-bold text-lg group-hover:bg-[#8b5cf6] group-hover:text-white transition-colors duration-300 shadow-inner">
+                                                {{ a.asesor.nombres|first|upper }}{{ a.asesor.apellidos|first|upper }}
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800 text-lg leading-tight">{{ a.asesor.nombres }} {{ a.asesor.apellidos }}</h4>
+                                                <p class="text-sm text-gray-500 font-medium mt-0.5">C.I: {{ a.asesor.cedula }}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 class="font-semibold text-gray-800 text-lg leading-tight">{{ a.asesor.nombres }} {{ a.asesor.apellidos }}</h4>
-                                            <p class="text-sm text-gray-500 font-medium mt-0.5">C.I: {{ a.asesor.cedula }}</p>
+                                        <div class="flex gap-2">
+                                            <button onclick="document.getElementById('modal_editar_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-colors cursor-pointer" title="Editar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            </button>
+                                            <button onclick="document.getElementById('modal_estado_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors cursor-pointer" title="Deshabilitar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                                            </button>
                                         </div>
                                     </div>
-                                    
-                                    <div class="flex gap-2">
-                                        <button onclick="document.getElementById('modal_editar_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-colors cursor-pointer" title="Editar">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                        </button>
-                                        <button onclick="document.getElementById('modal_estado_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors cursor-pointer" title="Deshabilitar">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
-                                        </button>
-                                    </div>
-                                </div>
+                                {% endif %}
+                            {% empty %}
+                                {% if query_search and tab_actual != 'inactivos' %}
+                                    <div class="col-span-full text-center text-gray-400 font-medium py-10 bg-white/50 rounded-2xl border border-dashed border-gray-300">No se encontraron asesores habilitados con "{{ query_search }}".</div>
+                                {% elif not query_search %}
+                                    <div class="col-span-full text-center text-gray-400 font-medium py-10 bg-white/50 rounded-2xl border border-dashed border-gray-300">No hay asesores académicos habilitados.</div>
                                 {% endif %}
                             {% endfor %}
-                            {% if not asesores %}
-                                <div class="col-span-full text-center text-white/80 font-medium py-10">No hay asesores académicos registrados.</div>
-                            {% endif %}
                         </div>
 
-                        <div id="lista-inactivos" class="hidden grid-cols-1 lg:grid-cols-2 gap-4 content-start transition-opacity duration-300">
+                        <div id="lista-inactivos" class="{% if tab_actual == 'inactivos' %}grid{% else %}hidden{% endif %} grid-cols-1 lg:grid-cols-2 gap-4 content-start">
                             {% for a in asesores %}
                                 {% if not a.activo %}
-                                <div class="bg-white/70 rounded-2xl p-5 shadow-sm border border-transparent flex items-center justify-between hover:shadow-md transition-all duration-300 group">
-                                    <div class="flex items-center gap-4 opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer flex-1" onclick='window.location.href="{% url "detalle_asesor" a.asesor.id %}"' title="Ver detalles del asesor">
-                                        <div class="w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg shadow-inner">
-                                            {{ a.asesor.nombres|first|upper }}{{ a.asesor.apellidos|first|upper }}
+                                    <div class="bg-white/70 rounded-2xl p-5 shadow-sm border border-transparent flex items-center justify-between hover:shadow-md transition-all duration-300 group">
+                                        <div class="flex items-center gap-4 opacity-80 group-hover:opacity-100 transition-opacity cursor-pointer flex-1" onclick='window.location.href="{% url "detalle_asesor" a.asesor.id %}"' title="Ver detalles del asesor">
+                                            <div class="w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold text-lg shadow-inner">
+                                                {{ a.asesor.nombres|first|upper }}{{ a.asesor.apellidos|first|upper }}
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-600 text-lg leading-tight">{{ a.asesor.nombres }} {{ a.asesor.apellidos }}</h4>
+                                                <p class="text-sm text-gray-500 font-medium mt-0.5">C.I: {{ a.asesor.cedula }}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 class="font-semibold text-gray-600 text-lg leading-tight">{{ a.asesor.nombres }} {{ a.asesor.apellidos }}</h4>
-                                            <p class="text-sm text-gray-500 font-medium mt-0.5">C.I: {{ a.asesor.cedula }}</p>
+                                        
+                                        <div class="flex gap-2">
+                                            <button onclick="document.getElementById('modal_editar_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-colors" title="Editar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            </button>
+                                            <button onclick="document.getElementById('modal_estado_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-green-500 hover:bg-green-50 rounded-xl transition-colors" title="Habilitar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                            </button>
                                         </div>
                                     </div>
-                                    
-                                    <div class="flex gap-2">
-                                        <button onclick="document.getElementById('modal_editar_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-colors" title="Editar">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                        </button>
-                                        <button onclick="document.getElementById('modal_estado_{{ a.asesor.id }}').showModal()" class="p-2 text-gray-400 hover:text-green-500 hover:bg-green-50 rounded-xl transition-colors" title="Habilitar">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                        </button>
-                                    </div>
-                                </div>
+                                {% endif %}
+                            {% empty %}
+                                {% if query_search and tab_actual == 'inactivos' %}
+                                    <div class="col-span-full text-center text-gray-400 font-medium py-10 bg-white/50 rounded-2xl border border-dashed border-gray-300">No se encontraron asesores deshabilitados con "{{ query_search }}".</div>
+                                {% elif not query_search %}
+                                    <div class="col-span-full text-center text-gray-400 font-medium py-10 bg-white/50 rounded-2xl border border-dashed border-gray-300">No hay asesores académicos deshabilitados.</div>
                                 {% endif %}
                             {% endfor %}
                         </div>
@@ -89,8 +118,12 @@
             </div>
 
             <div class="flex-none order-1 md:order-2 flex justify-end mb-4 md:mb-0 md:sticky md:top-42 z-10 self-start md:mt-42">
-                <button class="btn btn-circle bg-[#a855f7] hover:bg-[#9333ea] text-white border-none shadow-xl h-14 w-14 hover:scale-110 transition-transform duration-300" onclick="modal_nuevo_asesor.showModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                <button
+                    class="btn btn-circle bg-[#a855f7] hover:bg-[#9333ea] text-white border-none shadow-xl h-14 w-14 hover:scale-110 transition-transform duration-300"
+                    onclick="modal_nuevo_asesor.showModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
                 </button>
             </div>
 
@@ -98,159 +131,102 @@
     </main>
 
     {% for a in asesores %}
-        <dialog id="modal_editar_{{ a.asesor.id }}" class="modal">
-            <div class="modal-box bg-white text-gray-800 rounded-3xl max-w-3xl">
-                <h3 class="font-bold text-2xl text-blue-500 mb-6 text-center">Editar Asesor Académico</h3>
-                
-                <form method="POST" id="form_editar_{{ a.asesor.id }}">
-                    {% csrf_token %}
-                    <input type="hidden" name="accion" value="editar">
-                    <input type="hidden" name="id" value="{{ a.asesor.id }}">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Nombres</span></label>
-                            <input type="text" name="nombres" value="{{ a.asesor.nombres }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" />
-                        </div>
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Apellidos</span></label>
-                            <input type="text" name="apellidos" value="{{ a.asesor.apellidos }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" />
-                        </div>
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Cédula de Identidad</span></label>
-                            <input type="text" name="cedula" value="{{ a.asesor.cedula }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required maxlength="10" pattern="^[0-9]+$" title="Solo números" />
-                        </div>
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Teléfono</span></label>
-                            <input type="tel" name="telefono" value="{{ a.asesor.telefono }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required pattern="^[0-9]+$" maxlength="15" title="Solo números" />
-                        </div>
-                        <div class="form-control w-full md:col-span-2">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Correo Electrónico</span></label>
-                            <input type="email" name="correo" value="{{ a.asesor.correo }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required />
-                        </div>
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Profesión</span></label>
-                            <input type="text" name="profesion" value="{{ a.profesion }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required />
-                        </div>
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Dependencia</span></label>
-                            <input type="text" name="dependencia" value="{{ a.dependencia }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required />
-                        </div>
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Cargo</span></label>
-                            <input type="text" name="cargo" value="{{ a.cargo }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl" required />
-                        </div>
-                        <div class="form-control w-full">
-                            <label class="label"><span class="label-text font-medium text-gray-600">Estado</span></label>
-                            <select name="estado_activo" class="select select-bordered w-full bg-gray-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl text-gray-700 font-medium" required>
-                                <option value="True" {% if a.activo %}selected{% endif %}>Activo</option>
-                                <option value="False" {% if not a.activo %}selected{% endif %}>Inactivo</option>
-                            </select>
-                        </div>
-                    </div>
-                </form>
-                
-                <div class="modal-action mt-8 flex justify-between w-full">
-                    <form method="dialog"><button class="btn btn-ghost text-gray-500 rounded-xl px-8 hover:bg-gray-100 border-none">Cancelar</button></form>
-                    <button type="submit" form="form_editar_{{ a.asesor.id }}" class="btn bg-blue-500 hover:bg-blue-600 text-white border-none rounded-xl px-10 shadow-md hover:shadow-lg transition-all duration-300">Actualizar</button>
-                </div>
-            </div>
-            <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
-        </dialog>
-
-        <dialog id="modal_estado_{{ a.asesor.id }}" class="modal">
-            <div class="modal-box bg-white text-gray-800 rounded-3xl max-w-sm text-center py-8">
-                <div class="flex justify-center mb-4">
-                    {% if a.activo %}
-                        <div class="w-16 h-16 rounded-full bg-red-100 text-red-500 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        </div>
-                    {% else %}
-                        <div class="w-16 h-16 rounded-full bg-green-100 text-green-500 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <h3 class="font-bold text-2xl {% if a.activo %}text-red-500{% else %}text-green-500{% endif %} mb-2">
-                    {% if a.activo %}¿Deshabilitar Asesor?{% else %}¿Habilitar Asesor?{% endif %}
-                </h3>
-                <p class="text-gray-500 mb-6 px-4 leading-relaxed">
-                    ¿Estás seguro que deseas {% if a.activo %}deshabilitar{% else %}habilitar{% endif %} al asesor <br><b class="text-gray-700">{{ a.asesor.nombres }} {{ a.asesor.apellidos }}</b>?
-                </p>
-                
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="accion" value="cambiar_estado">
-                    <input type="hidden" name="id" value="{{ a.asesor.id }}">
-                    
-                    <div class="flex justify-center gap-4 w-full">
-                        <button type="button" class="btn btn-ghost rounded-xl px-6 text-gray-500 hover:bg-gray-100" onclick="document.getElementById('modal_estado_{{ a.asesor.id }}').close()">Cancelar</button>
-                        <button type="submit" class="btn {% if a.activo %}bg-red-500 hover:bg-red-600 shadow-red-500/30{% else %}bg-green-500 hover:bg-green-600 shadow-green-500/30{% endif %} text-white border-none rounded-xl px-8 shadow-md hover:shadow-lg transition-all duration-300">
-                            Confirmar
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
-        </dialog>
-    {% endfor %}
-    <dialog id="modal_nuevo_asesor" class="modal">
+    <dialog id="modal_editar_{{ a.asesor.id }}" class="modal">
         <div class="modal-box bg-white text-gray-800 rounded-3xl max-w-3xl">
-            <h3 class="font-bold text-2xl text-[#8b5cf6] mb-6 text-center">Añadir Asesor Académico</h3>
-            
-            <form method="POST" id="form_nuevo_asesor">
+            <h3 class="font-bold text-2xl text-[#8b5cf6] mb-6 text-center border-b border-gray-100 pb-4">Editar Asesor Académico</h3>
+            <form id="form_editar_{{ a.asesor.id }}" method="POST">
                 {% csrf_token %}
-                <input type="hidden" name="accion" value="crear">
-                
+                <input type="hidden" name="accion" value="editar">
+                <input type="hidden" name="id" value="{{ a.asesor.id }}">
+                <input type="hidden" name="tab_actual" class="tab_actual_input" value="{{ tab_actual }}">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control w-full">
                         <label class="label"><span class="label-text font-medium text-gray-600">Nombres</span></label>
-                        <input type="text" name="nombres" placeholder="Ej: Juan Carlos" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" />
+                        <input type="text" name="nombres" value="{{ a.asesor.nombres }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" />
                     </div>
                     <div class="form-control w-full">
                         <label class="label"><span class="label-text font-medium text-gray-600">Apellidos</span></label>
-                        <input type="text" name="apellidos" placeholder="Ej: Pérez Gómez" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" />
-                    </div>
-                    <div class="form-control w-full">
-                        <label class="label"><span class="label-text font-medium text-gray-600">Cédula de Identidad</span></label>
-                        <input type="text" name="cedula" placeholder="Ej: 12345678" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required maxlength="10" pattern="^[0-9]+$" title="Ingrese únicamente números. Sin puntos ni la letra V." />
-                    </div>
-                    <div class="form-control w-full">
-                        <label class="label"><span class="label-text font-medium text-gray-600">Teléfono</span></label>
-                        <input type="tel" name="telefono" placeholder="Ej: 04241234567" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[0-9]+$" maxlength="15" title="Ingrese solo números, sin guiones ni espacios" />
+                        <input type="text" name="apellidos" value="{{ a.asesor.apellidos }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" />
                     </div>
                     <div class="form-control w-full md:col-span-2">
-                        <label class="label"><span class="label-text font-medium text-gray-600">Correo Electrónico</span></label>
-                        <input type="email" name="correo" placeholder="Ej: juan.perez@gmail.com" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
-                    </div>
-                    <div class="form-control w-full">
                         <label class="label"><span class="label-text font-medium text-gray-600">Profesión</span></label>
-                        <input type="text" name="profesion" placeholder="Ej: Ing. en Informática" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
-                    </div>
-                    <div class="form-control w-full">
-                        <label class="label"><span class="label-text font-medium text-gray-600">Dependencia</span></label>
-                        <input type="text" name="dependencia" placeholder="Ej: Dpto. de Tecnología" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
+                        <input type="text" name="profesion" value="{{ a.profesion }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
                     </div>
                     <div class="form-control w-full">
                         <label class="label"><span class="label-text font-medium text-gray-600">Cargo</span></label>
-                        <input type="text" name="cargo" placeholder="Ej: Profesor Titular" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
+                        <input type="text" name="cargo" value="{{ a.cargo }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
                     </div>
                     <div class="form-control w-full">
-                        <label class="label"><span class="label-text font-medium text-gray-600">Estado</span></label>
-                        <select name="estado_activo" class="select select-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl text-gray-700 font-medium" required>
-                            <option value="True" selected>Activo</option>
-                            <option value="False">Inactivo</option>
-                        </select>
+                        <label class="label"><span class="label-text font-medium text-gray-600">Dependencia</span></label>
+                        <input type="text" name="dependencia" value="{{ a.dependencia }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
+                    </div>
+                    <div class="form-control w-full">
+                        <label class="label"><span class="label-text font-medium text-gray-600">Teléfono</span></label>
+                        <input type="text" name="telefono" value="{{ a.asesor.telefono }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
+                    </div>
+                    <div class="form-control w-full">
+                        <label class="label"><span class="label-text font-medium text-gray-600">Correo Electrónico</span></label>
+                        <input type="email" name="correo" value="{{ a.asesor.correo }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
                     </div>
                 </div>
             </form>
-            
             <div class="modal-action mt-8 flex justify-between w-full">
-                <form method="dialog">
-                    <button class="btn btn-ghost text-gray-500 rounded-xl px-8 hover:bg-red-400 hover:text-white border-none transition-colors">Cancelar</button>
-                </form>
-                <button type="submit" form="form_nuevo_asesor" class="btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none rounded-xl px-10 shadow-md hover:shadow-lg transition-all duration-300">Guardar</button>
+                <form method="dialog"><button class="btn btn-ghost text-gray-500 rounded-xl px-8 hover:bg-gray-100 border-none transition-colors">Cancelar</button></form>
+                <button type="submit" form="form_editar_{{ a.asesor.id }}" class="btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none rounded-xl px-10 shadow-md">Guardar Cambios</button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
+    </dialog>
+
+    <dialog id="modal_estado_{{ a.asesor.id }}" class="modal">
+        <div class="modal-box bg-white text-gray-800 rounded-3xl max-w-md text-center p-8">
+            <div class="flex justify-center mb-6">
+                {% if a.activo %}
+                <div class="w-20 h-20 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                </div>
+                {% else %}
+                <div class="w-20 h-20 rounded-full bg-green-50 text-green-500 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                {% endif %}
+            </div>
+            <h3 class="font-bold text-2xl {% if a.activo %}text-red-500{% else %}text-green-500{% endif %} mb-2">¿{% if a.activo %}Deshabilitar{% else %}Habilitar{% endif %} Asesor?</h3>
+            <p class="text-gray-500 mb-8">El asesor <b>{{ a.asesor.nombres }}</b> {% if a.activo %}ya no podrá ser asignado.{% else %}volverá a estar disponible.{% endif %}</p>
+            <form method="POST" class="flex justify-center gap-4 w-full">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="cambiar_estado">
+                <input type="hidden" name="id" value="{{ a.asesor.id }}">
+                <input type="hidden" name="tab_actual" class="tab_actual_input" value="{{ tab_actual }}">
+                <button type="button" class="btn btn-ghost rounded-xl px-8 text-gray-500" onclick="document.getElementById('modal_estado_{{ a.asesor.id }}').close()">Cancelar</button>
+                <button type="submit" class="btn {% if a.activo %}bg-red-500 hover:bg-red-600{% else %}bg-green-500 hover:bg-green-600{% endif %} text-white border-none rounded-xl px-10 shadow-md">Sí, {% if a.activo %}Deshabilitar{% else %}Habilitar{% endif %}</button>
+            </form>
+        </div>
+        <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
+    </dialog>
+    {% endfor %}
+
+    <dialog id="modal_nuevo_asesor" class="modal">
+        <div class="modal-box bg-white text-gray-800 rounded-3xl max-w-3xl">
+            <h3 class="font-bold text-2xl text-[#8b5cf6] mb-6 text-center border-b border-gray-100 pb-4">Registrar Nuevo Asesor</h3>
+            <form id="form_nuevo_asesor" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="crear">
+                <input type="hidden" name="tab_actual" class="tab_actual_input" value="{{ tab_actual }}">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control w-full"><label class="label"><span class="label-text font-medium text-gray-600">Cédula</span></label><input type="text" name="cedula" placeholder="Ej: 12345678" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[0-9]+$" /></div>
+                    <div class="form-control w-full"><label class="label"><span class="label-text font-medium text-gray-600">Nombres</span></label><input type="text" name="nombres" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" /></div>
+                    <div class="form-control w-full"><label class="label"><span class="label-text font-medium text-gray-600">Apellidos</span></label><input type="text" name="apellidos" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" /></div>
+                    <div class="form-control w-full md:col-span-2"><label class="label"><span class="label-text font-medium text-gray-600">Profesión</span></label><input type="text" name="profesion" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required /></div>
+                    <div class="form-control w-full"><label class="label"><span class="label-text font-medium text-gray-600">Cargo</span></label><input type="text" name="cargo" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required /></div>
+                    <div class="form-control w-full"><label class="label"><span class="label-text font-medium text-gray-600">Dependencia</span></label><input type="text" name="dependencia" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required /></div>
+                    <div class="form-control w-full"><label class="label"><span class="label-text font-medium text-gray-600">Teléfono</span></label><input type="text" name="telefono" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required /></div>
+                    <div class="form-control w-full"><label class="label"><span class="label-text font-medium text-gray-600">Correo Electrónico</span></label><input type="email" name="correo" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required /></div>
+                </div>
+            </form>
+            <div class="modal-action mt-8 flex justify-between w-full">
+                <form method="dialog"><button class="btn btn-ghost text-gray-500 rounded-xl px-8 hover:bg-red-400 hover:text-white transition-colors">Cancelar</button></form>
+                <button type="submit" form="form_nuevo_asesor" class="btn bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none rounded-xl px-10 shadow-md">Guardar</button>
             </div>
         </div>
         <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
@@ -258,8 +234,5 @@
 
 </div>
 
-{% block extra_js %}
-<script src="{% static 'js/AsAc_scripts.js' %}"></script>
-{% endblock %}
-
+<script src="{% static 'js/AsAc_scripts.js' %}?v=1.1"></script>
 {% endblock content %}

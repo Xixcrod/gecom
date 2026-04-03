@@ -5,6 +5,7 @@ from .utils.carrera_utils import procesar_formulario_carrera, obtener_carreras
 from .utils.asesor_academico_utils import procesar_formulario_asesor, obtener_asesores_academicos, obtener_asesor_por_id
 from .utils.asesor_proyecto_utils import obtener_proyectos_por_asesor_academico, procesar_documento_asesor
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 @login_required
 def index(request):
@@ -48,17 +49,22 @@ def carrera(request):
 @login_required
 def asesores_academicos(request):
     """
-    Maneja la vista general del directorio de Asesores Académicos.
-    Recibe las peticiones de los formularios modales (Añadir, Editar, Deshabilitar)
-    y carga la lista completa de asesores activos e inactivos.
+    Maneja la vista de asesores con soporte para búsqueda y persistencia de pestañas.
     """
     if request.method == 'POST':
         procesar_formulario_asesor(request)
-        return redirect('asesores_academicos')
+        # Redirigimos manteniendo el estado de búsqueda y pestaña si existen
+        query = request.GET.get('q', '')
+        tab = request.POST.get('tab_actual', 'activos')
+        return redirect(f"{reverse('asesores_academicos')}?q={query}&tab={tab}")
         
-    # Pasamos la lista de asesores al contexto para usarla luego en la tabla/grid
+    query_search = request.GET.get('q', '')
+    tab_actual = request.GET.get('tab', 'activos') # Por defecto 'activos'
+
     context = {
-        'asesores': obtener_asesores_academicos()
+        'asesores': obtener_asesores_academicos(query_search),
+        'query_search': query_search,
+        'tab_actual': tab_actual
     }
     
     return render(request, 'asesores_academicos.html', context)

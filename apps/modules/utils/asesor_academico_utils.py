@@ -1,6 +1,7 @@
 # apps/modules/utils/asesor_academico_utils.py
 import re
 from django.contrib import messages
+from django.db.models import Q
 from apps.core.models import Asesor, AsesorAcademico 
 from django.shortcuts import get_object_or_404
 
@@ -12,13 +13,21 @@ def validar_solo_letras(texto):
     patron = r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$'
     return bool(re.match(patron, texto.strip()))
 
-def obtener_asesores_academicos():
+def obtener_asesores_academicos(query_search=None):
     """
-    Obtiene la lista de todos los asesores académicos registrados.
-    Utiliza 'select_related' para optimizar la consulta a la base de datos, 
-    trayendo la información del modelo padre (Asesor) en una sola petición.
+    Obtiene los asesores con soporte para búsqueda por nombre, apellido o cédula.
     """
-    return AsesorAcademico.objects.select_related('asesor').order_by('asesor__apellidos', 'asesor__nombres')
+    queryset = AsesorAcademico.objects.select_related('asesor').order_by('asesor__apellidos', 'asesor__nombres')
+    
+    if query_search:
+        # Filtramos por nombres, apellidos o cédula (usando la relación con el modelo padre Asesor)
+        filtros =   Q(asesor__nombres__icontains=query_search) | \
+                    Q(asesor__apellidos__icontains=query_search) | \
+                    Q(asesor__cedula__icontains=query_search)
+        
+        queryset = queryset.filter(filtros).distinct()
+        
+    return queryset
 
 def obtener_asesor_por_id(asesor_id):
     """Busca un asesor específico, si no existe devuelve error 404 de forma segura."""
