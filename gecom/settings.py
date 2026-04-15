@@ -59,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    'apps.core.middleware.MaintenanceModeMiddleware',  # Agrega el middleware de mantenimiento
 ]
 
 ROOT_URLCONF = 'gecom.urls'
@@ -160,3 +161,13 @@ SESSION_COOKIE_AGE = 3600
 SESSION_SAVE_EVERY_REQUEST = True
 
 PASSWORD_RESET_TIMEOUT = 900  # El enlace expira en 15 minutos (900 segundos) para el token de restablecimiento de contraseña
+
+# Guardar sesiones en archivos en lugar de la base de datos
+SESSION_ENGINE = "django.contrib.sessions.backends.file"
+
+# Opcional: define dónde se guardarán (por defecto es la carpeta temporal del sistema)
+SESSION_FILE_PATH = os.path.join(BASE_DIR, 'temp_sessions')
+
+# Crea la carpeta si no existe
+if not os.path.exists(SESSION_FILE_PATH):
+    os.makedirs(SESSION_FILE_PATH)

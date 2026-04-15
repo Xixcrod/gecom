@@ -10,3 +10,5 @@ media/
 .vscode/
 node_modules/
 digest.txt
+client_secrets.json
+credentials.json

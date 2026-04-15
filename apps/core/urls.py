@@ -10,4 +10,7 @@ urlpatterns = [
     path('processing_password/', login.recovering_password, name="processing_password"), #Ruta para procesar la solicitud de recuperación de contraseña
     path('nueva_contrasena/', views.nueva_contrasena, name="nueva_contrasena"), #Ruta para la página de nueva contraseña
     path('restablecer/<uidb64>/<token>/', login.reset_password_confirm, name='reset_password_confirm'), #Ruta para confirmar el restablecimiento de contraseña con token
+    path('respaldo/', views.respaldo, name='respaldo'), #Ruta para la página de respaldo y restauración, accesible solo para superusuarios
+    path('backup/crear/', views.trigger_backup, name='hacer_respaldo'),#Ruta para crear un respaldo de la base de datos y archivos multimedia, solo accesible para superusuarios
+    path('backup/restaurar/', views.trigger_restore, name='hacer_restauracion'),#Ruta para restaurar la base de datos y archivos multimedia desde el último respaldo, solo accesible para superusuarios
 ]
