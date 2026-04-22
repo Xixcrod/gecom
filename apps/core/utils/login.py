@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
 
-# @login_excluded('dashboard')
+# @login_excluded('dashboard') 
 def loginProcess(request):
 
     """
@@ -17,7 +17,7 @@ def loginProcess(request):
     """
 
     if request.method == 'POST':
-        # En tu caso, el 'username' del superusuario suele ser su nombre o cédula
+        # El 'username' del superusuario es su cédula
         username_input = request.POST.get('username')
         password_input = request.POST.get('password')
 
@@ -42,7 +42,8 @@ def loginProcess(request):
     return render(request, 'login.html')
 
 
-# @login_excluded('dashboard')
+# @login_excluded('dashboard') para evitar regresar (por acomodar)
+
 def recovering_password(request):
     """
     Recupera la contraseña del administrador verificando cédula (username) y email.
@@ -65,7 +66,7 @@ def recovering_password(request):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
 
 
-            # 2. Construir la URL (asegúrate de tener esta ruta en urls.py)
+            # 2. Construir la URL 
             protocol = 'https' if request.is_secure() else 'http'
             domain = request.get_host()
             link = reverse('reset_password_confirm', kwargs={'uidb64': uid, 'token': token})
@@ -90,7 +91,7 @@ def recovering_password(request):
 
 
 
-# @login_excluded('dashboard')
+# @login_excluded('dashboard') para evitar regresar (por acomodar)
 def reset_password_confirm(request, uidb64, token):
     """
     función para manejar la confirmación del restablecimiento de contraseña. Verifica el token y permite al usuario ingresar una nueva contraseña. De acuerdo si es GET o POST, muestra el formulario o procesa la nueva contraseña respectivamente.

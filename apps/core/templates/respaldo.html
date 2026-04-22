@@ -1,8 +1,8 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block extra_css %}  
-<link rel="stylesheet" href="{% static 'css/respaldo.css' %}" /> 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/respaldo.css' %}" />
 {% endblock extra_css %}
 
 {% block titulo_seccion %}Respaldo{% endblock %}
@@ -12,14 +12,14 @@
     <h3>Centro de Respaldo</h3>
 
     <div class="d-flex gap-3 mt-3">
-        <a href="{% url 'hacer_respaldo' %}" class="btn btn-primary" 
-           onclick="return confirm('¿Crear y subir respaldo a Drive? Esto tardará unos segundos.')">
-           Respaldar Sistema a la Nube
+        <a href="{% url 'hacer_respaldo' %}" class="btn btn-primary"
+            onclick="return confirm('¿Crear y subir respaldo a Drive? Esto tardará unos segundos.')">
+            Respaldar Sistema a la Nube
         </a>
 
-        <a href="{% url 'hacer_restauracion' %}" class="btn btn-danger" 
-           onclick="return confirm('¡ADVERTENCIA! Esto borrará la base de datos actual y pondrá la app en mantenimiento. ¿Continuar?')">
-           Restaurar desde la Nube
+        <a href="{% url 'hacer_restauracion' %}" class="btn btn-danger"
+            onclick="return confirm('¡ADVERTENCIA! Esto borrará la base de datos actual y pondrá la app en mantenimiento. ¿Continuar?')">
+            Restaurar desde la Nube
         </a>
     </div>
 </div>

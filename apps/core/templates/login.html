@@ -5,10 +5,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
     <title>GECOM</title>
     <link rel="stylesheet" href="{% static 'css/_variables.css' %}" />
-    <!-- <link rel="stylesheet" href="{% static 'css/login.css' %}" /> -->
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> -->
 </head>
 
@@ -16,6 +16,7 @@
     <div>
         <h2>Inicio de sesión</h2>
 
+        <!-- Mostrar mensaje de error si existe -->
         {% if error %}
         <div>{{ error }}</div>
         {% endif %}
@@ -27,12 +28,12 @@
 
             <input type="password" name="password" id="password" placeholder="Contraseña" required />
 
-            <button type="submit">Login</button>
+            <button type="submit">Ingresar</button>
 
             <div>
                 <a href="{% url 'recuperar_contrasena' %}">¿Has olvidado tú contraseña?</a>
             </div>
-
+            <!-- Mostrar mensaje de éxito si existe -->
             {% if success %}
             <div>
                 {{ success }}

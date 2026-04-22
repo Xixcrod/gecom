@@ -5,17 +5,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
     <title>GECOM</title>
     <link rel="stylesheet" href="{% static 'css/_variables.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/recuperar_contrasena.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/recuperar_contrasena.css' %}">
     <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> -->
 </head>
 
 <body>
     <div>
         <h2>Recuperar Contraseña</h2>
-
+        <!-- Mostrar mensaje de error si existe -->
         {% if error %}
             <div>{{ error }}</div>
         {% endif %}
@@ -24,7 +24,7 @@
             {% csrf_token %}
 
             <label for="username">Cédula</label>
-            <input type="text" id="username" name="username" placeholder="Ingrese su cédula" required />
+            <input type="text" id="username" name="username" placeholder="12345678" required />
 
             <label for="email">Correo</label>
             <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required />

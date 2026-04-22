@@ -6,22 +6,24 @@
     <!-- Configuración básica del documento HTML. -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
     <title>GECOM</title>
 
     <!-- Enlaces a hojas de estilo CSS. -->
-
     <link rel="stylesheet" href="{% static 'css/_variables.css' %}" />
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/footer.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
     <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}">  -->
     <script src="{% static 'js/mensajes.js' %}"></script>
     {% block extra_css %}{% endblock extra_css %}
 </head>
+{% if user.is_authenticated %}
 
 <body class=" min-h-screen">
-    {% if user.is_authenticated %}
+
+
+    <!-- Barra de navegación superior -->
     <nav class="gcm-top-nav">
         <div class="gcm-nav-left">
             <button id="gcm-open-menu" class="gcm-menu-trigger">&#9776;</button>
@@ -36,6 +38,7 @@
         </div>
     </nav>
 
+    <!-- Menú lateral desplegable -->
     <aside id="gcm-sidebar-menu" class="gcm-sidebar">
         <div class="gcm-sidebar-header">
             <img src="{% static 'img/logo.png' %}" alt="Logo GECOM" class="gcm-logo-img" />
@@ -53,30 +56,41 @@
     </aside>
 
     <div id="gcm-overlay-layer" class="gcm-screen-overlay"></div>
-    {% endif %}
 
+
+    <!-- Mensajes de notificación -->
     {% if messages %}
-        <div class="toast toast-top toast-end z-9999 mt-20">
-            {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %} text-white shadow-xl flex flex-row items-center gap-3 transition-opacity duration-500 rounded-2xl">
+    <div class="toast toast-top toast-end z-9999 mt-20">
+        {% for message in messages %}
+        <div
+            class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %} text-white shadow-xl flex flex-row items-center gap-3 transition-opacity duration-500 rounded-2xl">
 
-                {% if message.tags == 'error' %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                {% else %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                {% endif %}
+            {% if message.tags == 'error' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {% endif %}
 
-                <span class="font-medium">{{ message }}</span>
-            </div>
-            {% endfor %}
+            <span class="font-medium">{{ message }}</span>
         </div>
+        {% endfor %}
+    </div>
     {% endif %}
 
+    <!-- Contenido principal -->
     <div class="gcm-page-wrapper">
         {% block content %} {% endblock content %}
     </div>
 
-    {% if user.is_authenticated %}
+    <!-- Pie de página -->
     <footer style="
         padding: 20px;
         text-align: center;
@@ -85,8 +99,9 @@
         ">
         <p>&copy; 2026 GECOM - Gestión Audiovisual</p>
     </footer>
-    {% endif %}
+
 </body>
+{% endif %}
 
 <script src="{% static 'js/menu_desplegable.js' %}"></script>
 

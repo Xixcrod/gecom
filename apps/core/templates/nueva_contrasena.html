@@ -5,10 +5,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
     <title>GECOM</title>
     <link rel="stylesheet" href="{% static 'css/_variables.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/nueva_contrasena.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/nueva_contrasena.css' %}">
     <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> -->
 </head>
 
@@ -18,7 +18,7 @@
 
     <form method="POST">
         {% csrf_token %}
-        
+        <!-- Mostrar mensaje de error si existe -->
         {% if error %}
             <div>{{ error }}</div>
         {% endif %}

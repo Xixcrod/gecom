@@ -40,8 +40,8 @@ def trigger_backup(request):
 def trigger_restore(request):
     '''Ejecuta la lógica de restauración y muestra mensajes de éxito o error.'''
     try:
-        perform_system_restore()
-        messages.success(request, "Sistema restaurado correctamente. Inicia sesión de nuevo.")
+        perform_system_restore(request)
+        messages.success(request, "Sistema restaurado correctamente.")
     except Exception as e:
         messages.error(request, f"Error en restauración: {str(e)}")
     

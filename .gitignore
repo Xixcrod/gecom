@@ -12,3 +12,4 @@ node_modules/
 digest.txt
 client_secrets.json
 credentials.json
+temp_sessions/

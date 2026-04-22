@@ -1,10 +1,12 @@
 # services.py
 import os
 import shutil
+import threading
 import zipfile
 from django.conf import settings
 from django.db import connections
 from .backup_utils import upload_or_replace_backup, download_latest_backup
+from django.shortcuts import redirect
 
 def perform_system_backup():
     """Ejecuta toda la lógica de compresión y subida del respaldo."""
@@ -29,13 +31,10 @@ def perform_system_backup():
     os.remove(final_zip)
 
 
-def perform_system_restore():
-    """Ejecuta la descarga, extracción y reemplazo de los archivos de Prisma."""
+def background_restore_task():
+    """Ejecuta la descarga, extracción y reemplazo de los archivos en segundo plano."""
     lock_path = os.path.join(settings.BASE_DIR, 'maintenance.lock')
     try:
-        # 1. ACTIVAR MANTENIMIENTO
-        open(lock_path, 'a').close()
-
         # 2. Descargar respaldo
         zip_path = download_latest_backup()
         if not zip_path:
@@ -72,7 +71,29 @@ def perform_system_restore():
         if os.path.exists(zip_path):
             os.remove(zip_path)
             
+    except Exception as e:
+        print(f"Error crítico en la restauración: {e}")
+        # Aquí podrías agregar lógica para enviarte un correo si falla
+
     finally:
         # 6. DESACTIVAR MANTENIMIENTO SIEMPRE
         if os.path.exists(lock_path):
             os.remove(lock_path)
+
+
+# Esta es la vista que se llama cuando el usuario hace clic en "Restaurar"
+def perform_system_restore(request):
+    lock_path = os.path.join(settings.BASE_DIR, 'maintenance.lock')
+    
+    # 1. ACTIVAR MANTENIMIENTO INMEDIATAMENTE
+    # Esto crea el archivo al instante para que el Middleware empiece a bloquear
+    open(lock_path, 'a').close()
+
+    # Lanzamos el proceso pesado en un hilo secundario (background)
+    thread = threading.Thread(target=background_restore_task)
+    thread.start()
+
+    # Redirigimos al usuario inmediatamente a la página de login
+    # Como el archivo ya existe y esta petición web ya terminó, 
+    # el Middleware lo atrapará en la redirección.
+    return redirect('login.html')
