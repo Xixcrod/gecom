@@ -17,7 +17,7 @@ function handleOutsideClick(event) {
     }
 }
 
-// Lógica para ocultar alertas (si las usas)
+// Lógica para ocultar alertas
 window.addEventListener('DOMContentLoaded', () => {
     const alerts = document.querySelectorAll('.alert-msg');
     alerts.forEach(alert => {

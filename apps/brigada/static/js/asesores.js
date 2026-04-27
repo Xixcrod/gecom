@@ -40,16 +40,16 @@ function guardarAcademico(brigadaId) {
         },
         body: JSON.stringify({ asesor_base_id: asesorId })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert("✅ " + data.message);
-            location.reload();
-        } else {
-            alert("❌ Error: " + data.message);
-        }
+    .then(res => {
+        // Independientemente de si es success o error, recargamos.
+        // El backend ya se encargó de poner el mensaje en la cola de Django.
+        location.reload();
     })
-    .catch(err => console.error("Error en petición:", err));
+    .catch(err => {
+        console.error("Error en la petición:", err);
+        // Este alert solo aparece si hay un error de red (el servidor no responde)
+        alert("Error crítico de comunicación con el servidor.");
+    });
 }
 
 // --- LÓGICA ASESOR COMUNITARIO ---
@@ -97,16 +97,15 @@ function guardarComunitario(brigadaId) {
         },
         body: JSON.stringify(payload)
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert("✅ " + data.message);
-            location.reload(); 
-        } else {
-            alert("❌ Error: " + data.message);
-        }
+    .then(res => {
+        // Recargamos la página sin importar si es 200, 400 o 500.
+        // Django habrá guardado el mensaje (success o error) en la sesión.
+        location.reload();
     })
-    .catch(err => console.error("Error en petición:", err));
+    .catch(err => {
+        console.error("Error crítico de red:", err);
+        alert("Error de conexión con el servidor.");
+    });
 }
 
 // Cerrar modal al hacer clic fuera

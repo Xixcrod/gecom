@@ -7,6 +7,7 @@ from django.conf import settings
 from django.db import connections
 from .backup_utils import upload_or_replace_backup, download_latest_backup
 from django.shortcuts import redirect
+from django.http import JsonResponse
 
 def perform_system_backup():
     """Ejecuta toda la lógica de compresión y subida del respaldo."""
@@ -97,3 +98,11 @@ def perform_system_restore(request):
     # Como el archivo ya existe y esta petición web ya terminó, 
     # el Middleware lo atrapará en la redirección.
     return redirect('login.html')
+
+
+def check_restore_status(request):
+    '''Vista para que el frontend consulte si el proceso de restauración terminó o sigue en mantenimiento.'''
+    lock_path = os.path.join(settings.BASE_DIR, 'maintenance.lock')
+    # Si el archivo no existe, el mantenimiento terminó
+    en_mantenimiento = os.path.exists(lock_path)
+    return JsonResponse({'status': 'completed' if not en_mantenimiento else 'pending'})

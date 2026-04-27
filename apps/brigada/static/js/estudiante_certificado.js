@@ -5,11 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalTitulo = document.getElementById('modalTitulo');
     const btnConfirmar = document.getElementById('btnConfirmar');
 
-    // Leemos el ID desde el atributo data del HTML
     const estudianteId = document.getElementById('metadata-estudiante').dataset.id;
     let tipoActual = "";
 
-    // Función para obtener el CSRF Token de las cookies
     const getCookie = (name) => {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -45,9 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnConfirmar.innerText = "Validando PDF...";
         errorAlerta.style.display = 'none';
 
-        // URL adaptada a la nueva vista del estudiante
         const url = `/brigada/estudiante/${estudianteId}/subir-certificado/`; 
-
         const formData = new FormData(form);
 
         try {
@@ -56,17 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData,
                 headers: { 
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': getCookie('csrftoken') // Inyección del token de seguridad
+                    'X-CSRFToken': getCookie('csrftoken') 
                 }
             });
 
-            const resultado = await response.text();
+            // 1. Convertimos la respuesta a JSON
+            const data = await response.json();
 
-            if (response.ok) {
-                window.location.reload(); // Recarga para mostrar el PDF y las nuevas fechas
+            if (response.ok && data.success) {
+                // ÉXITO: Recargamos para que Django renderice el messages.success
+                window.location.reload();
             } else {
-                errorAlerta.innerText = resultado.replace("Error de validación: ", "");
+                // ERROR CRÍTICO: Recargamos para que Django renderice el messages.error
+                if (data.fatal_error) {
+                    window.location.reload();
+                    return;
+                }
+
+                // ERRORES DE VALIDACIÓN: Se muestran en el modal (data.message)
+                errorAlerta.innerText = data.message;
                 errorAlerta.style.display = 'block';
+                
                 btnConfirmar.disabled = false;
                 btnConfirmar.innerText = "Reintentar Envío";
             }
@@ -78,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Cerrar modal al hacer clic fuera de él
     window.onclick = function(event) {
         if (event.target == modal) cerrarModal();
     };

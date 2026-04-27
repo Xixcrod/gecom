@@ -35,10 +35,8 @@ function enviarModificacion() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message); 
             location.reload();
         } else {
-            // Error del servidor (ej. nombre ya existe)
             errorDiv.textContent = data.message;
             errorDiv.style.display = 'block';
         }

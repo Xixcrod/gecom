@@ -8,10 +8,11 @@
 {% block titulo_seccion %}Brigadas{% endblock %}
 
 {% block content %}
-
+<!-- Botón para regresar a la lista de periodos -->
 <a href="{% url 'brigada_periodo' %}">Regresar</a>
 
 <div class="main-layout">
+    <!-- Botón flotante para agregar nueva brigada -->
     <button class="fab-add" onclick="toggleModal(true)" title="Agregar nueva brigada">
         <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -23,6 +24,7 @@
             <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h1 style="color: white;">Periodo: {{ periodo.nombre }}</h1>
                 
+                <!-- buscador -->
                 <form method="GET" class="search-form" style="display: flex; gap: 0.5rem;">
                     <input type="text" name="q" value="{{ query_search|default:'' }}" 
                            placeholder="Brigada, Cédula Est. o Asesor..." 
@@ -32,6 +34,7 @@
             </div>
 
             <div id="contenedor-brigadas" class="periods-section">
+                <!--- Mostrar brigadas -->
                 <div id="grid-brigadas" class="periods-grid">
                     {% for b in page_obj %}
                     <a href="{% url 'brigada_detalles' brigada_id=b.id %}" class="period-card">
@@ -53,6 +56,7 @@
                     {% endfor %}
                 </div> 
 
+                <!-- Paginación -->
                 {% if page_obj.has_other_pages %}
                 <div class="pagination-wrapper">
                     <div class="pagination-container">

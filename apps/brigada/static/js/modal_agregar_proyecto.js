@@ -54,40 +54,15 @@ if (formProyecto) {
                 'X-Requested-With': 'XMLHttpRequest',
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // --- CASO ÉXITO ---
-                // 1. Mostramos el mensaje en el modal (opcional, por si tardan en dar aceptar)
-                if (errorDiv) {
-                    errorDiv.textContent = data.message;
-                    errorDiv.style.color = "#28a745"; 
-                    errorDiv.style.display = 'block';
-                }
-
-                // 2. LANZAMOS LA ALERTA: El navegador se detiene aquí.
-                alert(data.message); 
-
-                // 3. Cuando el usuario da clic en "Aceptar", se ejecuta la recarga:
-                window.location.reload(); 
-
-            } else {
-                // --- CASO ERROR ---
-                if (btnGuardar) btnGuardar.disabled = false; 
-                
-                if (errorDiv) {
-                    errorDiv.textContent = data.message;
-                    errorDiv.style.color = "#ff4444"; 
-                    errorDiv.style.display = 'block';
-                } else {
-                    alert(data.message);
-                }
-            }
+        .then(response => {
+            window.location.reload(); 
         })
         .catch(error => {
+            // Este bloque captura errores de red
+            // (ej. el usuario se quedó sin internet o el servidor se apagó por completo)
             if (btnGuardar) btnGuardar.disabled = false;
-            console.error('Error:', error);
-            alert('Error crítico al conectar con el servidor.');
+            console.error('Error de red:', error);
+            alert('Error crítico al conectar con el servidor. Revisa tu conexión.');
         });
     });
 }

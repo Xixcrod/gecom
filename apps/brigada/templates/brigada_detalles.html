@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="contenedor-fondo-azul">
-
+    <!--- Brigada y Periodo actual -->
     <div class="cabecera-brigada">
         <h2 id="titulo-brigada">Brigada: {{ brigada.nombre }} - Periodo: {{ brigada.periodo.nombre }}</h2>
         <button onclick="abrirModalModificar('{{ brigada.id }}', '{{ brigada.nombre }}')" class="btn-lapiz">
@@ -17,6 +17,7 @@
         </button>
     </div>
 
+    <!-- Botón de regreso -->
     <div class="link-regresar">
         <a href="{% url 'brigadas' brigada.periodo.id %}"><i class="fas fa-arrow-left"></i> Regresar</a>
     </div>
@@ -25,7 +26,8 @@
 
     <div id="card-asesores" data-url-academico="{% url 'asignar_academico' brigada.id %}" data-url-comunitario="{% url 'guardar_comunitario' brigada.id %}">
         <div class="asesores-grid">
-            
+            <!-- Asesor Comunitario -->
+
             <div class="asesor-columna">
                 <h3 class="titulo-rojo">Asesor Comunitario</h3>
                 <div class="tarjeta-morada">
@@ -49,6 +51,7 @@
                 {% endif %}
             </div>
 
+            <!-- Asesor Académico -->
             <div class="asesor-columna">
                 <h3 class="titulo-rojo">Asesor Académico</h3>
                 <div class="tarjeta-morada">
@@ -71,6 +74,7 @@
                         <p id="no-academico-msg">No asignado</p>
                     {% endif %}
 
+                    <!-- Por acomodar asignación de asesor académico -->
                     <div id="selector-academico-div" style="display: {% if asesor_academico %}none{% else %}block{% endif %}; margin-top:10px;">
                         <select id="select-academico" style="width:100%; margin-bottom:5px;">
                             <option value="">Seleccione un Asesor Activo...</option>
@@ -90,10 +94,10 @@
                 </button>
                 {% endif %}
             </div>
-
         </div>
     </div>
 
+    <!-- Proyecto -->
     <div class="seccion-central">
         <h3 class="titulo-rojo">Proyecto</h3>
         <div class="contenedor-tarjeta-lateral">
@@ -123,6 +127,7 @@
         </div>
     </div>
 
+    <!-- Estudiantes -->
     <div class="seccion-central">
         <h3 class="titulo-rojo">Estudiantes</h3>
         <div class="contenedor-tarjeta-lateral">
@@ -146,8 +151,13 @@
             </button>
         </div>
     </div>
+</div> 
 
-</div> <div id="customModal" class="modal-overlay">
+<!-- ************************************* Modales **************************************************-->
+<!--*************************************************************************************************-->
+
+<!-- Modal para modificar Brigada -->
+<div id="customModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
             <h3>Modificar Número de Brigada</h3>
@@ -166,6 +176,7 @@
     </div>
 </div>
 
+<!-- Modal para asignar/editar Asesor Comunitario -->
 <div id="modalComunitario" class="modal-overlay">
     <div class="modal-content">
         <h3 id="modal-titulo" style="padding: 15px; margin:0; background:#f5f5f5;">Asesor Comunitario</h3>
@@ -184,6 +195,7 @@
     </div>
 </div>
 
+<!-- Modal para agregar proyecto  -->
 <div id="proyectoModalManual" class="modal-overlay">
     <div class="modal-content">
         <form id="formProyecto" action="{% url 'guardar_proyecto' brigada.id %}" method="POST">
@@ -208,6 +220,7 @@
     </div>
 </div>
 
+<!-- Modal para agregar estudiante -->
 <div id="estudiante-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
@@ -239,6 +252,7 @@
     </div>
 </div>
 
+<!-- Scripts -->
 <script src="{% static 'js/asesores.js' %}"></script>
 <script src="{% static 'js/modal_modificar_brigada.js' %}"></script>
 <script src="{% static 'js/modal_agregar_proyecto.js' %}"></script>

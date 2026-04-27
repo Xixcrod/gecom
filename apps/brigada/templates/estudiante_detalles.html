@@ -22,7 +22,7 @@
 <h2>Certificado</h2>
 <p><strong>Fecha de entrega:</strong> {{ certificado.fecha_retiro|default:"Pendiente" }}</p>
 <p><strong>Fecha de actualización:</strong> {{ certificado.fecha_actualizacion|default:"No ha sido modificado" }}</p>
-
+<!-- Botón para abrir el modal de edición de estudiante-->
 <button class="btn-modificar" onclick="abrirModalEditar()">Editar Datos</button>
 
 <div id="modalEditarEstudiante" class="modal-sistema" style="display: none;">
@@ -75,6 +75,7 @@
     </div>
 </div>
 
+<!-- Sección de certificado -->
 <div class="doc-card">
     <div>
         <strong>Archivo del Certificado</strong>
@@ -93,6 +94,7 @@
     </div>
 </div>
 
+<!-- Modal para subir/modificar certificado -->
 <div id="modalDocumento" class="modal-sistema">
     <div class="modal-contenido">
         <div class="header-modal">
@@ -111,6 +113,7 @@
     </div>
 </div>
 
+<!-- Scripts -->
 <script src="{% static 'js/modal_modificar_estudiante.js' %}"></script>
 <script src="{% static 'js/estudiante_certificado.js' %}"></script>
 {% endblock content %}

@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from apps.core.models import Proyecto, GrupoDocumentos
 from datetime import datetime
+from django.contrib import messages
 
 # Configuraciones
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 * 1024 KB * 1024 Bytes
@@ -104,28 +105,33 @@ def subir_documento_proyecto(request, proyecto_id, tipo_documento):
     campos_validos = ['planilla_inscripcion', 'control_horas', 'anteproyecto', 'informe_final']
     
     if tipo_documento not in campos_validos:
-        return HttpResponseBadRequest("Tipo de documento no reconocido.")
+        return JsonResponse({'success': False, 'message': 'Tipo de documento no reconocido.'}, status=400)
 
     archivo = request.FILES.get('documento')
     if not archivo:
-        return HttpResponseBadRequest("No se adjuntó ningún archivo en la solicitud.")
+        return JsonResponse({'success': False, 'message': 'No se adjuntó ningún archivo en la solicitud.'}, status=400)
 
     # Ejecutar todas las validaciones
     es_valido, resultado = procesar_y_validar_pdf(archivo)
     
     if not es_valido:
         # Si falló, 'resultado' contiene el mensaje de error
-        return HttpResponseBadRequest(f"Error de validación: {resultado}")
+        return JsonResponse({'success': False, 'message': resultado}, status=400)
+    try:
+        # Guardar o actualizar el documento
+        proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+        grupo_docs, created = GrupoDocumentos.objects.get_or_create(proyecto=proyecto)
+        
+        # Asignar el archivo limpio al campo correspondiente dinámicamente
+        setattr(grupo_docs, tipo_documento, resultado)
+        grupo_docs.save()
 
-    # Guardar o actualizar el documento
-    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
-    grupo_docs, created = GrupoDocumentos.objects.get_or_create(proyecto=proyecto)
-    
-    # Asignar el archivo limpio al campo correspondiente dinámicamente
-    setattr(grupo_docs, tipo_documento, resultado)
-    grupo_docs.save()
+        messages.success(request, f'Documento "{tipo_documento.replace("_", " ").title()}" subido y validado con éxito.')
+        return JsonResponse({'success': True})
 
-    return HttpResponse("Documento subido y validado con éxito.", status=200)
+    except Exception as e:
+        messages.error(request, f"Error interno al guardar el documento: {str(e)}")
+        return JsonResponse({'success': False, 'fatal_error': True}, status=500)
 
 
 @login_required
@@ -147,8 +153,8 @@ def editar_proyecto(request, proyecto_id):
         if not nombre_proyecto or not comunidad or not fecha_inicio_str:
             return JsonResponse({
                 'success': False, 
-                'error': 'El nombre del proyecto, la comunidad y la fecha de inicio son obligatorios.'
-            })
+                'message': 'El nombre del proyecto, la comunidad y la fecha de inicio son obligatorios.'
+            }, status=400)
 
         # 2. Validación y conversión de fechas
         try:
@@ -162,13 +168,13 @@ def editar_proyecto(request, proyecto_id):
                 if fecha_culminacion < fecha_inicio:
                     return JsonResponse({
                         'success': False, 
-                        'error': 'La fecha de culminación no puede ser anterior a la fecha de inicio.'
-                    })
+                        'message': 'La fecha de culminación no puede ser anterior a la fecha de inicio.'
+                    }, status=400)
         except ValueError:
             return JsonResponse({
                 'success': False, 
-                'error': 'El formato de las fechas no es válido.'
-            })
+                'message': 'El formato de las fechas no es válido.'
+            }, status=400)
 
         # --- ACTUALIZACIÓN ---
         try:
@@ -180,15 +186,12 @@ def editar_proyecto(request, proyecto_id):
             
             proyecto.save()
 
-            return JsonResponse({
-                'success': True, 
-                'message': '¡Los datos del proyecto se han actualizado exitosamente!'
-            })
+            messages.success(request, '¡Los datos del proyecto se han actualizado exitosamente!')
+            return JsonResponse({'success': True})
             
         except Exception as e:
-            return JsonResponse({
-                'success': False, 
-                'error': f'Ocurrió un error al guardar: {str(e)}'
-            })
+            # Error crítico: Usamos mensaje de Django y pedimos recarga
+            messages.error(request, f'Error inesperado al guardar: {str(e)}')
+            return JsonResponse({'success': False, 'fatal_error': True}, status=500)
 
-    return JsonResponse({'success': False, 'error': 'Método no permitido.'})
+    return JsonResponse({'success': False, 'message': 'Método no permitido.'}, status=405)

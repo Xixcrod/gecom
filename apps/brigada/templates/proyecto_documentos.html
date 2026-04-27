@@ -11,10 +11,14 @@
 <div id="metadata-proyecto" data-id="{{ proyecto.id }}"></div>
 
 <h2>Documentos del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
+<!-- Botón para regresar-->
 <div><a href="{% url 'brigada_detalles' brigada.id %}"> ← Regresar</a></div>
+
+<!-- Botón para editar el proyecto -->
 <button class="btn-modificar" onclick="abrirModalEditarProyecto()">Editar Proyecto</button>
 <hr>
 
+<!-- Modal para editar datos del proyecto -->
 <div id="modalEditarProyecto" class="modal-sistema" style="display: none;">
     <div class="modal-contenido">
         <div class="header-modal">
@@ -57,6 +61,7 @@
     </div>
 </div>
 
+<!-- Sección de documentos -->
 <section>
     <div class="doc-card">
         <div>
@@ -119,6 +124,7 @@
     </div>
 </section>
 
+<!-- Modal para cargar documentos -->
 <div id="modalDocumento" class="modal-sistema">
     <div class="modal-contenido">
         <div class="header-modal">
@@ -140,6 +146,7 @@
     </div>
 </div>
 
+<!-- Scripts -->
 <script src="{% static 'js/modal_modificar_proyecto.js' %}"></script>
 <script src="{% static 'js/proyecto_documentos.js' %}"></script>
 {% endblock content %}

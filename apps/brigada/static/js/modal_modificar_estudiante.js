@@ -1,45 +1,85 @@
 // --- Funciones del Modal de Edición ---
 function abrirModalEditar() {
-    document.getElementById('modalEditarEstudiante').style.display = 'flex'; // o 'block' según tus estilos CSS
+    document.getElementById('modalEditarEstudiante').style.display = 'flex';
 }
 
 function cerrarModalEditar() {
     document.getElementById('modalEditarEstudiante').style.display = 'none';
-    document.getElementById('errorAlertaEditar').innerText = ''; // Limpiar errores
+    const alerta = document.getElementById('errorAlertaEditar');
+    if (alerta) {
+        alerta.style.display = 'none';
+        alerta.innerText = '';
+    }
 }
 
-// Manejar el envío del formulario
 const formEditar = document.getElementById('formEditarEstudiante');
+
 if (formEditar) {
-    formEditar.addEventListener('submit', function(e) {
-        e.preventDefault(); // Evitar recarga tradicional
+    // Usamos async para mantener el estándar moderno
+    formEditar.addEventListener('submit', async function(e) {
+        e.preventDefault(); 
         
-        // Obtenemos el ID del estudiante del div oculto que ya tienes en el HTML
-        const estudianteId = document.getElementById('metadata-estudiante').getAttribute('data-id');
+        const metadata = document.getElementById('metadata-estudiante');
+        const estudianteId = metadata ? metadata.getAttribute('data-id') : null;
+        const alertaUI = document.getElementById('errorAlertaEditar');
+        const btnSubmit = this.querySelector('button[type="submit"]');
+        
+        // Obtener el token CSRF (Asumiendo que tienes {% csrf_token %} en tu form HTML)
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        const csrfToken = csrfInput ? csrfInput.value : '';
+
+        if (!estudianteId) {
+            console.error("No se encontró el ID del estudiante");
+            return;
+        }
+
         const formData = new FormData(this);
 
-        // Hacemos la petición AJAX a tu endpoint de Django
-        fetch(`/brigada/estudiante/editar/${estudianteId}/`, { // <- Ajusta esta URL a la tuya
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest' // Para que Django detecte que es AJAX
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Si todo sale bien, recargamos la página para ver los cambios
-                alert(data.message);
+        try {
+            if (btnSubmit) btnSubmit.disabled = true;
+            if (alertaUI) alertaUI.style.display = 'none';
+
+            // Petición al servidor
+            const response = await fetch(`/brigada/estudiante/editar/${estudianteId}/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken // Obligatorio para Django
+                }
+            });
+
+            // Convertimos la respuesta
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // ÉXITO: Recargamos la página (ya quitamos el alert manual)
+                // Django mostrará la notificación verde de messages.success
                 window.location.reload();
             } else {
-                // Si hay un error de validación, lo mostramos
-                document.getElementById('errorAlertaEditar').innerText = data.error || 'Ocurrió un error al actualizar.';
+                // ERROR CRÍTICO
+                if (data.fatal_error) {
+                    window.location.reload();
+                    return;
+                }
+
+                // ERRORES DE VALIDACIÓN: Se muestran directo en el modal
+                if (alertaUI) {
+                    alertaUI.style.display = 'block';
+                    alertaUI.style.color = '#ff4b2b';
+                    alertaUI.innerText = data.message || 'Error desconocido';
+                }
+                
+                if (btnSubmit) btnSubmit.disabled = false;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('errorAlertaEditar').innerText = 'Error de conexión con el servidor.';
-        });
+
+        } catch (error) {
+            console.error('Error de conexión:', error);
+            if (alertaUI) {
+                alertaUI.style.display = 'block';
+                alertaUI.innerText = 'Error de conexión con el servidor.';
+            }
+            if (btnSubmit) btnSubmit.disabled = false;
+        }
     });
 }

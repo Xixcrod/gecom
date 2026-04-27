@@ -70,7 +70,6 @@ def estudiante_detalles(request, brigada_id, estudiante_id):
     }
     return render(request, 'estudiante_detalles.html', context)
 
-
 @login_required
 def draftbox(request):
     '''Vista para mostrar la página de Draftbox.'''

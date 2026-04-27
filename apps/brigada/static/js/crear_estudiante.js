@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Validación rápida en cliente
             if (!brigadaId || !carreraId) {
-                mostrarError('Por favor, selecciona una carrera válida.');
+                alert('Por favor, selecciona una carrera válida.');
                 return;
             }
 
@@ -50,48 +50,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 const btnSubmit = form.querySelector('button[type="submit"]');
+                // Deshabilitar botón para evitar doble envío
                 if(btnSubmit) btnSubmit.disabled = true;
 
-                const response = await fetch(url, { 
+                await fetch(url, { 
                     method: 'POST',
                     body: formData,
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
-                        // Extraemos el CSRF token del formulario
                         'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value 
                     }
                 });
 
-                const data = await response.json();
+                window.location.reload();
 
-                if (data.exito) {
-                    // ÉXITO: Recargamos para ver los cambios y mensajes de Django
-                    modal.style.display = 'none';
-                    window.location.reload(); 
-                } else {
-                    // ERROR DEL SERVIDOR (Validación, etc.)
-                    mostrarError(data.mensaje || 'Error al guardar el estudiante.');
-                    if(btnSubmit) btnSubmit.disabled = false;
-                }
 
             } catch (error) {
+                // Este catch solo se activa si hay un fallo de red o el servidor cae.
                 console.error("Error en Fetch:", error);
-                mostrarError('Error de conexión con el servidor.');
+                alert('Error de conexión con el servidor. Revisa tu internet.');
+                
+                // Si falla la red, habilitamos el botón de nuevo
                 const btnSubmit = form.querySelector('button[type="submit"]');
-                if(btnSubmit) btnSubmit.disabled = false;
+                if (btnSubmit) btnSubmit.disabled = false;
             }
         });
-    }
-
-    // Función auxiliar para mostrar errores de forma limpia
-    function mostrarError(mensaje) {
-        if (divError) {
-            divError.textContent = mensaje;
-            divError.style.display = 'block';
-            divError.style.color = '#e74c3c';
-            divError.style.marginTop = '10px';
-        } else {
-            alert(mensaje);
-        }
     }
 });

@@ -6,11 +6,11 @@ from io import BytesIO #
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from apps.core.models import Estudiante, Certificado, Carrera
 from django.http import JsonResponse
+from django.contrib import messages
 
 # Configuraciones
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 * 1024 KB * 1024 Bytes
@@ -102,32 +102,42 @@ def subir_certificado_estudiante(request, estudiante_id):
     '''Vista para subir, validar y actualizar el certificado de un estudiante.'''
     archivo = request.FILES.get('documento')
     if not archivo:
-        return HttpResponseBadRequest("No se adjuntó ningún archivo en la solicitud.")
-
+        return JsonResponse({
+            'success': False, 
+            'message': 'No se adjuntó ningún archivo en la solicitud.'
+        }, status=400)
     # Reutilizamos tu función procesar_y_validar_pdf
     es_valido, resultado = procesar_y_validar_pdf(archivo)
     
     if not es_valido:
-        return HttpResponseBadRequest(f"Error de validación: {resultado}")
+        # Si falló la validación del PDF (tamaño, extensión, corrupto)
+        return JsonResponse({'success': False, 'message': resultado}, status=400)
+    try:
+        # Obtener el estudiante y su certificado asociado
+        estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+        certificado, created = Certificado.objects.get_or_create(estudiante=estudiante)
+        
+        # Lógica de asignación de fechas
+        if not certificado.archivo:
+            # Si NO hay archivo previo, es la primera vez que se sube
+            certificado.fecha_retiro = timezone.now().date() 
+        else:
+            # Si YA existe un archivo, se está modificando
+            certificado.fecha_actualizacion = timezone.now().date()
+        
+        # Guardar el documento limpio procesado por pypdf
+        certificado.archivo = resultado
+        certificado.save()
 
-    # Obtener el estudiante y su certificado asociado
-    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
-    certificado, created = Certificado.objects.get_or_create(estudiante=estudiante)
+        messages.success(request, 'Certificado procesado y guardado con éxito.')
+        return JsonResponse({'success': True})
     
-    # Lógica de asignación de fechas
-    if not certificado.archivo:
-        # Si NO hay archivo previo, es la primera vez que se sube
-        certificado.fecha_retiro = timezone.now().date() # Usa .date() o timezone.now() según tu modelo
-    else:
-        # Si YA existe un archivo, se está modificando
-        certificado.fecha_actualizacion = timezone.now().date()
-    
-    # Guardar el documento limpio procesado por pypdf
-    certificado.archivo = resultado
-    certificado.save()
+    except Exception as e:
+        # --- ERROR CRÍTICO ---
+        messages.error(request, f"Error interno al guardar el certificado: {str(e)}")
+        return JsonResponse({'success': False, 'fatal_error': True}, status=500)
 
-    return HttpResponse("Certificado procesado y guardado con éxito.", status=200)
-
+@login_required
 def editar_estudiante(request, estudiante_id):
     # Verificar que la petición sea AJAX y sea POST
     if request.method == 'POST':
@@ -147,15 +157,15 @@ def editar_estudiante(request, estudiante_id):
         if not all([nombres, apellidos, cedula, correo, telefono, carrera_id]):
             return JsonResponse({
                 'success': False, 
-                'error': 'Por favor, completa todos los campos obligatorios.'
-            })
+                'message': 'Por favor, completa todos los campos obligatorios.'
+            }, status=400) # Usamos message y status 400
 
         # 2. Validar que la cédula no esté en uso por OTRO estudiante
         if Estudiante.objects.filter(cedula=cedula).exclude(id=estudiante.id).exists():
             return JsonResponse({
                 'success': False, 
-                'error': f'La cédula {cedula} ya está registrada a nombre de otro estudiante.'
-            })
+                'message': f'La cédula {cedula} ya está registrada a nombre de otro estudiante.'
+            }, status=400)
 
         # 3. Validar que la carrera exista
         try:
@@ -163,8 +173,8 @@ def editar_estudiante(request, estudiante_id):
         except Carrera.DoesNotExist:
             return JsonResponse({
                 'success': False, 
-                'error': 'La carrera seleccionada no es válida.'
-            })
+                'message': 'La carrera seleccionada no es válida.'
+            }, status=400)
 
         # --- ACTUALIZACIÓN ---
         
@@ -177,17 +187,14 @@ def editar_estudiante(request, estudiante_id):
             estudiante.carrera = carrera
             estudiante.save()
 
-            return JsonResponse({
-                'success': True, 
-                'message': '¡Datos actualizados correctamente!'
-            })
+            # Mensaje de éxito nativo de Django
+            messages.success(request, '¡Los datos del estudiante se han actualizado correctamente!')
+            return JsonResponse({'success': True})
             
         except Exception as e:
             # Capturar cualquier otro error de base de datos
-            return JsonResponse({
-                'success': False, 
-                'error': f'Ocurrió un error interno al guardar: {str(e)}'
-            })
-
+            # Error crítico para mostrar tras la recarga
+            messages.error(request, f'Ocurrió un error interno al guardar: {str(e)}')
+            return JsonResponse({'success': False, 'fatal_error': True}, status=500)
     # Si no es POST
-    return JsonResponse({'success': False, 'error': 'Método no permitido.'})
+    return JsonResponse({'success': False, 'message': 'Método no permitido.'}, status=405)

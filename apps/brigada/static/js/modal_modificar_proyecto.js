@@ -13,50 +13,68 @@ function cerrarModalEditarProyecto() {
 const formEditarProyecto = document.getElementById('formEditarProyecto');
 
 if (formEditarProyecto) {
-    formEditarProyecto.addEventListener('submit', function(e) {
+    // CORRECCIÓN: Agregamos "async" antes de la función
+    formEditarProyecto.addEventListener('submit', async function(e) {
         e.preventDefault(); 
         
-        const proyectoId = document.getElementById('metadata-proyecto').getAttribute('data-id');
-        const formData = new FormData(this);
+        const metadata = document.getElementById('metadata-proyecto');
+        const proyectoId = metadata ? metadata.getAttribute('data-id') : null;
         const alertaUI = document.getElementById('errorAlertaEditarProyecto');
+        const btnSubmit = this.querySelector('button[type="submit"]');
+        
+        // 1. Obtener el token CSRF
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        const csrfToken = csrfInput ? csrfInput.value : '';
 
-        // URL conectada a la vista que acabamos de crear en Python
-        fetch(`/brigada/proyecto/editar_proyecto/${proyectoId}/`, { 
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Éxito: Mostrar verde, bloquear botón, alertar y recargar
-                alertaUI.style.display = 'block'; // Asegurar visibilidad
-                alertaUI.style.color = 'green';
-                alertaUI.innerText = data.message;
+        if (!proyectoId) {
+            console.error("No se encontró el ID del proyecto");
+            return;
+        }
 
-                const btn = formEditarProyecto.querySelector('button[type="submit"]');
-                if (btn) btn.disabled = true;
+        const formData = new FormData(this); // (Línea duplicada eliminada)
 
-                alert("✅ " + data.message);
-                
-                cerrarModalEditarProyecto();
+        try {
+            if (btnSubmit) btnSubmit.disabled = true;
+            if (alertaUI) alertaUI.style.display = 'none';
+
+            // 2. Petición al servidor
+            const response = await fetch(`/brigada/proyecto/editar_proyecto/${proyectoId}/`, { 
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // ÉXITO
                 window.location.reload();
-                
             } else {
-                // Error desde Python: Mostrar en rojo
-                alertaUI.style.display = 'block';
-                alertaUI.style.color = 'red';
-                alertaUI.innerText = data.error || 'Ocurrió un error al actualizar.';
-                console.error("Error validación:", data.error);
+                // ERROR DE VALIDACIÓN o ERROR FATAL
+                if (data.fatal_error) {
+                    window.location.reload();
+                    return;
+                }
+
+                if (alertaUI) {
+                    alertaUI.style.display = 'block';
+                    alertaUI.style.color = '#ff4b2b';
+                    alertaUI.innerText = data.message || 'Error desconocido';
+                }
+                
+                if (btnSubmit) btnSubmit.disabled = false;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alertaUI.style.display = 'block';
-            alertaUI.style.color = 'red';
-            alertaUI.innerText = 'Error de conexión con el servidor.';
-        });
+
+        } catch (error) {
+            console.error('Error en la comunicación:', error);
+            if (alertaUI) {
+                alertaUI.style.display = 'block';
+                alertaUI.innerText = 'Error de conexión con el servidor.';
+            }
+            if (btnSubmit) btnSubmit.disabled = false;
+        }
     });
 }

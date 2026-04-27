@@ -1,5 +1,6 @@
 from django import forms
-from apps.core.models import Brigada, Proyecto
+from apps.core.models import Brigada
+
 
 class BrigadaForm(forms.ModelForm):
     class Meta:
@@ -21,9 +22,10 @@ class BrigadaForm(forms.ModelForm):
         nombre = self.cleaned_data.get('nombre')
         if not nombre.isdigit():
             raise forms.ValidationError("El nombre debe ser un número entero.")
-        
+
         # Validación de existencia única en este periodo
         if self.periodo and Brigada.objects.filter(periodo=self.periodo, nombre=nombre).exists():
-            raise forms.ValidationError(f"La Brigada #{nombre} ya existe en este periodo.")
-        
+            raise forms.ValidationError(
+                f"La Brigada #{nombre} ya existe en este periodo.")
+
         return nombre

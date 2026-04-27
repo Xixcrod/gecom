@@ -16,14 +16,14 @@ def sort_periodos_key(periodo):
             
             # Convertimos números romanos a valores enteros para poder compararlos
             sem_map = {'I': 1, 'II': 2, 'III': 3}
-            d_s = sem_map.get(desde_sem, 0)
+            d_s = sem_map.get(desde_sem, 0) # Traduce el periodo romano a número. Si no encuentra el romano, pone un 0 por seguridad.
             h_s = sem_map.get(hasta_sem, 0)
             
             # Devuelve una tupla de pesos: (2027, 1, 2026, 2)
             return (hasta_anio, h_s, desde_anio, d_s)
         except ValueError:
             pass
-    return (0, 0, 0, 0) # Fallback por si hay datos basura
+    return (0, 0, 0, 0) # Plan B por si hay datos basura
 
 def obtener_periodos():
     """Consulta y devuelve los periodos ordenados cronológicamente desde el más reciente."""

@@ -48,17 +48,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            const resultado = await response.text();
+            const data = await response.json();
 
-            if (response.ok) {
+            if (response.ok && data.success) {
+                // ÉXITO: Recargamos para que Django muestre el messages.success
                 window.location.reload();
-            } else {
-                // Mostramos el error de validación del backend
-                errorAlerta.innerText = resultado.replace("Error de validación: ", "");
-                errorAlerta.style.display = 'block';
-                btnConfirmar.disabled = false;
-                btnConfirmar.innerText = "Reintentar Envío";
+        } else {
+            // ERROR CRÍTICO: El servidor falló (BD caída, etc.). Recargamos para ver el messages.error
+            if (data.fatal_error) {
+                window.location.reload();
+                return;
             }
+
+            // ERRORES DE VALIDACIÓN (Tamaño, formato, sin archivo)
+            // Se muestran directamente en el modal
+            errorAlerta.innerText = data.message;
+            errorAlerta.style.display = 'block';
+            
+            // Restauramos el botón para que el usuario pueda intentar con otro archivo
+            btnConfirmar.disabled = false;
+            btnConfirmar.innerText = "Reintentar Envío";
+        }
         } catch (error) {
             errorAlerta.innerText = "Error crítico de conexión con el servidor.";
             errorAlerta.style.display = 'block';
