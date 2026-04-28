@@ -11,17 +11,31 @@
 <div class="card p-4 my-4">
     <h3>Centro de Respaldo</h3>
 
-    <div class="d-flex gap-3 mt-3">
-        <a href="{% url 'hacer_respaldo' %}" class="btn btn-primary"
-            onclick="return confirm('¿Crear y subir respaldo a Drive? Esto tardará unos segundos.')">
+    <div class="d-flex-custom">
+        <button type="button" class="btn-custom btn-primary-custom trigger-modal" 
+                data-url="{% url 'hacer_respaldo' %}" 
+                data-message="¿Crear y subir respaldo a Drive? Esto tardará unos segundos.">
             Respaldar Sistema a la Nube
-        </a>
+        </button>
 
-        <a href="{% url 'hacer_restauracion' %}" class="btn btn-danger"
-            onclick="return confirm('¡ADVERTENCIA! Esto borrará la base de datos actual y pondrá la app en mantenimiento. ¿Continuar?')">
+        <button type="button" class="btn-custom btn-danger-custom trigger-modal" 
+                data-url="{% url 'hacer_restauracion' %}" 
+                data-message="¡ADVERTENCIA! Esto borrará la base de datos actual y pondrá la app en mantenimiento. ¿Continuar?">
             Restaurar desde la Nube
-        </a>
+        </button>
     </div>
 </div>
 
+<!-- Modal de Confirmación -->
+<dialog id="customModal" class="custom-modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Confirmar Acción</h3>
+        <p id="modalMessage"></p>
+        <div class="modal-actions">
+            <button id="cancelBtn" class="btn-custom btn-secondary">Cancelar</button>
+            <a id="confirmBtn" href="#" class="btn-custom">Confirmar y Continuar</a>
+        </div>
+    </div>
+</dialog>
+<script src="{% static 'js/modal_confirmacion.js' %}"></script>
 {% endblock content %}

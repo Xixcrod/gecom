@@ -147,9 +147,10 @@ class Estudiante(models.Model):
 
 class Certificado(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    fecha_retiro = models.DateField(null=True, blank=True)
+    fecha_entrega = models.DateField(null=True, blank=True)
     fecha_actualizacion = models.DateField(null=True, blank=True)
-    archivo = models.FileField(upload_to='estudiantes/certificados/', blank=True, null=True)
+    archivo_inicial = models.FileField(upload_to='estudiantes/certificados/iniciales/', blank=True, null=True)
+    archivo_actualizado = models.FileField(upload_to='estudiantes/certificados/actualizados/', blank=True, null=True)
     
     estudiante = models.OneToOneField(Estudiante, on_delete=models.CASCADE, related_name='certificado')
 

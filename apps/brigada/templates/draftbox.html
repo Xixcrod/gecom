@@ -4,10 +4,10 @@
 {% block titulo_seccion %}Draftbox{% endblock %}
 
 {% block content %}
-
+<!-- Botón para abrir el modal de subir borrador -->
 <button class="btn-subir" onclick="abrirModalBorrador()">Subir Borrador</button>
 
-
+<!-- Lista de Borradores -->
 {% if borradores %}
         <ul style="list-style-type: none; padding: 0;">
             {% for borrador in borradores %}
@@ -26,7 +26,8 @@
     {% else %}
         <p>No hay borradores disponibles.</p>
     {% endif %}
-
+    
+    <!-- Modal de Eliminación -->
     <div id="modalEliminarBorrador" class="modal-sistema" style="display: none;">
         <div class="modal-contenido">
             <div class="header-modal">
@@ -49,6 +50,7 @@
         </div>
     </div>
 
+    <!-- Modal de Subir Borrador -->
     <div id="modalBorrador" class="modal-sistema" style="display: none;">
         <div class="modal-contenido">
             <div class="header-modal">
@@ -90,6 +92,7 @@
         </div>
     </div>
 
+<!-- Scripts -->
 <script src="{% static 'js/modal_eliminar_borrador.js' %}"></script>
 <script src="{% static 'js/modal_subir_borrador.js' %}"></script>
 {% endblock content %}

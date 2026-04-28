@@ -20,7 +20,7 @@
 <p><strong>Teléfono:</strong> {{ estudiante.telefono }}</p>
 
 <h2>Certificado</h2>
-<p><strong>Fecha de entrega:</strong> {{ certificado.fecha_retiro|default:"Pendiente" }}</p>
+<p><strong>Fecha de entrega:</strong> {{ certificado.fecha_entrega|default:"Pendiente" }}</p>
 <p><strong>Fecha de actualización:</strong> {{ certificado.fecha_actualizacion|default:"No ha sido modificado" }}</p>
 <!-- Botón para abrir el modal de edición de estudiante-->
 <button class="btn-modificar" onclick="abrirModalEditar()">Editar Datos</button>
@@ -76,21 +76,46 @@
 </div>
 
 <!-- Sección de certificado -->
-<div class="doc-card">
-    <div>
-        <strong>Archivo del Certificado</strong>
-        {% if certificado.archivo %}
-            <br><a href="{{ certificado.archivo.url }}" target="_blank">Descargar Certificado Actual</a>
-        {% else %}
-            <br><span style="color: gray;">Sin certificado cargado</span>
-        {% endif %}
+<div class="certificados-container" style="display: grid; gap: 20px;">
+    
+    <div class="doc-card">
+        <div>
+            <strong>1. Certificado Inicial (Original)</strong>
+            <p style="font-size: 0.8em; color: gray;">Subido el: {{ certificado.fecha_entrega|default:"Pendiente" }}</p>
+            {% if certificado.archivo_inicial %}
+                <a href="{{ certificado.archivo_inicial.url }}" target="_blank" class="btn-link">📄 Ver Original</a>
+            {% else %}
+                <span style="color: #dc3545;">⚠️ No cargado</span>
+            {% endif %}
+        </div>
+        <div>
+            {% if not certificado.archivo_inicial %}
+                <button class="btn-subir" onclick="abrirModal('Certificado Inicial', '0')">Subir por primera vez</button>
+            {% endif %}
+        </div>
     </div>
-    <div>
-        {% if certificado.archivo %}
-            <button class="btn-modificar" onclick="abrirModal('Certificado', '1')">Modificar</button>
-        {% else %}
-            <button class="btn-subir" onclick="abrirModal('Certificado', '0')">Subir</button>
-        {% endif %}
+
+    <div class="doc-card">
+        <div>
+            <strong>2. Certificado Actualizado</strong>
+            <p style="font-size: 0.8em; color: gray;">Última actualización: {{ certificado.fecha_actualizacion|default:"Sin modificaciones" }}</p>
+            {% if certificado.archivo_actualizado %}
+                <a href="{{ certificado.archivo_actualizado.url }}" target="_blank" class="btn-link">📄 Ver Actualizado</a>
+            {% else %}
+                <span style="color: gray;">No se ha subido una actualización aún.</span>
+            {% endif %}
+        </div>
+        <div>
+            {% if certificado.archivo_inicial %}
+                <button class="btn-modificar" onclick="abrirModal('Actualizar Certificado', '1')">
+                    {% if certificado.archivo_actualizado %}Actualizar de nuevo{% else %}Subir actualización{% endif %}
+                </button>
+            {% else %}
+                <button class="btn-modificar" disabled title="Debe subir el inicial primero" style="opacity: 0.5; cursor: not_allowed;">
+                    Actualizar
+                </button>
+            {% endif %}
+        </div>
     </div>
 </div>
 

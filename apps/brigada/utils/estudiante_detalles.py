@@ -118,24 +118,25 @@ def subir_certificado_estudiante(request, estudiante_id):
         certificado, created = Certificado.objects.get_or_create(estudiante=estudiante)
         
         # Lógica de asignación de fechas
-        if not certificado.archivo:
+        if not certificado.archivo_inicial:
             # Si NO hay archivo previo, es la primera vez que se sube
-            certificado.fecha_retiro = timezone.now().date() 
+            certificado.archivo_inicial = resultado
+            certificado.fecha_entrega = timezone.now().date() 
+            mensaje = "Certificado inicial guardado con éxito."
         else:
-            # Si YA existe un archivo, se está modificando
+            # Ya existe el inicial: se guarda/actualiza el segundo campo
+            certificado.archivo_actualizado = resultado
             certificado.fecha_actualizacion = timezone.now().date()
+            mensaje = "Certificado de actualización guardado con éxito."
         
-        # Guardar el documento limpio procesado por pypdf
-        certificado.archivo = resultado
-        certificado.save()
 
-        messages.success(request, 'Certificado procesado y guardado con éxito.')
+        certificado.save()
+        messages.success(request, mensaje)
         return JsonResponse({'success': True})
     
     except Exception as e:
         # --- ERROR CRÍTICO ---
-        messages.error(request, f"Error interno al guardar el certificado: {str(e)}")
-        return JsonResponse({'success': False, 'fatal_error': True}, status=500)
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
 @login_required
 def editar_estudiante(request, estudiante_id):
