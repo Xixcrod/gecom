@@ -3,56 +3,81 @@ function abrirModalBorrador() {
 }
 
 function cerrarModalBorrador() {
-    document.getElementById('modalBorrador').style.display = 'none';
-    document.getElementById('formBorrador').reset();
+    const modal = document.getElementById('modalBorrador');
+    const form = document.getElementById('formBorrador');
     const alerta = document.getElementById('errorAlertaBorrador');
+    
+    modal.style.display = 'none';
+    form.reset();
     alerta.style.display = 'none';
     alerta.innerText = '';
 }
 
-document.getElementById('formBorrador').addEventListener('submit', function (e) {
+// Función auxiliar para obtener el CSRF (puedes tenerla en un archivo global)
+const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+};
+
+document.getElementById('formBorrador').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const formData = new FormData(this);
     const alertaUI = document.getElementById('errorAlertaBorrador');
     const btnSubmit = this.querySelector('button[type="submit"]');
+    const textoOriginal = btnSubmit.innerText;
 
-    // Bloquear botón para evitar dobles envíos
+    // UI Initial State
     btnSubmit.disabled = true;
-    btnSubmit.innerText = "Subiendo...";
+    btnSubmit.innerText = "Subiendo archivo...";
+    alertaUI.style.display = 'none';
 
-    // Asegúrate de poner la URL correcta que configuraste en urls.py para tu vista
-    fetch(`/brigada/draftbox/subir/`, {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error interno del servidor");
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                alertaUI.style.display = 'block';
-                alertaUI.style.color = 'green';
-                alertaUI.innerText = data.message;
-
-                alert("✅ " + data.message);
-                cerrarModalBorrador();
-                window.location.reload(); // Recargamos para ver el nuevo archivo en la lista
-            } else {
-                alertaUI.style.display = 'block';
-                alertaUI.style.color = 'red';
-                alertaUI.innerText = data.error;
-                btnSubmit.disabled = false;
-                btnSubmit.innerText = "Guardar Borrador";
+    try {
+        const response = await fetch(`/brigada/draftbox/subir/`, {
+            method: 'POST',
+            body: formData,
+            headers: { 
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
             }
-        })
-        .catch(error => {
-            alertaUI.style.display = 'block';
-            alertaUI.style.color = 'red';
-            alertaUI.innerText = "Hubo un problema de conexión con el servidor.";
-            btnSubmit.disabled = false;
-            btnSubmit.innerText = "Guardar Borrador";
         });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            // Caso Éxito: Recargamos para que Django muestre el messages.success
+            window.location.reload();
+        } else {
+            // Caso Error Fatal (500): Recargamos para ver el messages.error
+            if (data.fatal_error) {
+                window.location.reload();
+                return;
+            }
+
+            // Caso Error de Validación (400): Se queda en el modal
+            alertaUI.style.display = 'block';
+            alertaUI.style.color = '#dc3545'; // Rojo estándar
+            alertaUI.innerText = data.message || "Error al procesar el archivo.";
+            
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "Reintentar Guardar";
+        }
+
+    } catch (error) {
+        console.error("Error:", error);
+        alertaUI.style.display = 'block';
+        alertaUI.innerText = "Error de conexión con el servidor.";
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = textoOriginal;
+    }
 });

@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 
 def obtener_borradores():
@@ -49,7 +50,7 @@ def procesar_y_validar_borrador(archivo, categoria):
     Retorna: (bool, archivo_validado_o_mensaje_error)
     """
     if archivo.size > MAX_FILE_SIZE:
-        return False, "El archivo supera el límite de tamaño permitido (5MB)."
+        return False, "El archivo supera el límite de tamaño permitido (30MB)."
 
     if len(archivo.name) > 50:
         return False, "El nombre del archivo excede los 50 caracteres permitidos."
@@ -98,13 +99,13 @@ def subir_nuevo_borrador(request):
 
         # 1. Validaciones básicas de presencia
         if not nombre or not categoria or not archivo:
-            return JsonResponse({'success': False, 'error': 'Todos los campos (nombre, categoría y archivo) son obligatorios.'})
-
-        # 2. Llamar a nuestra función validadora
+            return JsonResponse({'success': False, 'message': 'Todos los campos son obligatorios.'}, status=400)
+        
+        # 2. Llamar a función validadora
         es_valido, resultado = procesar_y_validar_borrador(archivo, categoria)
 
         if not es_valido:
-            return JsonResponse({'success': False, 'error': resultado})
+            return JsonResponse({'success': False, 'message': resultado}, status=400)
 
         # 3. Guardar en la Base de Datos
         nuevo_borrador = Borrador(
@@ -114,14 +115,16 @@ def subir_nuevo_borrador(request):
         )
         nuevo_borrador.save()
 
-        return JsonResponse({
-            'success': True, 
-            'message': '¡Borrador subido y guardado con éxito!'
-        })
+        messages.success(request, f'El borrador "{nombre}" se ha subido correctamente.')
+        return JsonResponse({'success': True})
 
     except Exception as e:
-        return JsonResponse({'success': False, 'error': f'Ocurrió un error en el servidor: {str(e)}'})
-    
+        messages.error(request, f'Error crítico: {str(e)}')
+        return JsonResponse({
+            'success': False, 
+            'message': f'Error en el servidor: {str(e)}',
+            'fatal_error': True
+        }, status=500)
 
 @login_required
 @require_POST
@@ -139,13 +142,10 @@ def eliminar_borrador(request, uuid_borrador):
         # 3. Eliminar el registro de la base de datos
         borrador.delete()
         
-        return JsonResponse({
-            'success': True,
-            'message': 'Borrador eliminado correctamente.'
-        })
+        messages.success(request, f'Borrador "{borrador.nombre}" eliminado.') 
+        return JsonResponse({'success': True})
         
     except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': f'Error interno al eliminar: {str(e)}'
-        })
+        messages.error(request, 'No se pudo eliminar el borrador.')
+        # CAMBIO: 'message' y status=500
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
