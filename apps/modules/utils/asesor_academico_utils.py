@@ -48,7 +48,6 @@ def crear_asesor_academico(request, datos):
     profesion = datos.get('profesion', '').strip()
     dependencia = datos.get('dependencia', '').strip()
     cargo = datos.get('cargo', '').strip()
-    activo = datos.get('estado_activo') == 'True'
     
     # Validaciones de formato
     if not validar_solo_letras(nombres) or not validar_solo_letras(apellidos):
@@ -73,7 +72,7 @@ def crear_asesor_academico(request, datos):
         nombres=nombres, apellidos=apellidos, cedula=cedula, telefono=telefono, correo=correo
     )
     AsesorAcademico.objects.create(
-        asesor=nuevo_asesor_base, profesion=profesion, dependencia=dependencia, cargo=cargo, activo=activo 
+        asesor=nuevo_asesor_base, profesion=profesion, dependencia=dependencia, cargo=cargo, activo= True
     )
     messages.success(request, f"Asesor {nombres} {apellidos} registrado exitosamente.")
 

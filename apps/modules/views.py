@@ -18,9 +18,7 @@ def index(request):
 @login_required
 def periodo(request):
     """
-    Maneja la vista del módulo de Periodos Académicos.
-    - Si la petición es POST: Delega la lógica de creación, edición o eliminación al archivo utils y recarga.
-    - Si la petición es GET: Carga el contexto paginado y renderiza la lista de periodos.
+    Sección en donde se gestionan los periodos académicos.
     """
     if request.method == 'POST':
         procesar_formulario_periodo(request) 

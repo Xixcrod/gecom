@@ -138,7 +138,12 @@
                 {% csrf_token %}
                 <input type="hidden" name="accion" value="editar">
                 <input type="hidden" name="id" value="{{ a.asesor.id }}">
+                <input type="hidden" name="estado_activo" value="{{ a.activo }}">
                 <input type="hidden" name="tab_actual" class="tab_actual_input" value="{{ tab_actual }}">
+                <div class="form-control w-full">
+                        <label class="label"><span class="label-text font-medium text-gray-600">Cédula</span></label>
+                        <input type="text" name="cedula" value="{{ a.asesor.cedula }}" class="input input-bordered w-full bg-gray-50 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] rounded-xl" required />
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control w-full">
                         <label class="label"><span class="label-text font-medium text-gray-600">Nombres</span></label>

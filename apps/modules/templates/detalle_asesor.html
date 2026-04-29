@@ -107,13 +107,13 @@
                                         <h4 class="font-bold text-gray-700 text-lg">Constancia de Asesor</h4>
                                     </div>
 
-                                    {% if proyecto.constancia_asesor or proyecto.documentos.constancia_asesor %}
+                                    {% if proyecto.constancia_asesor %}
                                         <div class="mb-5 flex flex-col gap-3 bg-white p-4 rounded-xl border border-green-200 shadow-sm">
                                             <div class="flex items-center justify-center gap-2 text-sm text-green-600 font-bold">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
                                                 Documento Cargado Exitosamente
                                             </div>
-                                            <a href="{% if proyecto.constancia_asesor %}{{ proyecto.constancia_asesor.url }}{% else %}{{ proyecto.documentos.constancia_asesor.url }}{% endif %}" target="_blank" class="btn btn-sm btn-outline text-blue-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 w-full transition-colors">
+                                            <a href="{% if proyecto.constancia_asesor %}{{ proyecto.constancia_asesor.url }}{% endif %}" target="_blank" class="btn btn-sm btn-outline text-blue-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 w-full transition-colors">
                                                 Abrir Documento PDF
                                             </a>
                                         </div>
@@ -131,7 +131,7 @@
                                         <input type="hidden" name="tipo_documento" value="constancia_asesor">
                                         <input type="file" name="documento" accept=".pdf" class="file-input file-input-bordered file-input-sm w-full bg-white mb-3 text-gray-600 focus:border-blue-500" required>
                                         <button type="submit" class="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white border-none w-full shadow-md">
-                                            {% if proyecto.constancia_asesor or proyecto.documentos.constancia_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
+                                            {% if proyecto.constancia_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
                                         </button>
                                     </form>
                                 </div>
@@ -144,13 +144,13 @@
                                         <h4 class="font-bold text-gray-700 text-lg">Certificado de Asesor</h4>
                                     </div>
 
-                                    {% if proyecto.certificado_asesor or proyecto.documentos.certificado_asesor %}
+                                    {% if proyecto.certificado_asesor %}
                                         <div class="mb-5 flex flex-col gap-3 bg-white p-4 rounded-xl border border-green-200 shadow-sm">
                                             <div class="flex items-center justify-center gap-2 text-sm text-green-600 font-bold">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
                                                 Documento Cargado Exitosamente
                                             </div>
-                                            <a href="{% if proyecto.certificado_asesor %}{{ proyecto.certificado_asesor.url }}{% else %}{{ proyecto.documentos.certificado_asesor.url }}{% endif %}" target="_blank" class="btn btn-sm btn-outline text-[#8b5cf6] hover:bg-[#8b5cf6] hover:text-white hover:border-[#8b5cf6] w-full transition-colors">
+                                            <a href="{% if proyecto.certificado_asesor %}{{ proyecto.certificado_asesor.url }}{% endif %}" target="_blank" class="btn btn-sm btn-outline text-[#8b5cf6] hover:bg-[#8b5cf6] hover:text-white hover:border-[#8b5cf6] w-full transition-colors">
                                                 Abrir Documento PDF
                                             </a>
                                         </div>
@@ -168,7 +168,7 @@
                                         <input type="hidden" name="tipo_documento" value="certificado_asesor">
                                         <input type="file" name="documento" accept=".pdf" class="file-input file-input-bordered file-input-sm w-full bg-white mb-3 text-gray-600 focus:border-[#8b5cf6]" required>
                                         <button type="submit" class="btn btn-sm bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none w-full shadow-md">
-                                            {% if proyecto.certificado_asesor or proyecto.documentos.certificado_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
+                                            {% if proyecto.certificado_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
                                         </button>
                                     </form>
                                 </div>
