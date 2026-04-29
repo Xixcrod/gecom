@@ -21,15 +21,16 @@ def brigadas(request, periodo_id):
     periodo = get_object_or_404(Periodo, id=periodo_id)
     query = request.GET.get('q', '')
     page = request.GET.get('page', 1)
-
+    filtro = request.GET.get('f', '') 
     # función auxiliar para obtener la lógica de búsqueda y paginación
-    contexto = obtener_contexto_brigadas(periodo_id, query, page)
+    contexto = obtener_contexto_brigadas(periodo_id, query, page, filtro_estado = filtro)
     
     # Inyectamos el formulario vacío para el modal y los datos del periodo
     contexto.update({
         'periodo': periodo,
         'form': BrigadaForm(),  # Formulario limpio listo para el modal
         'query_search': query,
+        'filtro_estado': filtro,
     })
     
     return render(request, 'brigadas.html', contexto)

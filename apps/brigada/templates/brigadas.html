@@ -23,13 +23,21 @@
         <div class="content-wrapper">
             <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h1 style="color: white;">Periodo: {{ periodo.nombre }}</h1>
-                
-                <!-- buscador -->
-                <form method="GET" class="search-form" style="display: flex; gap: 0.5rem;">
+                <!-- Selector y buscador -->
+                <form method="GET" class="search-form" style="display: flex; gap: 0.5rem; max-width: 650px;">
+                    <input type="hidden" name="q" value="{{ query_search|default:'' }}">
+
+                    <select name="f" onchange="this.form.submit()" class="search-input" style="width: 180px; cursor: pointer;">
+                        <option value="" {% if not filtro_estado %}selected{% endif %}>Todos los estados</option>
+                        <option value="desaprobados" {% if filtro_estado == 'desaprobados' %}selected{% endif %}>Desaprobados</option>
+                        <option value="sin_certificados" {% if filtro_estado == 'sin_certificados' %}selected{% endif %}>Sin Certificados</option>
+                    </select>
+
                     <input type="text" name="q" value="{{ query_search|default:'' }}" 
-                           placeholder="Brigada, Cédula Est. o Asesor..." 
-                           style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; width: 300px;">
-                    <button type="submit" class="page-link active" style="border-radius: 0.5rem;">Buscar</button>
+                        placeholder="Brigada, Cédula Est. o Asesor..." 
+                        class="search-input">
+                        
+                    <button type="submit" class="btn-search">Buscar</button>
                 </form>
             </div>
 
@@ -70,12 +78,12 @@
                             {% if page_obj.number == num %}
                                 <button class="page-link active">{{ num }}</button>
                             {% else %}
-                                <a href="?page={{ num }}{% if query_search %}&q={{ query_search }}{% endif %}" class="page-link">{{ num }}</a>
+                                <a href="?page={{ num }}{% if query_search %}&q={{ query_search }}{% endif %}{% if filtro_estado %}&f={{ filtro_estado }}{% endif %}" class="page-link">{{ num }}</a>
                             {% endif %}
                         {% endfor %}
 
                         {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}{% if query_search %}&q={{ query_search }}{% endif %}" class="page-link btn-nav">
+                            <a href="?page={{ page_obj.next_page_number }}{% if query_search %}&q={{ query_search }}{% endif %}{% if filtro_estado %}&f={{ filtro_estado }}{% endif %}" class="page-link btn-nav">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                             </a>
                         {% endif %}

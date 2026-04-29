@@ -8,14 +8,27 @@ from .forms import BrigadaForm
 from django.contrib.auth.decorators import login_required
 
 
-def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items_por_pagina=16):
+def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, filtro_estado = None, items_por_pagina=16):
     '''Función para obtener el contexto de brigadas con filtros de búsqueda y paginación.'''
     # 1. Filtro base por periodo
     queryset = Brigada.objects.filter(periodo=periodo_id).annotate(
         nombre_int=Cast('nombre', output_field=IntegerField())
     ).order_by('nombre_int')
+    
+    # 2. Aplicar Filtros de Estado (Selector)
+    if filtro_estado == 'desaprobados':
+        # Brigadas que tengan al menos un proyecto con aprobado=False
+        queryset = queryset.filter(proyectos__aprobado=False).distinct()
+    
+    elif filtro_estado == 'sin_certificados':
+        # Brigadas con estudiantes que: o no tienen registro de certificado 
+        # o tienen el registro pero el archivo_inicial está vacío.
+        queryset = queryset.filter(
+            Q(estudiantes__certificado__isnull=True) | 
+            Q(estudiantes__certificado__archivo_inicial='')
+        ).distinct()
 
-    # 2. Filtros de búsqueda inteligentes
+    # 3. Filtros de búsqueda inteligentes
     if query_search:
         # Siempre buscamos por el nombre de la brigada
         filtros = Q(nombre__icontains=query_search)
@@ -27,7 +40,7 @@ def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items
 
         queryset = queryset.filter(filtros).distinct()
 
-    # 3. Paginación
+    # 4. Paginación
     paginator = Paginator(queryset, items_por_pagina)
 
     try:
@@ -37,7 +50,7 @@ def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items
 
     page_obj = paginator.get_page(numero_pagina)
 
-    # 4. Rango de páginas
+    # 5. Rango de páginas
     current_page = page_obj.number
     total_pages = paginator.num_pages
     start_page = max(1, current_page - 2)
@@ -52,7 +65,8 @@ def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, items
     return {
         'page_obj': page_obj,
         'custom_page_range': range(start_page, end_page + 1),
-        'query_search': query_search
+        'query_search': query_search,
+        'filtro_estado': filtro_estado,
     }
 
 @login_required

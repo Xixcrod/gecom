@@ -70,6 +70,16 @@
     outline: none;
 }
 
+.search-form select option {
+    background: #1e1b4b; /* Fondo oscuro para que combine con el modal */
+    color: white;
+}
+
+/* Para evitar que el selector se vea blanco en navegadores modernos */
+.search-input option:checked {
+    background-color: #a855f7 !important;
+}
+
 .btn-search {
     background: #8b5cf6; 
     color: white; 
