@@ -21,14 +21,17 @@
 
     <main class="main-content">
         <div class="content-wrapper">
+
             <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h1 style="color: white;">Periodo: {{ periodo.nombre }}</h1>
+
                 <!-- Selector y buscador -->
                 <form method="GET" class="search-form" style="display: flex; gap: 0.5rem; max-width: 650px;">
                     <input type="hidden" name="q" value="{{ query_search|default:'' }}">
 
                     <select name="f" onchange="this.form.submit()" class="search-input" style="width: 180px; cursor: pointer;">
                         <option value="" {% if not filtro_estado %}selected{% endif %}>Todos los estados</option>
+                        <option value="aprobados" {% if filtro_estado == 'aprobados' %}selected{% endif %}>Aprobados</option>
                         <option value="desaprobados" {% if filtro_estado == 'desaprobados' %}selected{% endif %}>Desaprobados</option>
                         <option value="sin_certificados" {% if filtro_estado == 'sin_certificados' %}selected{% endif %}>Sin Certificados</option>
                     </select>
@@ -39,6 +42,7 @@
                         
                     <button type="submit" class="btn-search">Buscar</button>
                 </form>
+
             </div>
 
             <div id="contenedor-brigadas" class="periods-section">
