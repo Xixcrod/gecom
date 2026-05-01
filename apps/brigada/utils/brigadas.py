@@ -17,16 +17,22 @@ def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, filtr
     
     # 2. Aplicar Filtros de Estado (Selector)
     if filtro_estado == 'desaprobados':
-        # Brigadas que tengan un proyecto con aprobado=False
-        queryset = queryset.filter(proyectos__aprobado=False).distinct()
+        # Brigadas que tengan AL MENOS un proyecto Y que esté desaprobado
+        queryset = queryset.filter(
+            proyectos__isnull=False, 
+            proyectos__aprobado=False
+        ).distinct()
 
-    if filtro_estado == 'aprobados':
-        # Brigadas que tengan un proyecto con aprobado=True
-        queryset = queryset.filter(proyectos__aprobado=True).distinct()
+    elif filtro_estado == 'aprobados':
+        # Brigadas que tengan AL MENOS un proyecto Y que esté aprobado
+        queryset = queryset.filter(
+            proyectos__isnull=False, 
+            proyectos__aprobado=True
+        ).distinct()
 
     elif filtro_estado == 'sin_certificados':
         # 1. La brigada debe tener al menos un estudiante (estudiantes__isnull=False)
-        # 2. Y verificar que no falte el certificado o el archivo inicial
+        # 2. Y verificar que falte el certificado o el archivo inicial
         queryset = queryset.filter(
             Q(estudiantes__isnull=False) & 
             (Q(estudiantes__certificado__isnull=True) | Q(estudiantes__certificado__archivo_inicial=''))
