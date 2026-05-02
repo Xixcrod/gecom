@@ -111,6 +111,51 @@
 .est-link { color: #111; font-style: italic; text-decoration: underline; flex: 1; text-align: right; }
 
 /* =========================================================
+   MODAL DE ASIGNAR ASESOR ACADÉMICO CON BUSCADOR
+   ========================================================= */
+.modal-busqueda { max-width: 500px; }
+.buscador-contenedor {
+    position: relative;
+    margin-bottom: 15px;
+}
+.buscador-contenedor i {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    color: #888;
+}
+.buscador-contenedor input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.lista-asesores-busqueda {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+.item-asesor {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.item-asesor:hover { background: #f0f7ff; }
+.item-asesor.seleccionado {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+.item-asesor.seleccionado .check-icon { display: block; color: #2196f3; }
+.check-icon { display: none; }
+.item-nombre { font-weight: bold; display: block; }
+.item-sub { font-size: 0.85em; color: #666; }
+
+/* =========================================================
    BOTONES E ICONOS LATERALES
    ========================================================= */
 .btn-lapiz, .btn-mas {

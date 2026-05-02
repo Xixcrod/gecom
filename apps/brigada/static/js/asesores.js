@@ -10,26 +10,48 @@ const getApiUrls = () => {
 };
 
 // --- LÓGICA ASESOR ACADÉMICO ---
-function toggleSelectorAcademico() {
-    const div = document.getElementById('selector-academico-div');
-    const info = document.getElementById('info-academico');
-    
-    if (div.style.display === 'none') {
-        div.style.display = 'block';
-        if (info) info.style.display = 'none';
-    } else {
-        div.style.display = 'none';
-        if (info) info.style.display = 'block';
-    }
+// Abrir y cerrar modal de asignar asesor académico
+function abrirModalAsignarAcademico() {
+    document.getElementById('modalAsignarAcademico').style.display = 'flex';
+    document.getElementById('inputBusquedaAcademico').focus();
 }
 
-function guardarAcademico(brigadaId) {
-    const asesorId = document.getElementById('select-academico').value;
-    if (!asesorId) {
-        alert('Por favor, selecciona un asesor académico activo.');
-        return;
-    }
+function cerrarModalAsignarAcademico() {
+    document.getElementById('modalAsignarAcademico').style.display = 'none';
+}
 
+// Lógica de filtrado en tiempo real
+function filtrarAsesores() {
+    const input = document.getElementById('inputBusquedaAcademico').value.toLowerCase();
+    const items = document.querySelectorAll('.item-asesor');
+    
+    items.forEach(item => {
+        const info = item.getAttribute('data-info').toLowerCase();
+        if (info.includes(input)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Selección de asesor académico
+function seleccionarAsesor(elemento) {
+    // Quitar selección previa
+    document.querySelectorAll('.item-asesor').forEach(i => i.classList.remove('seleccionado'));
+    
+    // Marcar nuevo seleccionado
+    elemento.classList.add('seleccionado');
+    const id = elemento.getAttribute('data-id');
+    document.getElementById('asesor_seleccionado_id').value = id;
+    
+    // Habilitar botón de guardar
+    document.getElementById('btnGuardarAcademico').disabled = false;
+}
+
+// Función para enviar los datos del asesor académico seleccionado al servidor
+function guardarAcademicoNuevo(brigadaId) {
+    const asesorId = document.getElementById('asesor_seleccionado_id').value;
     const { academico: url } = getApiUrls();
 
     fetch(url, {
@@ -40,16 +62,8 @@ function guardarAcademico(brigadaId) {
         },
         body: JSON.stringify({ asesor_base_id: asesorId })
     })
-    .then(res => {
-        // Independientemente de si es success o error, recargamos.
-        // El backend ya se encargó de poner el mensaje en la cola de Django.
-        location.reload();
-    })
-    .catch(err => {
-        console.error("Error en la petición:", err);
-        // Este alert solo aparece si hay un error de red (el servidor no responde)
-        alert("Error crítico de comunicación con el servidor.");
-    });
+    .then(res => location.reload())
+    .catch(err => alert("Error de comunicación con el servidor."));
 }
 
 // --- LÓGICA ASESOR COMUNITARIO ---

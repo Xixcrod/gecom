@@ -26,8 +26,8 @@
 
     <div id="card-asesores" data-url-academico="{% url 'asignar_academico' brigada.id %}" data-url-comunitario="{% url 'guardar_comunitario' brigada.id %}">
         <div class="asesores-grid">
-            <!-- Asesor Comunitario -->
 
+            <!-- Asesor Comunitario -->
             <div class="asesor-columna">
                 <h3 class="titulo-rojo">Asesor Comunitario</h3>
                 <div class="tarjeta-morada">
@@ -71,25 +71,14 @@
                             {% endif %}
                         </div>
                     {% else %}
-                        <p id="no-academico-msg">No asignado</p>
+                        <div onclick="abrirModalAsignarAcademico()" style="cursor: pointer; text-align: center;">
+                            <p>No asignado. <br><strong>Haz click para asignar</strong></p>
+                        </div>
                     {% endif %}
-
-                    <!-- Por acomodar asignación de asesor académico -->
-                    <div id="selector-academico-div" style="display: {% if asesor_academico %}none{% else %}block{% endif %}; margin-top:10px;">
-                        <select id="select-academico" style="width:100%; margin-bottom:5px;">
-                            <option value="">Seleccione un Asesor Activo...</option>
-                            {% for acc in academicos_activos %}
-                                <option value="{{ acc.asesor.id }}">{{ acc.asesor.nombres }} {{ acc.asesor.apellidos }} ({{ acc.profesion }})</option>
-                            {% endfor %}
-                        </select>
-                        <button onclick="guardarAcademico('{{ brigada.id }}')" class="btn-guardar-small">Guardar</button>
-                        {% if asesor_academico %}
-                            <button onclick="toggleSelectorAcademico()" class="btn-cancelar-small">Cancelar</button>
-                        {% endif %}
-                    </div>
                 </div>
+                
                 {% if asesor_academico %}
-                <button onclick="toggleSelectorAcademico()" class="btn-lapiz btn-lateral">
+                <button onclick="abrirModalAsignarAcademico()" class="btn-lapiz btn-lateral">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
                 {% endif %}
@@ -176,21 +165,42 @@
     </div>
 </div>
 
-<!-- Modal para asignar/editar Asesor Comunitario -->
-<div id="modalComunitario" class="modal-overlay">
-    <div class="modal-content">
-        <h3 id="modal-titulo" style="padding: 15px; margin:0; background:#f5f5f5;">Asesor Comunitario</h3>
-        <input type="hidden" id="com_id">
+<!-- Asignar Asesor Académico con Buscador -->
+<div id="modalAsignarAcademico" class="modal-overlay">
+    <div class="modal-content modal-busqueda">
+        <div class="modal-header">
+            <h3>Asignar Asesor Académico</h3>
+            <span class="close-btn" onclick="cerrarModalAsignarAcademico()">&times;</span>
+        </div>
         <div class="modal-body">
-            <label>Nombres:</label> <input type="text" id="com_nombres">
-            <label>Apellidos:</label> <input type="text" id="com_apellidos">
-            <label>Cédula:</label> <input type="text" id="com_cedula">
-            <label>Teléfono:</label> <input type="text" id="com_telefono">
-            <label>Correo:</label> <input type="email" id="com_correo">
+            <!-- Buscador -->
+            <div class="buscador-contenedor">
+                <i class="fas fa-search"></i>
+                <input type="text" id="inputBusquedaAcademico" placeholder="Buscar por cédula, nombre o apellido..." onkeyup="filtrarAsesores()">
+            </div>
+            
+            <!-- Lista de Resultados -->
+            <div class="lista-asesores-busqueda" id="listaAsesoresBusqueda">
+                {% for acc in academicos_activos %}
+                <div class="item-asesor" 
+                     onclick="seleccionarAsesor(this)" 
+                     data-id="{{ acc.asesor.id }}" 
+                     data-info="{{ acc.asesor.cedula }} {{ acc.asesor.nombres }} {{ acc.asesor.apellidos }}">
+                    <div class="item-info">
+                        <span class="item-nombre">{{ acc.asesor.nombres }} {{ acc.asesor.apellidos }}</span>
+                        <span class="item-sub">C.I: {{ acc.asesor.cedula }} | {{ acc.profesion }}</span>
+                    </div>
+                    <i class="fas fa-check-circle check-icon"></i>
+                </div>
+                {% empty %}
+                <p class="text-muted">No hay asesores académicos activos registrados.</p>
+                {% endfor %}
+            </div>
+            <input type="hidden" id="asesor_seleccionado_id">
         </div>
         <div class="modal-footer">
-            <button onclick="cerrarModalComunitario()" class="btn-cancelar">Cancelar</button>
-            <button onclick="guardarComunitario('{{ brigada.id }}')" class="btn-guardar">Guardar Asesor</button>
+            <button onclick="cerrarModalAsignarAcademico()" class="btn-cancelar">Cancelar</button>
+            <button onclick="guardarAcademicoNuevo('{{ brigada.id }}')" class="btn-guardar" id="btnGuardarAcademico" disabled>Asignar Asesor</button>
         </div>
     </div>
 </div>
