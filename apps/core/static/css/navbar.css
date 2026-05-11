@@ -1,16 +1,50 @@
-    /* NAVBAR SUPERIOR */
+/**************************************** ESTILO GENERAL **********************************************/
+    body {
+    font-family: 'RobotoLocal', Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    }
+    
+    /* fuente regular */
+    @font-face {
+    font-family: 'RobotoLocal';
+    src: url('../fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    }
+
+    /* fuente negrita */
+    @font-face {
+    font-family: 'RobotoLocal';
+    src: url('../fonts/Roboto-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    }
+
+    /* fuente delgada */
+    @font-face {
+    font-family: 'RobotoLocal';
+    src: url('../fonts/Roboto-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    }
+    
+    
+    /*********************************** NAVBAR SUPERIOR **********************************************/
     .gcm-top-nav {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 65px;
-        background-color: #ffffff;
+        background: linear-gradient(90deg, #2a346d 0%, #1073c1 50%, #28a9e0 100%);
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 25px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
         z-index: 1000;
         box-sizing: border-box;
     }
@@ -24,39 +58,34 @@
     .gcm-menu-trigger {
         background: none;
         border: none;
-        font-size: 24px;
+        font-size: 26px;
         cursor: pointer;
-        color: #333;
-        transition: color 0.3s;
+        color: #ffffff;
+        transition: color 0.3s ease;
     }
 
     /* INDICADOR DE SECCIÓN - Centrado absoluto */
     .gcm-section-indicator {
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: #444;
-        /* Quitamos el border-left y padding-left anterior para que se vea limpio en el centro */
-        border-left: none;
-        padding-left: 0;
-
-        /* Magia para centrar */
+        font-weight: 900;
+        font-size: 1.2rem;
+        color: #ffffff;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
         white-space: nowrap;
-        /* Evita que el texto salte de línea si es largo */
+        letter-spacing: 0.5px;
     }
 
-    /* SIDEBAR (MENÚ LATERAL) */
+
+    /************************************* SIDEBAR (MENÚ LATERAL) ************************************/
     .gcm-sidebar {
         position: fixed;
         top: 0;
         left: -280px;
         width: 280px;
         height: 100vh;
-        background-color: #1e293b;
-        /* Azul grisáceo oscuro */
-        color: #f8fafc;
+        background: linear-gradient(0deg, #2a346d 0%, #1073c1 50%, #28a9e0 100%);
+        color: #ffffff;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1100;
         box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
@@ -68,38 +97,118 @@
 
     /* CONTENEDOR DEL LOGO (RECUPERADO) */
     .gcm-sidebar-header {
-        padding: 30px 20px;
-        text-align: center;
-        background-color: #0f172a;
-        border-bottom: 1px solid #334155;
+        padding: 15px 20px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        box-sizing: border-box; /* Crucial para que el padding no sume al ancho */
+    }
+
+    .gcm-logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alinea todo a la izquierda */
+    gap: 12px; /* Espacio entre la imagen y el texto */
+    overflow: hidden; /* Evita que los hijos se salgan */
     }
 
     .gcm-logo-img {
-        max-width: 150px;
-        /* Ajusta según el tamaño de tu logo */
-        height: auto;
+        width: 90px; /* Tamaño pequeño tipo icono */
+        height: 90px;
+        object-fit: contain;
     }
 
-    /* LISTA DE NAVEGACIÓN */
+    .gcm-logo-text {
+        font-size: 1.2rem;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        
+        /* El truco del degradado en el texto */
+        background: linear-gradient(135deg, #2a346d 0%, #1073c1 50%, #28a9e0 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        
+        /* Evita que el texto se rompa en dos líneas */
+        white-space: normal;
+        text-align: center;
+    }
+
+    /* LINKS DEL SIDEBAR */
     .gcm-side-links {
         list-style: none;
-        padding: 20px 0;
+        padding: 15px 10px;
         margin: 0;
     }
 
+    .gcm-side-links li {
+    margin-bottom: 4px;
+    }
+    
+    /* LISTA DE NAVEGACIÓN */
     .gcm-side-links li a {
-        display: block;
-        padding: 12px 25px;
-        color: #cbd5e1;
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: rgba(255, 255, 255, 0.8); /* Texto blanco suave por defecto */
         text-decoration: none;
-        font-size: 1rem;
-        transition: all 0.3s;
+        font-size: 14px;
+        font-weight: 900;
+        border-radius: 8px;
+        margin: 0 10px; /* Margen para que el bloque blanco no toque los bordes del sidebar */
+        transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
     }
 
+        /* ESTILOS ESPECÍFICOS PARA EL ICONO SVG */
+    .gcm-icon {
+        margin-right: 12px; /* Espacio entre el icono y el texto */
+        flex-shrink: 0;     /* Evita que el icono se aplaste si el texto es muy largo */
+        transition: transform 0.3s ease;
+    }
+    
+    /* EFECTO HOVER: Fondo degradado sutil y línea indicadora */
     .gcm-side-links li a:hover {
-        background-color: #334155;
-        color: #ffffff;
-        padding-left: 35px;
+        /* Degradado de fondo: Empieza con un azul claro translúcido y se desvanece a transparente */
+        background: linear-gradient(90deg, #ffffff 0%, #ffffff 50%,rgba(255, 255, 255, 0) 100%);
+        
+        /* Línea de color a la izquierda (usamos box-shadow para no empujar el contenido) */
+        box-shadow: inset 4px 0 0 0 #2a346d; 
+        
+        transform: translateX(5px); /* Se mantiene el pequeño salto dinámico */
+    }
+
+    /* ESTADO NORMAL DEL SPAN */
+    .gcm-side-links li a span {
+        /* Mantenemos el clip y el color transparente siempre para evitar el 'recuadro' */
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        
+        background-color: rgba(255, 255, 255, 0.8); 
+        
+        transition: background-color 0.3s ease, font-weight 0.3s ease;
+    }
+
+    /* DEGRADADO MÁGICO PARA LAS LETRAS (TEXTO) */
+    .gcm-side-links li a:hover span {
+        /* Aquí defines los colores de tu degradado (Ej. de un azul claro a un azul más brillante) */
+        background-color: #2a346d; 
+        
+        /* Estos comandos hacen que el fondo solo se vea "dentro" de las letras */
+        -webkit-background-clip: text;
+        background-clip: text;
+        
+        font-weight: 900; /* Hacemos la letra un poco más gruesa para que el degradado luzca más */
+    }
+
+    /* EFECTO HOVER DEL ICONO: Que haga juego con el inicio del degradado */
+    .gcm-side-links li a:hover .gcm-icon {
+        stroke: #2a346d; /* Color sólido que coincide con la primera parte del texto */
+        transform: scale(1.15);
+    }
+
+    /* Transición suave para el texto */
+    .gcm-side-links li a span {
+        transition: all 0.3s ease;
     }
 
     /* FONDO OSCURO (OVERLAY) */
@@ -119,21 +228,31 @@
         display: block;
     }
 
-    /* CONTENIDO PRINCIPAL */
+    /********************************** CONTENIDO PRINCIPAL *******************************************/
     .gcm-page-wrapper {
+        flex: 1;
         padding: 90px 0 30px 0;
         min-height: calc(100vh - 90px);
     }
 
     .gcm-logout-btn {
-        color: #ef4444;
+        background-color: #2a346d; /* Tu azul más oscuro para el contraste */
+        color: #ffffff;
         text-decoration: none;
-        font-weight: 500;
-        padding: 8px 15px;
-        border-radius: 6px;
-        transition: background 0.3s;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 8px 18px; /* Más espacio a los lados */
+        border-radius: 20px; /* Esto hace que los bordes sean completamente redondeados */
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Espacio entre el texto y el icono */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
     }
 
     .gcm-logout-btn:hover {
-        background: #fee2e2;
+        background-color: #1e2654; /* Un azul aún más oscuro al pasar el mouse */
+        transform: translateY(-2px); /* Se levanta un poquito */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
+

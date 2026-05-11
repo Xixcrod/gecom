@@ -1,0 +1,8 @@
+/******************************************* FOOTER ***************************************************/
+    .gcm-footer {
+        padding: 20px;
+        text-align: center;
+        background: linear-gradient(90deg, #2a346d 0%, #1073c1 50%, #28a9e0 100%);
+        color: #ffffff; 
+        width: 100%;
+    }

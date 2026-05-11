@@ -31,7 +31,7 @@ def obtener_periodos():
     # reverse=True asegura que los más nuevos (ej. 2027) queden de primeros
     return sorted(periodos, key=sort_periodos_key, reverse=True)
 
-def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
+def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=12):
     lista_periodos = obtener_periodos()
     paginator = Paginator(lista_periodos, items_por_pagina)
     
