@@ -1,18 +1,15 @@
-/* --- Layout General --- */
+                                /* --- Layout General --- */
+/******************************************************************************************************/
 .main-layout {
-    color: #1f2937;
     display: flex;
     flex-direction: column;
-    /* Eliminamos el max-height fijo para evitar que se monte sobre el footer */
-    min-height: 100vh; 
-    width: 100%;
 }
 
 .main-content {
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-    padding: 2rem 1.5rem; /* Añadimos padding arriba y abajo */
+    padding: 3rem 1.5rem; /* Añadimos padding arriba y abajo */
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -58,112 +55,111 @@
 @media (min-width: 768px) { .periods-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; } }
 @media (min-width: 1024px) { .periods-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-/* --- Tarjeta (Card) --- */
+                                /* --- Tarjeta (Card) --- */
+/******************************************************************************************************/
 .period-card {
     display: block;
     position: relative;
-    background-color: #8b5cf6;
-    border: 1px solid #7c3aed;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    border-radius: 1rem; /* Un poco más redondeado se ve mejor para tarjetas */
+    background-color: #2a346d;
+    color: #e9f6ff;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde muy sutil para dar relieve */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+    border-radius: 1rem; /* Bordes ligeramente redondeados */
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transición más suave */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transición */
 }
 
 /* Efecto al pasar el mouse: se aclara y sube un poco */
 .period-card:hover {
-    background-color: #9d71fd; /* Un tono ligeramente más claro para el efecto de luz */
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.4);
+    color: #2a346d;
+    background-color: #e9f6ff;/* Un tono ligeramente más claro para el efecto de luz */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
 .card-body {
-    padding: 2.5rem 1.5rem; /* Más espacio vertical para que la tarjeta sea robusta */
+    padding: 2rem 1.5rem; 
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
+    min-height: 110px; /* Asegura que todas las tarjetas tengan el mismo alto mínimo */
+}
+
+.card-title-group {
+    display: flex;
+    align-items: center; /* Alinea el icono y el texto al mismo nivel vertical */
+    justify-content: center;
+    gap: 0.75rem; /* Espacio perfecto entre el icono y la letra */
 }
 
 .card-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: white;
     margin: 0;
     letter-spacing: 0.025em;
 }
 
-@media (min-width: 768px) {
-    .card-title {
-        font-size: 1.5rem;
-    }
+.gcm-icon {
+    opacity: 0.9;
 }
 
-/* --- Overlay con Icono --- */
-.card-overlay {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+@media (min-width: 768px) {
+    .card-title {
+        font-size: 1.4rem;
+    }
 }
 
 .period-card:hover .card-overlay {
     opacity: 1;
 }
 
-.icon-edit {
-    height: 3rem;
-    width: 3rem;
-    color: rgba(255, 255, 255, 0.8);
-}
 
-/* --- Mensaje vacio --- */
+                                    /* --- Mensaje vacio --- */
+/******************************************************************************************************/
 .empty-message {
     grid-column: 1 / -1;
     text-align: center;
     display: flex;
     justify-content: center;
-    color: white; /* Asumiendo que el fondo general es oscuro por el texto anterior */
-    font-size: 1.875rem; /* 3xl */
-    font-weight: 500;
+    color: #2a346d;
+    font-size: 3rem; /* 3xl */
+    font-weight: 900;
     padding-top: 5rem;
     padding-bottom: 5rem;
 }
 
-/* --- Paginación --- */
+                                /* --- Paginación --- */
+/******************************************************************************************************/
 .pagination-wrapper {
     display: flex;
     justify-content: center;
-    /* El margen top 'auto' empuja el paginador al fondo del contenedor main */
-    margin-top: auto; 
-    padding-top: 1rem;  /* Espacio sobre el paginador */
-    padding-bottom: 4rem; /* ESPACIO EXTRA para que no se vea recortado con el footer */
+    margin-top: auto;
+    padding-top: 2rem;  /* Espacio sobre el paginador */
+    padding-bottom: 0.5rem; /* ESPACIO EXTRA para que no se vea recortado con el footer */
 }
 
 .pagination-container {
     display: flex;
-    background-color: #1e40af; /* Azul oscuro */
+    background-color: #090e1d;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    border-radius: 0.375rem;
+    border-radius: 1rem;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .page-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 0.75rem; /* btn-sm aprox */
+    padding: 0.8rem 1rem; /* btn-sm aprox */
     font-size: 0.875rem;
-    background-color: #1e40af;
+    background-color: #2a346d;
     border: none;
     border-right: 1px solid #1e3a8a;
-    color: #93c5fd; /* blue-300 */
+    color: #e9f6ff;
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
@@ -174,13 +170,13 @@
 }
 
 .page-link:hover:not(.disabled):not(.active) {
-    background-color: #1e3a8a;
+    background-color: #7d87a5;
     color: white;
 }
 
 .page-link.active {
-    background-color: #a855f7; /* Morado activo */
-    color: white;
+    background-color: #e9f6ff; /* Morado activo */
+    color: #2a346d;
     pointer-events: none;
     cursor: default;
 }

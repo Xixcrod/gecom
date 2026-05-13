@@ -13,20 +13,27 @@
             <div id="contenedor-periodos" class="periods-section">
                 <!-- Sección de periodos -->
                 <div id="grid-periodos" class="periods-grid">
-                    {% for p in page_obj %}
-                    
-                    <a href="{% url 'brigadas' p.id %}" class="period-card">
-                        <div class="card-body">
+                {% for p in page_obj %}
+                
+                <a href="{% url 'brigadas' p.id %}" class="period-card">
+                    <div class="card-body">
+                        <div class="card-title-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="gcm-icon">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
                             <h2 class="card-title">{{ p.nombre }}</h2>
                         </div>
-                    </a>
-
-                    {% empty %}
-                    <div class="empty-message">
-                        Aún no hay Periodos Registrados
                     </div>
-                    {% endfor %}
-                </div> 
+                </a>
+                {% empty %}
+                    <div class="empty-message" style=" grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        Aún no hay periodos registrados.
+                    </div>
+                {% endfor %}
+            </div>
 
                 <!-- Paginación -->
                 {% if page_obj.has_other_pages %}

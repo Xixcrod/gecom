@@ -5,13 +5,11 @@
     color: #1f2937; 
     display: flex; 
     flex-direction: column; 
-    min-height: 100vh; 
-    width: 100%; 
 }
 
 .main-content { 
     width: 100%; 
-    padding: 2rem 1.5rem; 
+    padding: 0.8rem 1.5rem; 
     display: flex; 
     flex-direction: column; 
     flex-grow: 1; 
@@ -45,7 +43,7 @@
 }
 
 .header-title { 
-    color: white; 
+    color: #2a346d;
     font-size: 1.75rem; 
     font-weight: 700; 
     margin: 0; 
@@ -56,8 +54,8 @@
     width: 100%; 
     max-width: 450px;
     background: rgba(255,255,255,0.1); 
-    border: 1px solid #a855f7;
-    border-radius: 0.75rem; 
+    border: 4px solid #2a346d;
+    border-radius: 2rem; 
     padding: 0.25rem;
 }
 
@@ -65,8 +63,8 @@
     flex-grow: 1; 
     background: transparent; 
     border: none;
-    padding: 0.5rem 1rem; 
-    color: white; 
+    padding: 0.5rem 2.3rem; 
+    color: rgb(0, 0, 0); 
     outline: none;
 }
 
@@ -77,55 +75,84 @@
 
 /* Para evitar que el selector se vea blanco en navegadores modernos */
 .search-input option:checked {
-    background-color: #a855f7 !important;
+    color:#1e1b4b;
+    background-color: #e9f6ff !important;
 }
 
 .btn-search {
-    background: #8b5cf6; 
-    color: white; 
+    display: flex;
+    align-items: center; /* Alinea el icono y el texto al mismo nivel vertical */
+    justify-content: center;
+    background: #1e1b4b; 
+    color: #e9f6ff; 
     border: none;
     padding: 0.5rem 1.2rem; 
-    border-radius: 0.5rem; 
+    border-radius: 2rem; 
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s;
 }
 
 .btn-search:hover {
-    background: #7c3aed;
+    color:#1e1b4b; 
+    background:#e9f6ff;
+    box-shadow: 0 5px 8px -1px rgb(0, 0, 0);
 }
 
 /* ==========================================================================
    3. GRID Y TARJETAS DE BRIGADA
    ========================================================================== */
+
+.periods-section{
+    padding: 0rem 6rem;
+}
 .periods-grid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+    grid-template-columns: repeat(1, minmax(250px, 1fr)); 
     gap: 1.25rem; 
     margin-bottom: 0.8rem; 
 }
 
+@media (min-width: 640px) { .periods-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
+@media (min-width: 768px) { .periods-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; } }
+@media (min-width: 1024px) { .periods-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
 .period-card {
     display: block; 
     position: relative; 
-    background-color: #8b5cf6;
-    border: 1px solid #7c3aed; 
+    background-color: #2a346d;
+    color: #e9f6ff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
     border-radius: 1rem; 
     overflow: hidden;
-    text-decoration: none; 
-    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transición */
 }
 
 .period-card:hover { 
-    transform: translateY(-5px); 
-    background-color: #9d71fd; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    color: #2a346d;
+    background-color: #e9f6ff;/* Un tono ligeramente más claro para el efecto de luz */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
+.card-title-group {
+    display: flex;
+    align-items: center; /* Alinea el icono y el texto al mismo nivel vertical */
+    justify-content: center;
+    gap: 0.75rem; /* Espacio perfecto entre el icono y la letra */
+}
+
+
 .card-body { 
-    padding: 2rem 1rem; 
-    text-align: center; 
-    color: white; 
+    padding: 2rem 1.5rem; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 110px; /* Asegura que todas las tarjetas tengan el mismo alto mínimo */
 }
 
 .card-title { 
@@ -134,25 +161,39 @@
     margin: 0; 
 }
 
-.card-overlay { 
-    position: absolute; 
-    inset: 0; 
-    background: rgba(0,0,0,0.3); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    opacity: 0; 
-    transition: 0.3s; 
+
+.card-title-estudent { 
+    font-size: 1rem; 
+    font-weight: 600; 
+    margin: 0; 
+}
+
+.gcm-icon {
+    opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+    .card-title {
+        font-size: 1.4rem;
+    }
 }
 
 .period-card:hover .card-overlay { 
     opacity: 1; 
 }
 
-.icon-edit { 
-    height: 2.5rem; 
-    width: 2.5rem; 
-    color: white; 
+                                    /* --- Mensaje vacio --- */
+/******************************************************************************************************/
+.empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    color: #2a346d;
+    font-size: 3rem; /* 3xl */
+    font-weight: 900;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
 }
 
 /* ==========================================================================
@@ -161,12 +202,12 @@
 .fab-add {
     position: fixed;
     right: 25px;
-    top: 50%;
+    top: 80%;
     transform: translateY(-50%);
     width: 60px;
     height: 60px;
-    background: #8b5cf6;
-    color: white;
+    background: #2a346d;
+    color: #e9f6ff;
     border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.2);
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
@@ -180,8 +221,9 @@
 
 .fab-add:hover { 
     transform: translateY(-50%) scale(1.1); 
-    background: #7c3aed; 
-    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
+    background: #e9f6ff;
+    color:#2a346d;
+    box-shadow: 0 6px 25px rgb(13, 12, 12);
 }
 
 /* ==========================================================================
@@ -236,67 +278,47 @@
 /* ==========================================================================
    6. PAGINACIÓN
    ========================================================================== */
-.pagination-wrapper { 
-    display: flex; 
-    justify-content: center; 
-    margin-top: auto; 
-    padding: 2.5rem 0; 
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 2rem;  /* Espacio sobre el paginador */
+    padding-bottom: 0.5rem; /* ESPACIO EXTRA para que no se vea recortado con el footer */
 }
 
-.pagination-container { 
-    display: flex; 
-    background: #1e40af; 
-    border-radius: 0.75rem; 
-    overflow: hidden; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+.pagination-container {
+    display: flex;
+    background-color: #090e1d;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
-.page-link { 
-    padding: 0.6rem 1.2rem; 
-    color: #93c5fd; 
-    text-decoration: none; 
+.page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1rem; /* btn-sm aprox */
+    font-size: 0.875rem;
+    background-color: #2a346d;
+    border: none;
     border-right: 1px solid #1e3a8a;
-    transition: all 0.2s;
+    color: #e9f6ff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
 }
-
 .page-link:last-child { border-right: none; }
 
 .page-link:hover:not(.active) {
-    background: #2563eb;
+    background-color: #7d87a5;
     color: white;
 }
 
 .page-link.active { 
-    background: #a855f7; 
-    color: white; 
-    font-weight: bold;
+    background-color: #e9f6ff; /* Morado activo */
+    color: #2a346d;
+    pointer-events: none;
+    cursor: default;
 }
 
-/* ==========================================================================
-   7. ALERTAS Y NOTIFICACIONES
-   ========================================================================== */
-.alert-msg {
-    position: fixed;
-    top: 25px;
-    right: 25px;
-    padding: 1rem 1.5rem;
-    border-radius: 0.75rem;
-    color: white;
-    z-index: 2000;
-    background: #ef4444; /* Rojo error por defecto */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    min-width: 300px;
-    animation: slideIn 0.3s ease-out;
-}
-
-.alert-success { 
-    background: #10b981; /* Verde éxito */
-}
-
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}

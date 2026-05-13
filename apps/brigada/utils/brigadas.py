@@ -8,7 +8,7 @@ from .forms import BrigadaForm
 from django.contrib.auth.decorators import login_required
 
 
-def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, filtro_estado = None, items_por_pagina=16):
+def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, filtro_estado = None, items_por_pagina=6):
     '''Función para obtener el contexto de brigadas con filtros de búsqueda y paginación.'''
     # 1. Filtro base por periodo
     queryset = Brigada.objects.filter(periodo=periodo_id).annotate(

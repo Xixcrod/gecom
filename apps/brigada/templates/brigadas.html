@@ -23,7 +23,7 @@
         <div class="content-wrapper">
 
             <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h1 style="color: white;">Periodo: {{ periodo.nombre }}</h1>
+                <h1 class="header-title">Periodo: {{ periodo.nombre }}</h1>
 
                 <!-- Selector y buscador -->
                 <form method="GET" class="search-form" style="display: flex; gap: 0.5rem; max-width: 650px;">
@@ -40,9 +40,11 @@
                         placeholder="Brigada, Cédula Est. o Asesor..." 
                         class="search-input">
                         
-                    <button type="submit" class="btn-search">Buscar</button>
-                </form>
 
+                    <button type="submit" class="btn-search">
+                        <svg fill="currentColor" width="28" height="28" viewBox="-2.5 -2.5 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" class="jam jam-search"><path d='M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zm6.32-1.094l3.58 3.58a1 1 0 1 1-1.415 1.413l-3.58-3.58a8 8 0 1 1 1.414-1.414z'/></svg>
+                        Buscar</button>
+                </form>
             </div>
 
             <div id="contenedor-brigadas" class="periods-section">
@@ -51,18 +53,15 @@
                     {% for b in page_obj %}
                     <a href="{% url 'brigada_detalles' brigada_id=b.id %}" class="period-card">
                         <div class="card-body">
-                            <h2 class="card-title">Brigada #{{ b.nombre }}</h2>
-                            <p style="color: #e5e7eb; margin-top: 0.5rem;">{{ b.estudiantes.count }} Estudiantes</p>
-                        </div>
-                        <div class="card-overlay">
-                            <svg class="icon-edit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
+                            <div class="card-title-group">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="gcm-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                <h2 class="card-title">Brigada #{{ b.nombre }}</h2>
+                            </div>
+                            <p class="card-title-estudent">{{ b.estudiantes.count }} Estudiantes</p>
                         </div>
                     </a>
                     {% empty %}
-                    <div class="empty-message" style="color: white; grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <div class="empty-message" style=" grid-column: 1 / -1; text-align: center; padding: 3rem;">
                         No se encontraron brigadas.
                     </div>
                     {% endfor %}
