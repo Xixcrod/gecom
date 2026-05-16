@@ -1,101 +1,103 @@
 /* ==========================================================================
    1. LAYOUT PRINCIPAL Y CONTENEDORES
    ========================================================================== */
-.main-layout { 
-    color: #1f2937; 
-    display: flex; 
-    flex-direction: column; 
+.main-layout {
+    color: #1f2937;
+    display: flex;
+    flex-direction: column;
 }
 
-.main-content { 
-    width: 100%; 
-    padding: 0.8rem 1.5rem; 
-    display: flex; 
-    flex-direction: column; 
-    flex-grow: 1; 
+.main-content {
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
-.content-wrapper { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 1.5rem; 
-    width: 100%; 
-    position: relative; 
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    width: 100%;
+    position: relative;
 }
 
 /* ==========================================================================
    2. ENCABEZADO Y BUSCADOR
    ========================================================================== */
 .header-section {
-    display: flex; 
-    flex-direction: column; 
-    gap: 1rem; 
-    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 /* Ajuste para pantallas grandes */
-@media (min-width: 768px) { 
-    .header-section { 
-        flex-direction: row; 
-        justify-content: space-between; 
-        align-items: center; 
-    } 
+@media (min-width: 768px) {
+    .header-section {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 
-.header-title { 
+.header-title {
     color: #2a346d;
-    font-size: 1.75rem; 
-    font-weight: 700; 
-    margin: 0; 
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
 }
 
 .search-form {
-    display: flex; 
-    width: 100%; 
+    display: flex;
+    width: 100%;
     max-width: 450px;
-    background: rgba(255,255,255,0.1); 
+    background: rgba(255, 255, 255, 0.1);
     border: 4px solid #2a346d;
-    border-radius: 2rem; 
+    border-radius: 2rem;
     padding: 0.25rem;
 }
 
 .search-input {
-    flex-grow: 1; 
-    background: transparent; 
+    flex-grow: 1;
+    background: transparent;
     border: none;
-    padding: 0.5rem 2.3rem; 
-    color: rgb(0, 0, 0); 
+    padding: 0.5rem 2.3rem;
+    color: rgb(0, 0, 0);
     outline: none;
 }
 
 .search-form select option {
-    background: #1e1b4b; /* Fondo oscuro para que combine con el modal */
+    background: #1e1b4b;
+    /* Fondo oscuro para que combine con el modal */
     color: white;
 }
 
 /* Para evitar que el selector se vea blanco en navegadores modernos */
 .search-input option:checked {
-    color:#1e1b4b;
+    color: #1e1b4b;
     background-color: #e9f6ff !important;
 }
 
 .btn-search {
     display: flex;
-    align-items: center; /* Alinea el icono y el texto al mismo nivel vertical */
+    align-items: center;
+    /* Alinea el icono y el texto al mismo nivel vertical */
     justify-content: center;
-    background: #1e1b4b; 
-    color: #e9f6ff; 
+    background: #1e1b4b;
+    color: #e9f6ff;
     border: none;
-    padding: 0.5rem 1.2rem; 
-    border-radius: 2rem; 
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s;
 }
 
 .btn-search:hover {
-    color:#1e1b4b; 
-    background:#e9f6ff;
+    color: #1e1b4b;
+    background: #e9f6ff;
     box-shadow: 0 5px 8px -1px rgb(0, 0, 0);
 }
 
@@ -103,69 +105,90 @@
    3. GRID Y TARJETAS DE BRIGADA
    ========================================================================== */
 
-.periods-section{
+.periods-section {
     padding: 0rem 6rem;
 }
-.periods-grid { 
-    display: grid; 
-    grid-template-columns: repeat(1, minmax(250px, 1fr)); 
-    gap: 1.25rem; 
-    margin-bottom: 0.8rem; 
+
+.periods-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(250px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 0.8rem;
 }
 
-@media (min-width: 640px) { .periods-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
-@media (min-width: 768px) { .periods-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; } }
-@media (min-width: 1024px) { .periods-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 640px) {
+    .periods-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .periods-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .periods-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
 
 .period-card {
-    display: block; 
-    position: relative; 
+    display: block;
+    position: relative;
     background-color: #2a346d;
     color: #e9f6ff;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
-    border-radius: 1rem; 
+    border-radius: 1rem;
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transición */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Transición */
 }
 
-.period-card:hover { 
+.period-card:hover {
     color: #2a346d;
-    background-color: #e9f6ff;/* Un tono ligeramente más claro para el efecto de luz */
+    background-color: #e9f6ff;
+    /* Un tono ligeramente más claro para el efecto de luz */
     transform: translateY(-5px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
 .card-title-group {
     display: flex;
-    align-items: center; /* Alinea el icono y el texto al mismo nivel vertical */
+    align-items: center;
+    /* Alinea el icono y el texto al mismo nivel vertical */
     justify-content: center;
-    gap: 0.75rem; /* Espacio perfecto entre el icono y la letra */
+    gap: 0.75rem;
+    /* Espacio perfecto entre el icono y la letra */
 }
 
 
-.card-body { 
-    padding: 2rem 1.5rem; 
+.card-body {
+    padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 110px; /* Asegura que todas las tarjetas tengan el mismo alto mínimo */
+    min-height: 110px;
+    /* Asegura que todas las tarjetas tengan el mismo alto mínimo */
 }
 
-.card-title { 
-    font-size: 1.5rem; 
-    font-weight: 600; 
-    margin: 0; 
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
 }
 
 
-.card-title-estudent { 
-    font-size: 1rem; 
-    font-weight: 600; 
-    margin: 0; 
+.card-title-estudent {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
 }
 
 .gcm-icon {
@@ -178,11 +201,11 @@
     }
 }
 
-.period-card:hover .card-overlay { 
-    opacity: 1; 
+.period-card:hover .card-overlay {
+    opacity: 1;
 }
 
-                                    /* --- Mensaje vacio --- */
+/* --- Mensaje vacio --- */
 /******************************************************************************************************/
 .empty-message {
     grid-column: 1 / -1;
@@ -190,7 +213,8 @@
     display: flex;
     justify-content: center;
     color: #2a346d;
-    font-size: 3rem; /* 3xl */
+    font-size: 3rem;
+    /* 3xl */
     font-weight: 900;
     padding-top: 5rem;
     padding-bottom: 5rem;
@@ -209,8 +233,8 @@
     background: #2a346d;
     color: #e9f6ff;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.2);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     cursor: pointer;
     z-index: 99;
     display: flex;
@@ -219,10 +243,10 @@
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.fab-add:hover { 
-    transform: translateY(-50%) scale(1.1); 
+.fab-add:hover {
+    transform: translateY(-50%) scale(1.1);
     background: #e9f6ff;
-    color:#2a346d;
+    color: #2a346d;
     box-shadow: 0 6px 25px rgb(13, 12, 12);
 }
 
@@ -232,47 +256,161 @@
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
     backdrop-filter: blur(4px);
-    display: none; 
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 1000;
 }
 
-.modal-content {
-    background: #1e1b4b; /* Azul muy oscuro */
+/* Contenedor principal de la modal */
+.modal-content-light {
+   background: 
+        linear-gradient(#f4f8fb, #f4f8fb) padding-box, 
+        linear-gradient(to bottom, var(--primary-color), var(--secondary-color), var(--terciary-color)) border-box;
     padding: 2.5rem;
-    border-radius: 1.25rem;
-    border: 1px solid #8b5cf6;
+    
+    /* Borde grueso azul claro como en la imagen */
+    border: 8px solid transparent;
+    border-radius: 0.5rem;
     width: 90%;
     max-width: 400px;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center; /* Centra todo el contenido */
 }
 
-.form-group {
+/* Tipografía de la modal */
+.modal-title {
+    color: #1e3a8a; /* Azul oscuro */
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.modal-subtitle {
+    color: #1e3a8a;
+    font-size: 0.95rem;
+    font-weight: 600;
     margin-bottom: 1.5rem;
 }
 
-/* Este aplica al input que genera Django mediante el form */
-.modal-content input[type="text"],
+.centered-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.modal-label {
+    color: #0f172a;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+/* Estilo del input (incluyendo el de Django) */
+.modal-content-light input[type="text"],
+.modal-content-light input[type="number"],
 .modal-input {
     width: 100%;
-    padding: 0.8rem 1rem;
-    margin-top: 0.5rem;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid #4b5563;
-    border-radius: 0.6rem;
-    color: white;
+    padding: 0.7rem 1rem;
+    background: #ffffff;
+    /* Borde azul oscuro para el input */
+    border: 2px solid #2563eb; 
+    border-radius: 0.5rem;
+    color: #333;
     font-size: 1rem;
     outline: none;
     transition: border-color 0.2s;
+    text-align: left;
 }
 
-.modal-content input:focus { 
-    border-color: #a855f7; 
-    background: rgba(255,255,255,0.1);
+.modal-content-light input:focus {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.modal-content-light input::placeholder {
+    color: #94a3b8;
+}
+
+/* Contenedor de Botones */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+/* Botón Cancelar (Azul oscuro) */
+.btn-cancel {
+    flex: 1;
+    background: #2e3b84; 
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-cancel:hover {
+    background: #1e295d;
+    transform: scale(1.02);
+}
+
+/* Botón Guardar (Azul claro) */
+.btn-save {
+    flex: 1;
+    background: #38bdf8; 
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-save:hover {
+    background: #0284c7;
+    transform: scale(1.02);
+}
+
+/* Manteniendo tus animaciones de error intactas */
+.error-brigada-ajax {
+    width: 100%;
+    margin-top: 1rem;
+    animation: shake 0.4s ease-in-out; 
+}
+.error-modal-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background-color: rgba(239, 68, 68, 0.15); 
+    color: #ef4444; 
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #ef4444;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    animation: fadeInError 0.3s ease-out;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+@keyframes fadeInError {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
@@ -282,8 +420,10 @@
     display: flex;
     justify-content: center;
     margin-top: auto;
-    padding-top: 2rem;  /* Espacio sobre el paginador */
-    padding-bottom: 0.5rem; /* ESPACIO EXTRA para que no se vea recortado con el footer */
+    padding-top: 2rem;
+    /* Espacio sobre el paginador */
+    padding-bottom: 0.5rem;
+    /* ESPACIO EXTRA para que no se vea recortado con el footer */
 }
 
 .pagination-container {
@@ -294,11 +434,13 @@
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 .page-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.8rem 1rem; /* btn-sm aprox */
+    padding: 0.8rem 1rem;
+    /* btn-sm aprox */
     font-size: 0.875rem;
     background-color: #2a346d;
     border: none;
@@ -308,17 +450,59 @@
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 }
-.page-link:last-child { border-right: none; }
+
+.page-link:last-child {
+    border-right: none;
+}
 
 .page-link:hover:not(.active) {
     background-color: #7d87a5;
     color: white;
 }
 
-.page-link.active { 
-    background-color: #e9f6ff; /* Morado activo */
+.page-link.active {
+    background-color: #e9f6ff;
+    /* Morado activo */
     color: #2a346d;
     pointer-events: none;
     cursor: default;
 }
 
+/* ==========================================================================
+   6. BOTÓN PARA VOLVER
+   ========================================================================== */
+
+
+.back-icon {
+    position: relative;
+    display: inline-flex;
+    color: #e9f6ff;
+    background-color: #2a346d;
+
+    left: 0.7%;
+    top: 0.2%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.back-icon:hover {
+    transform: scale(1.1);
+    background-color: #e9f6ff;
+    color: #2a346d;
+}
+
+/* Ajuste para móviles para que no se superponga al texto */
+@media (max-width: 768px) {
+    .back-icon {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin-bottom: 1rem;
+    }
+}

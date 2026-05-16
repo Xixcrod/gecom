@@ -5,7 +5,11 @@
 
 <!-- Página principal del sistema -->
 {% block content %}
-    <main class="flex items-center justify-center min-h-[calc(100vh-220px)]">
-        <span class="bg-linear-to-b from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-5xl">Bienvenido al Sistema de Gestión de Proyectos</span>
-    </main>
+<main class="flex items-center justify-center min-h-[calc(100vh-220px)] p-4">
+    <span
+        style="background-image: linear-gradient(to bottom, var(--primary-color), var(--secondary-color), var(--terciary-color));"
+        class="bg-clip-text text-transparent font-bold text-5xl text-center block">
+        Bienvenido al Sistema de Gestión de Proyectos
+    </span>
+</main>
 {% endblock content %}

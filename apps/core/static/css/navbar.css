@@ -233,7 +233,7 @@
         flex: 1;
         padding: 80px 0 0 0;
         min-height: calc(100vh - 90px);
-        background-color: #e9f6ff;
+        background-color: var(--white-color);
     }
 
     .gcm-logout-btn {

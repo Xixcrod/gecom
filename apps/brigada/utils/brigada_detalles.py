@@ -53,18 +53,26 @@ def modificar_nombre_brigada(request, brigada_id):
         try:
             data = json.loads(request.body)
             nuevo_nombre = data.get('nombre')
+            brigada = get_object_or_404(Brigada, id=brigada_id)
 
             # 1. Validación de valor entero
             if not str(nuevo_nombre).isdigit():
                 return JsonResponse({'success': False, 'message': 'El nombre de la brigada debe ser un número entero sin letras.'}, status=400)
 
             # 2. Validación de existencia (Excluyendo la brigada actual)
+            duplicado = Brigada.objects.filter(
+                periodo=brigada.periodo, 
+                nombre=nuevo_nombre
+            ).exclude(id=brigada_id).exists()
+
             # Nota: filter().exclude() asegura que si no cambias el nombre, no dé error de "ya existe"
-            if Brigada.objects.filter(nombre=nuevo_nombre).exclude(id=brigada_id).exists():
-                return JsonResponse({'success': False, 'message': f'La brigada número {nuevo_nombre} ya existe en el sistema.'}, status=400)
+            if duplicado:
+                return JsonResponse({
+                    'success': False, 
+                    'message': f'La brigada #{nuevo_nombre} ya existe en el periodo {brigada.periodo.nombre}.'
+                }, status=400)
 
             # 3. Actualización
-            brigada = Brigada.objects.get(id=brigada_id)
             brigada.nombre = nuevo_nombre
             brigada.save()
 

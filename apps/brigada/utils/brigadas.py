@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from .forms import BrigadaForm
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 
 def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, filtro_estado = None, items_por_pagina=6):
@@ -90,11 +91,14 @@ def crear_brigada(request, periodo_id):
             nueva_b = form.save(commit=False)
             nueva_b.periodo = periodo
             nueva_b.save()
-            messages.success(
-                request, f"Brigada #{form.cleaned_data['nombre']} creada correctamente.")
+            messages.success(request, f"Brigada #{nueva_b.nombre} creada correctamente.")
+            
+            return JsonResponse({'success': True})
         else:
-            # Si hay errores (como el de duplicado), los pasamos a messages
-            for error in form.errors.values():
-                messages.error(request, error)
+            # Si hay errores, enviamos los errores del formulario en JSON
+            return JsonResponse({
+                'success': False, 
+                'errors': form.errors.get_json_data()
+            }, status=400)
 
-    return redirect('brigadas', periodo_id=periodo.id)
+    return JsonResponse({'success': False}, status=405)

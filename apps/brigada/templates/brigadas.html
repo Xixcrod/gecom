@@ -8,8 +8,7 @@
 {% block titulo_seccion %}Brigadas{% endblock %}
 
 {% block content %}
-<!-- Botón para regresar a la lista de periodos -->
-<a href="{% url 'brigada_periodo' %}">Regresar</a>
+
 
 <div class="main-layout">
     <!-- Botón flotante para agregar nueva brigada -->
@@ -21,8 +20,16 @@
 
     <main class="main-content">
         <div class="content-wrapper">
+            <!-- Botón para regresar a la lista de periodos -->
+            <a href="{% url 'brigada_periodo' %}" class="back-icon" title="Volver a Periodos">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+            </a>
 
-            <div class="header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            
+            <div class="header-section" style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- Periodo Actual -->
                 <h1 class="header-title">Periodo: {{ periodo.nombre }}</h1>
 
                 <!-- Selector y buscador -->
@@ -99,30 +106,22 @@
 </div>
 
 <div id="modalBrigada" class="modal-overlay" onclick="handleOutsideClick(event)">
-    <div class="modal-content">
-        <h2 style="color: white; margin-bottom: 0.5rem;">Nueva Brigada</h2>
-        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Ingresa el número correspondiente.</p>
+    <div class="modal-content-light">
+        <h2 class="modal-title">Nueva Brigada</h2>
+        <p class="modal-subtitle">Ingrese Numero Correspondiente.</p>
         
         <form method="POST" action="{% url 'crear_brigada' periodo.id %}" id="formNuevaBrigada">
             {% csrf_token %}
-            <div class="form-group">
-                <label style="color: #e2e8f0; display: block; margin-bottom: 0.5rem;">Número de Brigada</label>
+            <div class="form-group centered-group">
+                <label class="modal-label">Numero de Brigada</label>
                 {{ form.nombre }}
                 
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if 'error' in message.tags %}
-                            <div style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem; background: rgba(239, 68, 68, 0.1); padding: 0.5rem; border-radius: 0.4rem;">
-                                {{ message }}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+                <div id="error-brigada-ajax" class="error-brigada-ajax" style="display: none;"></div>
             </div>
 
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button type="submit" class="btn-search" style="flex: 1; justify-content: center;">Guardar</button>
-                <button type="button" onclick="toggleModal(false)" style="flex: 1; background: transparent; color: white; border: 1px solid #4b5563; border-radius: 0.5rem;">Cancelar</button>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="toggleModal(false)">Cancelar</button>
+                <button type="submit" class="btn-save">Guardar</button>
             </div>
         </form>
     </div>
