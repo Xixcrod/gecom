@@ -11,26 +11,31 @@
 <div class="contenedor-fondo-azul">
     <!--- Brigada y Periodo actual -->
     <div class="cabecera-brigada">
+
+        <!-- Botón de regreso -->
+        <div class="link-regresar">
+            <a href="{% url 'brigadas' brigada.periodo.id %}" class="back-icon" title="Volver a Brigadas">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+            </a>
+        </div>
+
+
         <h2 id="titulo-brigada">Brigada: {{ brigada.nombre }} - Periodo: {{ brigada.periodo.nombre }}</h2>
         <button onclick="abrirModalModificar('{{ brigada.id }}', '{{ brigada.nombre }}')" class="btn-lapiz">
             <i class="fas fa-pencil-alt"></i>
         </button>
     </div>
 
-    <!-- Botón de regreso -->
-    <div class="link-regresar">
-        <a href="{% url 'brigadas' brigada.periodo.id %}"><i class="fas fa-arrow-left"></i> Regresar</a>
-    </div>
-
-    {% csrf_token %}
-
+    <!-- ********************** Contenedor principal con asesores ********************************** -->
     <div id="card-asesores" data-url-academico="{% url 'asignar_academico' brigada.id %}" data-url-comunitario="{% url 'guardar_comunitario' brigada.id %}">
         <div class="asesores-grid">
 
             <!-- Asesor Comunitario -->
             <div class="asesor-columna">
-                <h3 class="titulo-rojo">Asesor Comunitario</h3>
-                <div class="tarjeta-morada">
+                <h3 class="titulo">Asesor Comunitario</h3>
+                <div class="tarjeta-azul-asesores">
                     {% if asesor_comunitario %}
                         <div id="info-comunitario">
                             <p><strong>{{ asesor_comunitario.asesor.nombres }} {{ asesor_comunitario.asesor.apellidos }}</strong></p>
@@ -39,7 +44,7 @@
                             <p>Correo: {{ asesor_comunitario.asesor.correo }}</p>
                         </div>
                     {% else %}
-                        <div onclick="abrirModalComunitario('', '', '', '', '', '')" style="cursor: pointer; text-align: center;">
+                        <div onclick="abrirModalComunitario('', '', '', '', '', '')" class="tarjeta-vacia">
                             <p>No asignado. <br><strong>Haz click para crear</strong></p>
                         </div>
                     {% endif %}
@@ -53,8 +58,8 @@
 
             <!-- Asesor Académico -->
             <div class="asesor-columna">
-                <h3 class="titulo-rojo">Asesor Académico</h3>
-                <div class="tarjeta-morada">
+                <h3 class="titulo">Asesor Académico</h3>
+                <div class="tarjeta-azul-asesores">
                     {% if asesor_academico %}
                         <div id="info-academico">
                             <p><strong>{{ asesor_academico.asesor.nombres }} {{ asesor_academico.asesor.apellidos }}</strong></p>
@@ -64,14 +69,16 @@
                             <p>Profesión: {{ asesor_academico.profesion }}</p>
                             <p>Dependencia: {{ asesor_academico.dependencia }}</p>
                             <p>Cargo: {{ asesor_academico.cargo }}</p>
-                            {% if asesor_academico.activo %}
-                                <span class="badge-activo">Estado: Activo</span>
-                            {% else %}
-                                <span class="badge-inactivo">Estado: Inactivo</span>
-                            {% endif %}
+                            <p style="margin-top: 12px;">
+                                {% if asesor_academico.activo %}
+                                    <span class="badge-estado estado-activo">Activo</span>
+                                {% else %}
+                                    <span class="badge-estado estado-inactivo">Inactivo</span>
+                                {% endif %}
+                            </p>
                         </div>
                     {% else %}
-                        <div onclick="abrirModalAsignarAcademico()" style="cursor: pointer; text-align: center;">
+                        <div onclick="abrirModalAsignarAcademico()" class="tarjeta-vacia">
                             <p>No asignado. <br><strong>Haz click para asignar</strong></p>
                         </div>
                     {% endif %}
@@ -86,58 +93,76 @@
         </div>
     </div>
 
-    <!-- Proyecto -->
-    <div class="seccion-central">
-        <h3 class="titulo-rojo">Proyecto</h3>
-        <div class="contenedor-tarjeta-lateral">
-            <div class="tarjeta-amarilla">
-                {% if proyecto %}
-                <a href="{% url 'proyecto_documentos' brigada.id proyecto.id %}" style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                    <div class="proyecto-distribucion">
-                        <div class="titulo-proy"><strong>{{ proyecto.nombre_proyecto }}</strong></div>
-                        <div class="comunidad-proy">{{ proyecto.comunidad }}</div>
-                        <div class="fechas-proy">
-                            <span>Fecha de inicio: {{ proyecto.fecha_inicio }}</span>
-                            <span>fecha de culminación: {{ proyecto.fecha_culminacion|default:"En ejecución" }}</span>
+    
+    <div class="secciones-secundarias-grid">
+
+        <!-- Proyecto -->
+        <div class="seccion-central">
+            <h3 class="titulo">Proyecto</h3>
+            <div class="contenedor-tarjeta-lateral">
+                <div class="tarjeta-blanca-proyecto {% if proyecto %}tarjeta-con-proyecto{% endif %}">
+                    {% if proyecto %}
+                    <a href="{% url 'proyecto_documentos' brigada.id proyecto.id %}" style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                        <div class="proyecto-distribucion">
+                            <div class="titulo-proy"><strong>{{ proyecto.nombre_proyecto }}</strong></div>
+                            <div class="comunidad-proy">Comunidad: {{ proyecto.comunidad }}</div>
+                            <div class="fechas-proy">
+                                <span>Fecha de inicio: {{ proyecto.fecha_inicio }}</span>
+                                <span>fecha de culminación: {{ proyecto.fecha_culminacion|default:"En ejecución" }}</span>
+                            </div>
+                            <div class="estado-proy">
+                                <span class="badge-estado {% if proyecto.aprobado %}estado-aprobado{% else %}estado-reprobado{% endif %}">
+                                    <strong>{% if proyecto.aprobado %} Aprobado {% else %} Reprobado {% endif %}</strong>
+                                </span>
+                            </div>
                         </div>
-                        <div class="estado-proy"><strong>{% if proyecto.aprobado %} Aprobado {% else %} Reprobado {% endif %}</strong></div>
-                    </div>
-                </a>
-                {% else %}
-                    <p class="proyecto-mensaje-vacio">No hay proyecto asignado.</p>
+                    </a>
+                    {% else %}
+                        <p class="proyecto-mensaje-vacio">No hay proyecto asignado.</p>
+                    {% endif %}
+                </div>
+                
+                {% if not proyecto %}
+                    <button type="button" class="btn-lapiz btn-lateral" id="btnAbrirProyecto">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 {% endif %}
             </div>
-            
-            {% if not proyecto %}
-                <button type="button" class="btn-lapiz btn-lateral" id="btnAbrirProyecto">
+        </div>
+
+        <!-- Estudiantes -->
+        <div class="seccion-central">
+            <h3 class="titulo">Estudiantes</h3>
+            <div class="contenedor-tarjeta-lateral">
+                <div class="tarjeta-blanca-estudiantes">
+                    <ul id="estudiante-lista">
+                        {% if estudiantes %}
+                        <li class="estudiante-header">
+                            <span class="est-nombre">Nombre y Apellido</span>
+                            <span class="est-cedula">Cédula</span>
+                            <span class="est-carrera">Carrera</span>
+                        </li>
+                        {% endif %}
+
+                        {% for e in estudiantes %}
+                            <li class="estudiante-item">
+                                <a href="{% url 'estudiante_detalles' brigada.id e.id %}" class="estudiante-fila-link">
+                                    <span class="est-nombre">{{ e.nombres }} {{ e.apellidos }}</span>
+                                    <span class="est-cedula">{{ e.cedula }}</span>
+                                    <span class="est-carrera">{{ e.carrera.nombre_carrera }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                        
+                        {% if estudiantes|length == 0 %}
+                            <p class="estudiante-mensaje-vacio">No hay estudiantes asignados.</p>
+                        {% endif %}
+                    </ul>
+                </div>
+                <button id="estudiante-btn-nuevo" class="btn-mas btn-lateral">
                     <i class="fas fa-plus"></i>
                 </button>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Estudiantes -->
-    <div class="seccion-central">
-        <h3 class="titulo-rojo">Estudiantes</h3>
-        <div class="contenedor-tarjeta-lateral">
-            <div class="tarjeta-verde">
-                <ul id="estudiante-lista">
-                    {% for e in estudiantes %}
-                        <li>
-                            <span class="est-nombre">{{ e.nombres }} {{ e.apellidos }}</span>
-                            <span class="est-cedula">{{ e.cedula }}</span>
-                            <span class="est-carrera">{{ e.carrera.nombre_carrera }}</span>
-                            <a href="{% url 'estudiante_detalles' brigada.id e.id %}"  class="est-link">Ver detalles...</a>
-                        </li>
-                    {% endfor %}
-                    {% if estudiantes|length == 0 %}
-                        <p class="estudiante-mensaje-vacio">No hay estudiantes asignados.</p>
-                    {% endif %}
-                </ul>
             </div>
-            <button id="estudiante-btn-nuevo" class="btn-mas btn-lateral">
-                <i class="fas fa-plus"></i>
-            </button>
         </div>
     </div>
 </div> 
