@@ -46,6 +46,7 @@ def obtener_contexto_brigada_detalles(brigada_id):
         'carreras': carreras_disponibles
     }
 
+
 @login_required
 def modificar_nombre_brigada(request, brigada_id):
     '''Modifica el nombre de una brigada específica, asegurando que el nuevo nombre sea un número entero único.'''
@@ -61,14 +62,14 @@ def modificar_nombre_brigada(request, brigada_id):
 
             # 2. Validación de existencia (Excluyendo la brigada actual)
             duplicado = Brigada.objects.filter(
-                periodo=brigada.periodo, 
+                periodo=brigada.periodo,
                 nombre=nuevo_nombre
             ).exclude(id=brigada_id).exists()
 
             # Nota: filter().exclude() asegura que si no cambias el nombre, no dé error de "ya existe"
             if duplicado:
                 return JsonResponse({
-                    'success': False, 
+                    'success': False,
                     'message': f'La brigada #{nuevo_nombre} ya existe en el periodo {brigada.periodo.nombre}.'
                 }, status=400)
 
@@ -87,6 +88,7 @@ def modificar_nombre_brigada(request, brigada_id):
 
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
 
+
 @login_required
 def guardar_asesor_comunitario(request, brigada_id):
     '''Guarda o actualiza un asesor comunitario, prohibiendo la reutilización de asesores académicos.'''
@@ -104,22 +106,24 @@ def guardar_asesor_comunitario(request, brigada_id):
                              'cedula', 'telefono', 'correo']
         for campo in campos_requeridos:
             if not data.get(campo) or str(data.get(campo)).strip() == '':
-                messages.error(request, f'El campo "{campo}" es obligatorio.')
-                return JsonResponse({'success': False}, status=400)
+                return JsonResponse({
+                    'success': False,
+                    'message': f'El campo "{campo}" es obligatorio.'
+                }, status=400)
 
         if asesor_id:
             # --- 1. MODIFICAR EXISTENTE ---
             try:
                 asesor = Asesor.objects.get(id=asesor_id)
             except Asesor.DoesNotExist:
-                messages.error(request, 'Asesor no encontrado.')
-                return JsonResponse({'success': False}, status=404)
+                return JsonResponse({'success': False, 'message': 'Asesor no encontrado.'}, status=404)
 
             # Validar que la nueva cédula no la tenga OTRO asesor
             if Asesor.objects.filter(cedula=nueva_cedula).exclude(id=asesor_id).exists():
-                messages.error(
-                    request, f'La cédula {nueva_cedula} ya está registrada.')
-                return JsonResponse({'success': False}, status=400)
+                return JsonResponse({
+                    'success': False,
+                    'message': f'La cédula {nueva_cedula} ya está registrada.'
+                }, status=400)
 
             asesor.nombres = data['nombres']
             asesor.apellidos = data['apellidos']
@@ -138,9 +142,10 @@ def guardar_asesor_comunitario(request, brigada_id):
                 # VALIDACIÓN CLAVE: Verificar si es Asesor Académico
                 # Usamos hasattr para comprobar la relación OneToOne inversa
                 if hasattr(asesor_existente, 'asesoracademico'):
-                    messages.error(
-                        request, f'La cédula {nueva_cedula} pertenece a un Asesor Académico.')
-                    return JsonResponse({'success': False}, status=400)
+                    return JsonResponse({
+                        'success': False,
+                        'message': f'La cédula {nueva_cedula} pertenece a un Asesor Académico.'
+                    }, status=400)
 
                 asesor_objetivo = asesor_existente
                 AsesorComunitario.objects.get_or_create(asesor=asesor_objetivo)
@@ -169,11 +174,10 @@ def guardar_asesor_comunitario(request, brigada_id):
         return JsonResponse({'success': True})
 
     except Brigada.DoesNotExist:
-        messages.error(request, 'Brigada no encontrada.')
-        return JsonResponse({'success': False}, status=404)
+        return JsonResponse({'success': False, 'message': 'Brigada no encontrada.'}, status=404)
     except Exception as e:
-        messages.error(request, f"Error inesperado: {str(e)}")
-        return JsonResponse({'success': False}, status=500)
+        return JsonResponse({'success': False, 'message': f"Error inesperado: {str(e)}"}, status=500)
+
 
 @login_required
 def asignar_asesor_academico(request, brigada_id):
@@ -230,9 +234,10 @@ def procesar_proyecto(request, brigada_id):
         ).first()
 
         if not enlace_academico:
-            messages.error(
-                request, 'No se puede crear el proyecto: La brigada no tiene un Asesor Académico asignado.')
-            return JsonResponse({'success': False}, status=400)
+            return JsonResponse({
+                'success': False,
+                'message': 'No se puede crear el proyecto: La brigada no tiene un Asesor Académico asignado.'
+            }, status=400)
 
         # 2. Captura manual de datos desde el formulario HTML
         nombre = request.POST.get('nombre_proyecto')
@@ -242,9 +247,10 @@ def procesar_proyecto(request, brigada_id):
 
         # Validación básica de campos requeridos para el JSON
         if not all([nombre, comunidad, f_inicio]):
-            messages.error(
-                request, 'Faltan campos obligatorios (Nombre, Comunidad o Fecha de Inicio).')
-            return JsonResponse({'success': False}, status=400)
+            return JsonResponse({
+                'success': False,
+                'message': 'Faltan campos obligatorios (Nombre, Comunidad o Fecha de Inicio).'
+            }, status=400)
 
         if f_fin:
             try:
@@ -254,14 +260,16 @@ def procesar_proyecto(request, brigada_id):
                 fecha_fin_obj = datetime.strptime(f_fin, formato).date()
 
                 if fecha_fin_obj < fecha_inicio_obj:
-                    messages.error(
-                        request, 'Error: La fecha de culminación no puede ser anterior a la fecha de inicio.')
-                    return JsonResponse({'success': False}, status=400)
+                    return JsonResponse({
+                        'success': False,
+                        'message': 'La fecha de culminación no puede ser anterior a la fecha de inicio.'
+                    }, status=400)
             except ValueError:
                 # Se dispara si alguien manipula el HTML y envía algo que no es una fecha válida
-                messages.error(
-                    request, 'El formato de las fechas proporcionadas es inválido.')
-                return JsonResponse({'success': False}, status=400)
+                return JsonResponse({
+                    'success': False,
+                    'message': 'El formato de las fechas proporcionadas es inválido.'
+                }, status=400)
 
         # 3. Creación del objeto Proyecto
         try:
@@ -285,21 +293,24 @@ def procesar_proyecto(request, brigada_id):
             return JsonResponse({'success': True})
 
         except AsesorAcademico.DoesNotExist:
-            messages.error(
-                request, 'El asesor asignado no tiene un perfil académico completo.')
-            return JsonResponse({'success': False}, status=400)
+            return JsonResponse({
+                'success': False,
+                'message': 'El asesor asignado no tiene un perfil académico completo.'
+            }, status=400)
         except Exception as e:
-            messages.error(
-                request, f'Error al guardar en la base de datos: {str(e)}')
-            return JsonResponse({'success': False}, status=500)
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al guardar en la base de datos: {str(e)}'
+            }, status=500)
 
-    return redirect('brigada_detalles', brigada_id=brigada_id)
+    # Si entra por GET u otro método
+    return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
 
 
 @login_required
 def guardar_estudiante_ajax(request, brigada_id, carrera_id):
     if request.method != 'POST':
-        return JsonResponse({'success': False}, status=405)
+        return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
 
     # 1. Obtener los datos del cuerpo del POST (enviados por el FormData de JS)
     nombres = request.POST.get('nombres')
@@ -310,15 +321,17 @@ def guardar_estudiante_ajax(request, brigada_id, carrera_id):
 
     # Validación de campos vacíos en backend
     if not all([nombres, apellidos, cedula]):
-        messages.error(
-            request, 'Faltan campos obligatorios (Nombres, Apellidos y Cédula).')
-        return JsonResponse({'success': False}, status=400)
+        return JsonResponse({
+            'success': False,
+            'message': 'Faltan campos obligatorios (Nombres, Apellidos y Cédula).'
+        }, status=400)
 
     # 2. Validación de Cédula Duplicada (Requerimiento principal)
     if Estudiante.objects.filter(cedula=cedula).exists():
-        messages.error(
-            request, f'La cédula {cedula} ya está registrada en el sistema.')
-        return JsonResponse({'success': False}, status=400)
+        return JsonResponse({
+            'success': False,
+            'message': f'La cédula {cedula} ya está registrada en el sistema.'
+        }, status=400)
 
     try:
         # 3. Obtener las instancias de los objetos por ID (vienen de la URL)
@@ -341,5 +354,7 @@ def guardar_estudiante_ajax(request, brigada_id, carrera_id):
         return JsonResponse({'success': True})
 
     except Exception as e:
-        messages.error(request, f'Ocurrió un error inesperado: {str(e)}')
-        return JsonResponse({'success': False}, status=500)
+        return JsonResponse({
+            'success': False,
+            'message': f'Ocurrió un error inesperado: {str(e)}'
+        }, status=500)

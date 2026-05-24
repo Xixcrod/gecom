@@ -10,66 +10,94 @@
 {% block content %}
 <div id="metadata-proyecto" data-id="{{ proyecto.id }}"></div>
 
-<h2>Documentos del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
-<!-- Botón para regresar-->
-<div><a href="{% url 'brigada_detalles' brigada.id %}"> ← Regresar</a></div>
 
-<!-- Botón para editar el proyecto -->
-<button class="btn-modificar" onclick="abrirModalEditarProyecto()">Editar Proyecto</button>
+
+
+<div class="cabecera-proyecto">
+
+    <!-- Botón para regresar-->
+    <a href="{% url 'brigada_detalles' brigada.id %}" class="back-icon" title="Volver"> 
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </a>
+
+    <h2 class="titulo-proyecto">Documentos del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
+    <!-- Botón para editar el proyecto -->
+<button class="btn-lapiz" onclick="abrirModalEditarProyecto()">
+    <svg viewBox="0 0 1024 1024" class="svg-lapiz" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M832 512a32 32 0 1164 0v352a32 32 0 01-32 32H160a32 32 0 01-32-32V160a32 32 0 0132-32h352a32 32 0 010 64H192v640h640V512z"/>
+                <path fill="currentColor" d="M469.952 554.24l52.8-7.552L847.104 222.4a32 32 0 10-45.248-45.248L477.44 501.44l-7.552 52.8zm422.4-422.4a96 96 0 010 135.808l-331.84 331.84a32 32 0 01-18.112 9.088L436.8 623.68a32 32 0 01-36.224-36.224l15.104-105.6a32 32 0 019.024-18.112l331.904-331.84a96 96 0 01135.744 0z"/>
+    </svg>
+</button>
+</div>
+
+
+
 <hr>
 
 <!-- Modal para editar datos del proyecto -->
-<div id="modalEditarProyecto" class="modal-sistema" style="display: none;">
-    <div class="modal-contenido">
-        <div class="header-modal">
-            <h3>Editar Datos del Proyecto</h3>
-        </div>
+<div id="modalEditarProyecto" class="modal-overlay">
+    <div class="modal-content-light">
+        
+        <h3 class="modal-title">Editar Proyecto</h3>
+        <p class="modal-subtitle">Actualice los datos del proyecto actual</p>
+
         <form id="formEditarProyecto">
             {% csrf_token %} 
             
-            <p>
-                <label>Nombre del Proyecto:</label><br>
-                <input type="text" name="nombre_proyecto" value="{{ proyecto.nombre_proyecto }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Comunidad:</label><br>
-                <input type="text" name="comunidad" value="{{ proyecto.comunidad }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Fecha de Inicio:</label><br>
-                <input type="date" name="fecha_inicio" value="{{ proyecto.fecha_inicio|date:'Y-m-d' }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Fecha de Culminación (Opcional):</label><br>
-                <input type="date" name="fecha_culminacion" value="{{ proyecto.fecha_culminacion|date:'Y-m-d' }}" style="width: 100%;">
-            </p>
-            <p>
-                <label>Estado del Proyecto:</label><br>
-                <select name="aprobado" required style="width: 100%;">
-                    <option value="false" {% if not proyecto.aprobado %}selected{% endif %}>En Progreso / No Aprobado</option>
-                    <option value="true" {% if proyecto.aprobado %}selected{% endif %}>Aprobado</option>
-                </select>
-            </p>
+            <div class="modal-form-grid">
+                <div class="centered-group full-width">
+                    <label class="modal-label">Nombre del Proyecto</label>
+                    <input type="text" name="nombre_proyecto" class="modal-input" value="{{ proyecto.nombre_proyecto }}" required>
+                </div>
+                
+                <div class="centered-group full-width">
+                    <label class="modal-label">Comunidad</label>
+                    <input type="text" name="comunidad" class="modal-input" value="{{ proyecto.comunidad }}" required>
+                </div>
+                
+                <div class="centered-group">
+                    <label class="modal-label">Fecha de Inicio</label>
+                    <input type="date" name="fecha_inicio" class="modal-input" value="{{ proyecto.fecha_inicio|date:'Y-m-d' }}" required>
+                </div>
+                
+                <div class="centered-group">
+                    <label class="modal-label">Fecha Culminación</label>
+                    <input type="date" name="fecha_culminacion" class="modal-input" value="{{ proyecto.fecha_culminacion|date:'Y-m-d' }}">
+                </div>
 
-            <div id="errorAlertaEditarProyecto" class="error-msg" style="color:red; margin-bottom: 10px; font-weight: bold;"></div>
+                <div class="centered-group full-width">
+                    <label class="modal-label">Estado del Proyecto</label>
+                    <select name="aprobado" class="modal-input" required>
+                        <option value="false" {% if not proyecto.aprobado %}selected{% endif %}>En Progreso / No Aprobado</option>
+                        <option value="true" {% if proyecto.aprobado %}selected{% endif %}>Aprobado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="errorAlertaEditarProyecto" class="error-brigada-ajax error-modal-msg" style="display: none;"></div>
             
-            <div class="footer-modal">
-                <button type="button" onclick="cerrarModalEditarProyecto()" style="padding: 8px 15px;">Cancelar</button>
-                <button type="submit" class="btn-subir" style="padding: 8px 15px;">Guardar Cambios</button>
+            <div class="modal-actions">
+                <button type="button" onclick="cerrarModalEditarProyecto()" class="btn-cancel">Cancelar</button>
+                <button type="submit" class="btn-save">Guardar Cambios</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Sección de documentos -->
-<section>
+<section class="documentos-container">
+    
     <div class="doc-card">
-        <div>
+        <div class="doc-info">
             <h3>Planilla de Inscripción</h3>
             {% if documents.planilla_inscripcion %}
-                <a href="{{ documents.planilla_inscripcion.url }}" target="_blank">📄 Ver archivo actual</a>
+                <a href="{{ documents.planilla_inscripcion.url }}" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                </a>
             {% else %}
-                <small style="color: gray;">No cargado</small>
+                <span class="doc-estado-vacio">No cargado</span>
             {% endif %}
         </div>
         <button class="{% if documents.planilla_inscripcion %}btn-modificar{% else %}btn-subir{% endif %}" 
@@ -79,12 +107,14 @@
     </div>
 
     <div class="doc-card">
-        <div>
+        <div class="doc-info">
             <h3>Control de Horas</h3>
             {% if documents.control_horas %}
-                <a href="{{ documents.control_horas.url }}" target="_blank">📄 Ver archivo actual</a>
+                <a href="{{ documents.control_horas.url }}" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                </a>
             {% else %}
-                <small style="color: gray;">No cargado</small>
+                <span class="doc-estado-vacio">No cargado</span>
             {% endif %}
         </div>
         <button class="{% if documents.control_horas %}btn-modificar{% else %}btn-subir{% endif %}" 
@@ -94,12 +124,14 @@
     </div>
 
     <div class="doc-card">
-        <div>
+        <div class="doc-info">
             <h3>Anteproyecto</h3>
             {% if documents.anteproyecto %}
-                <a href="{{ documents.anteproyecto.url }}" target="_blank">📄 Ver archivo actual</a>
+                <a href="{{ documents.anteproyecto.url }}" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                </a>
             {% else %}
-                <small style="color: gray;">No cargado</small>
+                <span class="doc-estado-vacio">No cargado</span>
             {% endif %}
         </div>
         <button class="{% if documents.anteproyecto %}btn-modificar{% else %}btn-subir{% endif %}" 
@@ -109,12 +141,14 @@
     </div>
 
     <div class="doc-card">
-        <div>
+        <div class="doc-info">
             <h3>Informe Final</h3>
             {% if documents.informe_final %}
-                <a href="{{ documents.informe_final.url }}" target="_blank">📄 Ver archivo actual</a>
+                <a href="{{ documents.informe_final.url }}" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                </a>
             {% else %}
-                <small style="color: gray;">No cargado</small>
+                <span class="doc-estado-vacio">No cargado</span>
             {% endif %}
         </div>
         <button class="{% if documents.informe_final %}btn-modificar{% else %}btn-subir{% endif %}" 
@@ -122,25 +156,29 @@
             {% if documents.informe_final %}Modificar{% else %}Subir{% endif %}
         </button>
     </div>
+
 </section>
 
 <!-- Modal para cargar documentos -->
-<div id="modalDocumento" class="modal-sistema">
-    <div class="modal-contenido">
-        <div class="header-modal">
-            <h3 id="modalTitulo">Cargar Documento</h3>
-        </div>
+<div id="modalDocumento" class="modal-overlay">
+    <div class="modal-content-light">
+        
+        <h3 id="modalTitulo" class="modal-title">Cargar Documento</h3>
+        <p class="modal-subtitle">Suba el archivo correspondiente al sistema</p>
         
         <form id="formDocumento" enctype="multipart/form-data">
             {% csrf_token %}
-            <p id="instruccionModal">Seleccione el archivo PDF (Máx 5MB):</p>
-            <input type="file" name="documento" id="inputArchivo" accept="application/pdf" required style="width: 100%;">
             
-            <div id="errorAlerta" class="error-msg"></div>
+            <div class="centered-group full-width">
+                <label id="instruccionModal" class="modal-label">Seleccione el archivo PDF (Máx 5MB):</label>
+                <input type="file" name="documento" id="inputArchivo" class="modal-input" accept="application/pdf" required>
+            </div>
+            
+            <div id="errorAlerta" class="error-brigada-ajax error-modal-msg" style="display: none;"></div>
 
-            <div class="footer-modal">
-                <button type="button" onclick="cerrarModal()" style="background:#6c757d; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Cancelar</button>
-                <button type="submit" id="btnConfirmar" class="btn-subir">Confirmar Envío</button>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" id="btnConfirmar" class="btn-save">Confirmar Envío</button>
             </div>
         </form>
     </div>

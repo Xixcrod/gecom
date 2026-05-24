@@ -70,15 +70,19 @@
    TARJETAS Y COLUMNAS
    ========================================================= */
 .asesores-grid {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    margin-bottom: 30px;
+    display: flex;             /* Activa Flexbox */
+    flex-direction: row;       /* Organiza los hijos en fila (horizontal) */
+    justify-content: center;   /* Centra las tarjetas horizontalmente */
+    align-items: flex-start;   /* Alinea las tarjetas por su borde superior */
+    gap: 200px;                 /* Espacio de separación entre Proyecto y Estudiantes */
+    width: 100%;               /* Ocupa todo el ancho disponible del contenedor azul */
+    margin-bottom: 30px;       /* Mantiene el margen inferior existente */
 }
 
 .asesor-columna {
     position: relative;
     width: 45%;
+    max-width: 500px;
 }
 
 .seccion-central {
@@ -205,7 +209,7 @@
 /* Ajustes a los hijos directos del grid para que compartan el espacio */
 .secciones-secundarias-grid .seccion-central {
     flex: 1;                   /* Cada sección ocupa el mismo ancho disponible (aprox 50%) */
-    max-width: 600px;          /* Opcional: Ancho máximo para que no se estiren demasiado en pantallas enormes */
+    max-width: 550px;          /* Opcional: Ancho máximo para que no se estiren demasiado en pantallas enormes */
     margin-bottom: 0;          /* Anula el margen inferior de la clase base porque ya lo maneja el padre */
     width: 100%;               /* Asegura que ocupen el ancho definido por flex */
 }
@@ -404,94 +408,364 @@
 /* =========================================================
    BOTONES E ICONOS LATERALES
    ========================================================= */
-.btn-lapiz,
+/* ==========================================================================
+   BOTÓN DE EDITAR (LÁPIZ SVG)
+   ========================================================================== */
+
+.btn-lapiz {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent; /* Quita cualquier fondo */
+    border: none; /* Quita los bordes */
+    box-shadow: none; /* Quita las sombras */
+    color: var(--primary-color); /* Azul oscuro de tu paleta para que se vea bien sobre fondo claro */
+    padding: 5px; /* Un pequeño margen invisible para que sea fácil hacer click */
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Efecto Hover (Al pasar el mouse) */
+.btn-lapiz:hover {
+    transform: scale(1.15); /* Crece ligeramente para indicar que es clickeable */
+    color: var(--secondary-color); /* Cambia a un azul más claro/brillante de tu paleta */
+    background: transparent; /* Mantiene el fondo transparente */
+}
+
+/* Control del tamaño de tu SVG */
+.svg-lapiz {
+    width: 45px; /* Lo hacemos un poquito más grande ya que no tiene el círculo que le daba volumen */
+    height: 45px;
+    display: block;
+}
+
+/* Clase para controlar el tamaño del nuevo icono SVG */
+.svg-mas {
+    width: 45px;
+    height: 45px;
+    fill: currentColor; /* Esto hará que el icono herede el color del texto del botón */
+    transition: transform 0.2s ease;
+}
+
+/* Ajuste del contenedor del botón para centrar y animar */
 .btn-mas {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 2rem;
-    color: #0d47a1;
-    /* Azul oscuro para los iconos */
+    color: var(--primary-color); /* Color azul original */
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Efecto al pasar el mouse (el "salto" suave) */
+.btn-mas:hover {
+    transform: scale(1.15); /* Aumenta un poco al pasar el mouse */
+    color: var(--secondary-color); /* Un azul un poco más brillante en hover */
 }
 
 .btn-lateral {
     position: absolute;
-    right: -40px;
-    /* Posiciona el icono a la derecha, fuera de la tarjeta */
-    top: 50%;
-    transform: translateY(-50%);
+    right: -65px; 
+    top: 50%; /* Cambiado de 45% a 50% */
+    transform: translateY(-50%); 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    will-change: transform; 
+    cursor: pointer;
 }
 
-.asesor-columna .btn-lateral {
-    right: -35px;
-    /* Ajuste especial para los asesores */
-    top: 40px;
+/* 2. Corregimos el hover */
+.btn-lateral:hover {
+    /* Mantenemos el translateY(-50%) para que no se mueva verticalmente al crecer */
+    transform: translateY(-50%) scale(1.2); 
 }
 
-/* Estilos Base para Modales (Para que no se rompan) */
+/* =========================================================
+   MODAL DE EDICIÓN DE ASESOR
+   ========================================================= */
+
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+    backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 2000;
+    z-index: 2000; /* Aseguramos que quede por encima de todo */
 }
 
-.modal-content {
-    background-color: #fff;
-    border-radius: 8px;
+/* Contenedor principal de la modal */
+.modal-content-light {
+    background: 
+        linear-gradient(#f4f8fb, #f4f8fb) padding-box, 
+        linear-gradient(to bottom, var(--primary-color), var(--secondary-color)) border-box;
+    padding: 1.5rem 2rem; /* REDUCIDO: Menos espacio interno arriba y abajo */
+    border: 8px solid transparent;
+    border-radius: 0.5rem;
     width: 90%;
-    max-width: 500px;
-    font-family: Arial, sans-serif;
-    /* Fuente limpia para formularios */
+    max-width: 550px; /* AUMENTADO: De 400px a 550px para las dos columnas */
+    max-height: 90vh; /* NUEVO: Nunca será más alta que la pantalla */
+    overflow-y: auto; /* NUEVO: Agrega scroll interno si la pantalla es muy pequeña */
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-.modal-body {
-    padding: 20px;
+.modal-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas del mismo ancho */
+    gap: 0.8rem 1rem; /* Espaciado entre filas y columnas */
+    text-align: left;
 }
 
-.modal-body input,
-.modal-body select {
+/* Tipografía de la modal */
+.modal-title {
+    color: #1e3a8a; /* Azul oscuro */
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.modal-subtitle {
+    color: #1e3a8a;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.centered-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0; 
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+
+
+.modal-label {
+    color: #0f172a;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.modal-content-light input[type="text"],
+.modal-content-light input[type="number"],
+.modal-content-light input[type="email"],
+.modal-content-light input[type="date"],
+.modal-content-light select,
+.modal-input {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
+    padding: 0.6rem 0.8rem; /* REDUCIDO */
+    background: #ffffff;
+    border: 2px solid #2563eb; 
+    border-radius: 0.5rem;
+    color: #333;
+    font-size: 0.95rem; /* Letra un toque más pequeña */
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: left;
     box-sizing: border-box;
 }
 
-.modal-footer {
-    padding: 15px;
+.modal-content-light input:focus {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.modal-content-light input::placeholder {
+    color: #94a3b8;
+}
+
+/* Contenedor de Botones */
+.modal-actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    background: #eee;
+    gap: 1rem;
+    margin-top: 1.5rem; /* REDUCIDO de 2rem a 1.5rem */
+    justify-content: center;
 }
 
-.btn-guardar {
-    background: #1a73e8;
+/* Botón Cancelar (Azul oscuro) */
+.btn-cancel {
+    flex: 1;
+    background: #2e3b84; 
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
     cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
 }
 
-.btn-cancelar {
-    background: #d32f2f;
+.btn-cancel:hover {
+    background: #1e295d;
+    transform: scale(1.02);
+}
+
+/* Botón Guardar (Azul claro) */
+.btn-save {
+    flex: 1;
+    background: #38bdf8; 
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
     cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
 }
 
+.btn-save:hover {
+    background: #0284c7;
+    transform: scale(1.02);
+}
+
+/* Botón de Cerrar (X) Adaptado al nuevo diseño */
 .close-btn {
-    font-size: 24px;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    color: #94a3b8;
     cursor: pointer;
-    float: right;
-    margin-top: -10px;
+    line-height: 1;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.close-btn:hover {
+    color: #ef4444; /* Se pone rojo sutilmente al pasar el mouse */
+    transform: scale(1.1);
+}
+
+/* Animaciones de error intactas */
+.error-brigada-ajax {
+    width: 100%;
+    margin-top: 1rem;
+    animation: shake 0.4s ease-in-out; 
+}
+
+.error-modal-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background-color: rgba(239, 68, 68, 0.15); 
+    color: #ef4444; 
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #ef4444;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    animation: fadeInError 0.3s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+@keyframes fadeInError {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .modal-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   MODAL DE ASIGNAR ASESOR ACADÉMICO (Estilos Adaptados)
+   ========================================================= */
+
+.buscador-contenedor {
+    position: relative;
+    width: 100%;
+}
+
+/* Alineamos la lupa en el centro vertical del input */
+.buscador-contenedor i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8; /* Gris azulado acorde al nuevo diseño */
+    font-size: 1.1rem;
+}
+
+/* Le damos espacio interno (padding-left) extra para que el texto no pise la lupa */
+.buscador-contenedor .modal-input {
+    padding-left: 2.5rem; 
+}
+
+/* Rediseñamos la lista para que combine con los degradados */
+.lista-asesores-busqueda {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 2px solid #e2e8f0; /* Borde más suave */
+    border-radius: 0.5rem;
+    background: #f8fafc; /* Fondo un poco más gris para diferenciarlo */
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+.item-asesor {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.item-asesor:hover {
+    background: #e0f2fe; /* Azul cielo muy claro */
+}
+
+/* Estado de selección (Azul eléctrico) */
+.item-asesor.seleccionado {
+    background: #bae6fd; 
+    border-left: 4px solid #0284c7;
+}
+
+.item-asesor.seleccionado .check-icon {
+    display: block;
+    color: #0284c7; /* Azul fuerte para el check */
+    font-size: 1.2rem;
+}
+
+.check-icon {
+    display: none;
+}
+
+.item-nombre {
+    font-weight: 700;
+    display: block;
+    color: #0f172a; /* Texto principal oscuro */
+}
+
+.item-sub {
+    font-size: 0.85rem;
+    color: #64748b; /* Subtexto más suave */
+}
+
+.empty-msg {
+    text-align: center;
+    padding: 1rem;
+    color: #64748b;
+    font-weight: 600;
 }

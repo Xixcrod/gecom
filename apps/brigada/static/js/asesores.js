@@ -76,13 +76,26 @@ function abrirModalComunitario(id, nombres, apellidos, cedula, telefono, correo)
     document.getElementById('com_correo').value = correo || '';
     
     document.getElementById('modal-titulo').innerText = id ? 'Editar Asesor Comunitario' : 'Nuevo Asesor Comunitario';
-    
+
+    // Limpiamos los errores si se abre de nuevo el modal
+    const errorContainer = document.getElementById('error-comunitario-ajax');
+    if(errorContainer) {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+    }
+
     const modal = document.getElementById('modalComunitario');
     modal.style.display = 'flex';
 }
 
 function cerrarModalComunitario() {
     document.getElementById('modalComunitario').style.display = 'none';
+}
+
+function mostrarErrorModalComunitario(mensaje) {
+    const errorContainer = document.getElementById('error-comunitario-ajax');
+    errorContainer.style.display = 'block';
+    errorContainer.innerHTML = `<div class="error-modal-msg"><i class="fas fa-exclamation-circle"></i> ${mensaje}</div>`;
 }
 
 function guardarComunitario(brigadaId) {
@@ -97,7 +110,7 @@ function guardarComunitario(brigadaId) {
 
     // Validación simple
     if (!payload.nombres || !payload.cedula) {
-        alert("Nombres y Cédula son obligatorios.");
+        mostrarErrorModalComunitario("Los Nombres y la Cédula son obligatorios.");
         return;
     }
 
@@ -111,14 +124,20 @@ function guardarComunitario(brigadaId) {
         },
         body: JSON.stringify(payload)
     })
-    .then(res => {
-        // Recargamos la página sin importar si es 200, 400 o 500.
-        // Django habrá guardado el mensaje (success o error) en la sesión.
-        location.reload();
+    .then(async res => {
+        const data = await res.json();
+        
+        if (data.success) {
+            // ÉXITO: Django ya guardó el mensaje, recargamos la página.
+            location.reload();
+        } else {
+            // ERROR: Mostramos el error en el modal sin recargar la página.
+            mostrarErrorModalComunitario(data.message || "Ocurrió un error al guardar.");
+        }
     })
     .catch(err => {
         console.error("Error crítico de red:", err);
-        alert("Error de conexión con el servidor.");
+        mostrarErrorModalComunitario("Error de conexión con el servidor.");
     });
 }
 

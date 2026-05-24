@@ -3,13 +3,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAbrir = document.getElementById('estudiante-btn-nuevo');
     const btnCerrar = document.getElementById('estudiante-btn-cerrar');
     const form = document.getElementById('estudiante-form');
-    const divError = document.getElementById('estudiante-error');
+    const errorDivEstudiante = document.getElementById('error-estudiante-ajax');
+
+    // Función para mostrar errores
+    function mostrarErrorEstudiante(mensaje) {
+        if (!errorDivEstudiante) return;
+        errorDivEstudiante.style.display = 'block';
+        errorDivEstudiante.innerHTML = `<div class="error-modal-msg"><i class="fas fa-exclamation-circle"></i> ${mensaje}</div>`;
+    }
 
     // --- 1. Manejo del Modal ---
     if (btnAbrir) {
         btnAbrir.addEventListener('click', () => {
-            modal.style.display = 'flex'; // Aseguramos que sea flex para centrar el contenido
-            if (divError) divError.style.display = 'none'; 
+            modal.style.display = 'flex'; 
+            if (errorDivEstudiante) {
+                errorDivEstudiante.style.display = 'none';
+                errorDivEstudiante.innerHTML = '';
+            }
             form.reset(); 
         });
     }
@@ -20,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Cerrar al hacer clic en el fondo oscuro
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.style.display = 'none';
@@ -33,27 +42,28 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault(); 
 
             const formData = new FormData(form);
-            if (divError) divError.style.display = 'none';
+            
+            // Ocultar errores al reintentar
+            if (errorDivEstudiante) {
+                errorDivEstudiante.style.display = 'none';
+                errorDivEstudiante.innerHTML = '';
+            }
 
-            // Obtenemos los IDs necesarios para la URL
             const brigadaId = formData.get('brigada_id');
             const carreraId = formData.get('carrera_id');
 
-            // Validación rápida en cliente
             if (!brigadaId || !carreraId) {
-                alert('Por favor, selecciona una carrera válida.');
+                mostrarErrorEstudiante('Por favor, selecciona una carrera válida.');
                 return;
             }
 
-            // Construcción de la URL (Asegúrate que coincida con tu urls.py)
             const url = `/brigada/${brigadaId}/${carreraId}/estudiante/agregar/`;
+            const btnSubmit = form.querySelector('button[type="submit"]');
 
             try {
-                const btnSubmit = form.querySelector('button[type="submit"]');
-                // Deshabilitar botón para evitar doble envío
                 if(btnSubmit) btnSubmit.disabled = true;
 
-                await fetch(url, { 
+                const response = await fetch(url, { 
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -62,16 +72,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                window.location.reload();
+                // LEER EL JSON DEL BACKEND
+                const data = await response.json();
 
+                if (data.success) {
+                    // Si todo fue bien, recarga para ver el mensaje de éxito de Django
+                    window.location.reload();
+                } else {
+                    // Si hubo error de validación, mostramos el mensaje y habilitamos el botón
+                    mostrarErrorEstudiante(data.message || 'Error al guardar el estudiante.');
+                    if (btnSubmit) btnSubmit.disabled = false;
+                }
 
             } catch (error) {
-                // Este catch solo se activa si hay un fallo de red o el servidor cae.
                 console.error("Error en Fetch:", error);
-                alert('Error de conexión con el servidor. Revisa tu internet.');
-                
-                // Si falla la red, habilitamos el botón de nuevo
-                const btnSubmit = form.querySelector('button[type="submit"]');
+                mostrarErrorEstudiante('Error de conexión con el servidor. Revisa tu internet.');
                 if (btnSubmit) btnSubmit.disabled = false;
             }
         });

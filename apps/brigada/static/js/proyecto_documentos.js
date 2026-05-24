@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTitulo.innerText = (existe === '1' ? 'Modificar ' : 'Subir ') + nombre;
         errorAlerta.style.display = 'none';
         form.reset();
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
     };
 
     window.cerrarModal = function() {

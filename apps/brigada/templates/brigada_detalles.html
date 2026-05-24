@@ -2,8 +2,6 @@
 {% load static %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/brigada_detalles.css' %}">  
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock extra_css %}
 {% block titulo_seccion %}Brigadas{% endblock %}
 
@@ -23,8 +21,11 @@
 
 
         <h2 id="titulo-brigada">Brigada: {{ brigada.nombre }} - Periodo: {{ brigada.periodo.nombre }}</h2>
-        <button onclick="abrirModalModificar('{{ brigada.id }}', '{{ brigada.nombre }}')" class="btn-lapiz">
-            <i class="fas fa-pencil-alt"></i>
+        <button onclick="abrirModalModificar('{{ brigada.id }}', '{{ brigada.nombre }}')" class="btn-lapiz" title="Editar Brigada">
+            <svg viewBox="0 0 1024 1024" class="svg-lapiz" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M832 512a32 32 0 1164 0v352a32 32 0 01-32 32H160a32 32 0 01-32-32V160a32 32 0 0132-32h352a32 32 0 010 64H192v640h640V512z"/>
+                <path fill="currentColor" d="M469.952 554.24l52.8-7.552L847.104 222.4a32 32 0 10-45.248-45.248L477.44 501.44l-7.552 52.8zm422.4-422.4a96 96 0 010 135.808l-331.84 331.84a32 32 0 01-18.112 9.088L436.8 623.68a32 32 0 01-36.224-36.224l15.104-105.6a32 32 0 019.024-18.112l331.904-331.84a96 96 0 01135.744 0z"/>
+            </svg>
         </button>
     </div>
 
@@ -50,8 +51,11 @@
                     {% endif %}
                 </div>
                 {% if asesor_comunitario %}
-                <button onclick="abrirModalComunitario('{{ asesor_comunitario.asesor.id }}', '{{ asesor_comunitario.asesor.nombres }}', '{{ asesor_comunitario.asesor.apellidos }}', '{{ asesor_comunitario.asesor.cedula }}', '{{ asesor_comunitario.asesor.telefono }}', '{{ asesor_comunitario.asesor.correo }}')" class="btn-lapiz btn-lateral">
-                    <i class="fas fa-pencil-alt"></i>
+                <button onclick="abrirModalComunitario('{{ asesor_comunitario.asesor.id }}', '{{ asesor_comunitario.asesor.nombres }}', '{{ asesor_comunitario.asesor.apellidos }}', '{{ asesor_comunitario.asesor.cedula }}', '{{ asesor_comunitario.asesor.telefono }}', '{{ asesor_comunitario.asesor.correo }}')" class="btn-lapiz btn-lateral" title="Editar Asesor C">
+                    <svg viewBox="0 0 1024 1024" class="svg-lapiz" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="currentColor" d="M832 512a32 32 0 1164 0v352a32 32 0 01-32 32H160a32 32 0 01-32-32V160a32 32 0 0132-32h352a32 32 0 010 64H192v640h640V512z"/>
+                        <path fill="currentColor" d="M469.952 554.24l52.8-7.552L847.104 222.4a32 32 0 10-45.248-45.248L477.44 501.44l-7.552 52.8zm422.4-422.4a96 96 0 010 135.808l-331.84 331.84a32 32 0 01-18.112 9.088L436.8 623.68a32 32 0 01-36.224-36.224l15.104-105.6a32 32 0 019.024-18.112l331.904-331.84a96 96 0 01135.744 0z"/>
+                    </svg>
                 </button>
                 {% endif %}
             </div>
@@ -85,8 +89,11 @@
                 </div>
                 
                 {% if asesor_academico %}
-                <button onclick="abrirModalAsignarAcademico()" class="btn-lapiz btn-lateral">
-                    <i class="fas fa-pencil-alt"></i>
+                <button onclick="abrirModalAsignarAcademico()" class="btn-lapiz btn-lateral" title="Editar Asesor A">
+                    <svg viewBox="0 0 1024 1024" class="svg-lapiz" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="currentColor" d="M832 512a32 32 0 1164 0v352a32 32 0 01-32 32H160a32 32 0 01-32-32V160a32 32 0 0132-32h352a32 32 0 010 64H192v640h640V512z"/>
+                        <path fill="currentColor" d="M469.952 554.24l52.8-7.552L847.104 222.4a32 32 0 10-45.248-45.248L477.44 501.44l-7.552 52.8zm422.4-422.4a96 96 0 010 135.808l-331.84 331.84a32 32 0 01-18.112 9.088L436.8 623.68a32 32 0 01-36.224-36.224l15.104-105.6a32 32 0 019.024-18.112l331.904-331.84a96 96 0 01135.744 0z"/>
+                    </svg>
                 </button>
                 {% endif %}
             </div>
@@ -123,8 +130,10 @@
                 </div>
                 
                 {% if not proyecto %}
-                    <button type="button" class="btn-lapiz btn-lateral" id="btnAbrirProyecto">
-                        <i class="fas fa-plus"></i>
+                    <button type="button" class="btn-lapiz btn-lateral" id="btnAbrirProyecto" title="Crear Proyecto">
+                        <svg viewBox="0 0 24 24" class="svg-mas" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12,21 C16.9705627,21 21,16.9705627 21,12 C21,7.02943725 16.9705627,3 12,3 C7.02943725,3 3,7.02943725 3,12 C3,16.9705627 7.02943725,21 12,21 Z M12,23 C5.92486775,23 1,18.0751322 1,12 C1,5.92486775 5.92486775,1 12,1 C18.0751322,1 23,5.92486775 23,12 C23,18.0751322 18.0751322,23 12,23 Z M13,11 L13,8.99703014 C13,8.45303631 12.5522847,8 12,8 C11.4438648,8 11,8.4463856 11,8.99703014 L11,11 L8.99703014,11 C8.45303631,11 8,11.4477153 8,12 C8,12.5561352 8.4463856,13 8.99703014,13 L11,13 L11,15.0029699 C11,15.5469637 11.4477153,16 12,16 C12.5561352,16 13,15.5536144 13,15.0029699 L13,13 L15.0029699,13 C15.5469637,13 16,12.5522847 16,12 C16,11.4438648 15.5536144,11 15.0029699,11 L13,11 Z" fill="currentColor"></path>
+                        </svg>
                     </button>
                 {% endif %}
             </div>
@@ -159,8 +168,10 @@
                         {% endif %}
                     </ul>
                 </div>
-                <button id="estudiante-btn-nuevo" class="btn-mas btn-lateral">
-                    <i class="fas fa-plus"></i>
+                <button id="estudiante-btn-nuevo" class="btn-mas btn-lateral" title="Agregar Estudiante">
+                    <svg viewBox="0 0 24 24" class="svg-mas" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12,21 C16.9705627,21 21,16.9705627 21,12 C21,7.02943725 16.9705627,3 12,3 C7.02943725,3 3,7.02943725 3,12 C3,16.9705627 7.02943725,21 12,21 Z M12,23 C5.92486775,23 1,18.0751322 1,12 C1,5.92486775 5.92486775,1 12,1 C18.0751322,1 23,5.92486775 23,12 C23,18.0751322 18.0751322,23 12,23 Z M13,11 L13,8.99703014 C13,8.45303631 12.5522847,8 12,8 C11.4438648,8 11,8.4463856 11,8.99703014 L11,11 L8.99703014,11 C8.45303631,11 8,11.4477153 8,12 C8,12.5561352 8.4463856,13 8.99703014,13 L11,13 L11,15.0029699 C11,15.5469637 11.4477153,16 12,16 C12.5561352,16 13,15.5536144 13,15.0029699 L13,13 L15.0029699,13 C15.5469637,13 16,12.5522847 16,12 C16,11.4438648 15.5536144,11 15.0029699,11 L13,11 Z" fill="currentColor"></path>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -172,70 +183,88 @@
 
 <!-- Modal para modificar Brigada -->
 <div id="customModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Modificar Número de Brigada</h3>
-            <span class="close-btn" onclick="cerrarModal()">&times;</span>
-        </div>
-        <div class="modal-body">
-            <p>Ingrese el nuevo nombre:</p>
-            <input type="text" id="inputNuevoNombre" placeholder="Solo números (ej. 105)">
+    <div class="modal-content-light">
+        <span class="close-btn" onclick="cerrarModal()">&times;</span>
+        
+        <h3 class="modal-title">Modificar Brigada</h3>
+        <p class="modal-subtitle">Ingrese el nuevo número de identificación</p>
+
+        <div class="modal-body" style="text-align: left;">
+            <div class="centered-group">
+                <label class="modal-label">Nuevo nombre:</label>
+                <input type="text" id="inputNuevoNombre" class="modal-input" placeholder="Solo números (ej. 105)">
+            </div>
+            
             <input type="hidden" id="hiddenBrigadaId">
-            <div id="error-msg" class="error-text"></div>
+            
+            <div id="error-msg" class="error-modal-msg" style="display: none;"></div>
         </div>
-        <div class="modal-footer">
-            <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-            <button class="btn-guardar" onclick="enviarModificacion()">Guardar Cambios</button>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn-save" onclick="enviarModificacion()">Guardar Cambios</button>
         </div>
     </div>
 </div>
 
 <!-- Modal para Asesor Comunitario (CREAR/EDITAR) -->
 <div id="modalComunitario" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="modal-titulo">Nuevo Asesor Comunitario</h3>
-            <span class="close-btn" onclick="cerrarModalComunitario()">&times;</span>
+    <div class="modal-content-light">
+
+        <h3 id="modal-titulo" class="modal-title">Nuevo Asesor Comunitario</h3>
+        <p class="modal-subtitle">Ingrese los datos correspondientes</p>
+
+        <input type="hidden" id="com_id">
+
+        <div class="modal-form-grid">
+            <div class="centered-group">
+                <label class="modal-label">Nombres</label>
+                <input type="text" id="com_nombres" class="modal-input" placeholder="Nombres">
+            </div>
+            
+            <div class="centered-group">
+                <label class="modal-label">Apellidos</label>
+                <input type="text" id="com_apellidos" class="modal-input" placeholder="Apellidos">
+            </div>
+            
+            <div class="centered-group">
+                <label class="modal-label">Cédula</label>
+                <input type="text" id="com_cedula" class="modal-input" placeholder="Cédula">
+            </div>
+            
+            <div class="centered-group">
+                <label class="modal-label">Teléfono</label>
+                <input type="text" id="com_telefono" class="modal-input" placeholder="Teléfono">
+            </div>
+            
+            <div class="centered-group full-width">
+                <label class="modal-label">Correo</label>
+                <input type="email" id="com_correo" class="modal-input" placeholder="Correo electrónico">
+            </div>
         </div>
-        <div class="modal-body">
-            <!-- El ID oculto para saber si editamos o creamos -->
-            <input type="hidden" id="com_id">
-            
-            <label>Nombres</label>
-            <input type="text" id="com_nombres" placeholder="Nombres">
-            
-            <label>Apellidos</label>
-            <input type="text" id="com_apellidos" placeholder="Apellidos">
-            
-            <label>Cédula</label>
-            <input type="text" id="com_cedula" placeholder="Cédula">
-            
-            <label>Teléfono</label>
-            <input type="text" id="com_telefono" placeholder="Teléfono">
-            
-            <label>Correo</label>
-            <input type="email" id="com_correo" placeholder="Correo electrónico">
-        </div>
-        <div class="modal-footer">
-            <button class="btn-cancelar" onclick="cerrarModalComunitario()">Cancelar</button>
-            <button class="btn-guardar" onclick="guardarComunitario('{{ brigada.id }}')">Guardar</button>
+        <div id="error-comunitario-ajax" class="error-brigada-ajax" style="display: none;"></div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="cerrarModalComunitario()">Cancelar</button>
+            <button type="button" class="btn-save" onclick="guardarComunitario('{{ brigada.id }}')">Guardar</button>
         </div>
     </div>
 </div>
 
 <!-- Asignar Asesor Académico con Buscador -->
 <div id="modalAsignarAcademico" class="modal-overlay">
-    <div class="modal-content modal-busqueda">
-        <div class="modal-header">
-            <h3>Asignar Asesor Académico</h3>
-            <span class="close-btn" onclick="cerrarModalAsignarAcademico()">&times;</span>
-        </div>
-        <div class="modal-body">
+    <div class="modal-content-light">
+
+        <h3 class="modal-title">Asignar Asesor Académico</h3>
+        <p class="modal-subtitle">Busca y selecciona un asesor de la lista</p>
+
             <!-- Buscador -->
-            <div class="buscador-contenedor">
+        <div class="centered-group full-width">
+            <div class="buscador-contenedor" style="width: 100%;">
                 <i class="fas fa-search"></i>
-                <input type="text" id="inputBusquedaAcademico" placeholder="Buscar por cédula, nombre o apellido..." onkeyup="filtrarAsesores()">
+                <input type="text" id="inputBusquedaAcademico" class="modal-input" placeholder="Buscar por cédula, nombre o apellido..." onkeyup="filtrarAsesores()">
             </div>
+        </div>
             
             <!-- Lista de Resultados -->
             <div class="lista-asesores-busqueda" id="listaAsesoresBusqueda">
@@ -251,38 +280,54 @@
                     <i class="fas fa-check-circle check-icon"></i>
                 </div>
                 {% empty %}
-                <p class="text-muted">No hay asesores académicos activos registrados.</p>
+                <p class="text-muted empty-msg">No hay asesores académicos activos registrados.</p>
                 {% endfor %}
             </div>
             <input type="hidden" id="asesor_seleccionado_id">
-        </div>
-        <div class="modal-footer">
-            <button onclick="cerrarModalAsignarAcademico()" class="btn-cancelar">Cancelar</button>
-            <button onclick="guardarAcademicoNuevo('{{ brigada.id }}')" class="btn-guardar" id="btnGuardarAcademico" disabled>Asignar Asesor</button>
+        <div class="modal-actions">
+            <button type="button" onclick="cerrarModalAsignarAcademico()" class="btn-cancel">Cancelar</button>
+            <button type="button" onclick="guardarAcademicoNuevo('{{ brigada.id }}')" class="btn-save" id="btnGuardarAcademico" disabled>Asignar Asesor</button>
         </div>
     </div>
 </div>
 
 <!-- Modal para agregar proyecto  -->
 <div id="proyectoModalManual" class="modal-overlay">
-    <div class="modal-content">
+    <div class="modal-content-light">
+        
+        <h3 class="modal-title">Nuevo Proyecto</h3>
+        <p class="modal-subtitle"> Brigada: {{ brigada.nombre }}</p>
+
         <form id="formProyecto" action="{% url 'guardar_proyecto' brigada.id %}" method="POST">
             {% csrf_token %}
-            <div class="modal-header">
-                <h3>Nuevo Proyecto - {{ brigada.nombre }}</h3>
-                <span class="close-btn" id="btnCerrarX">&times;</span>
-            </div>
-            <div class="modal-body">
-                <label>Nombre del Proyecto</label> <input type="text" name="nombre_proyecto" required>
-                <label>Comunidad</label> <input type="text" name="comunidad" required>
-                <div style="display:flex; gap:10px;">
-                    <div style="flex:1;"><label>Fecha Inicio</label><input type="date" name="fecha_inicio" required></div>
-                    <div style="flex:1;"><label>Fecha Fin</label><input type="date" name="fecha_culminacion"></div>
+            
+            <div class="modal-form-grid">
+                <div class="centered-group full-width">
+                    <label class="modal-label">Nombre del Proyecto</label>
+                    <input type="text" name="nombre_proyecto" class="modal-input" required placeholder="Nombre del proyecto...">
+                </div>
+                
+                <div class="centered-group full-width">
+                    <label class="modal-label">Comunidad</label>
+                    <input type="text" name="comunidad" class="modal-input" required placeholder="Nombre de la comunidad...">
+                </div>
+                
+                <div class="centered-group">
+                    <label class="modal-label">Fecha Inicio</label>
+                    <input type="date" name="fecha_inicio" class="modal-input" required>
+                </div>
+                
+                <div class="centered-group">
+                    <label class="modal-label">Fecha Fin</label>
+                    <input type="date" name="fecha_culminacion" class="modal-input">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
-                <button type="submit" class="btn-guardar">Guardar Proyecto</button>
+
+            <div id="error-proyecto-ajax" class="error-brigada-ajax" style="display: none;"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" id="btnCancelar">Cancelar</button>
+                <button type="submit" class="btn-save">Guardar Proyecto</button>
             </div>
         </form>
     </div>
@@ -290,31 +335,53 @@
 
 <!-- Modal para agregar estudiante -->
 <div id="estudiante-modal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Nuevo Estudiante</h3>
-            <span id="estudiante-btn-cerrar" class="close-btn">&times;</span>
-        </div>
+    <div class="modal-content-light">
+        
+        <h3 class="modal-title">Nuevo Estudiante</h3>
+        <p class="modal-subtitle">Ingrese los datos del estudiante</p>
+
         <form id="estudiante-form">
             {% csrf_token %}
             <input type="hidden" name="brigada_id" value="{{ brigada.id }}">
-            <div class="modal-body">
-                <label>Nombres:</label> <input type="text" name="nombres" required>
-                <label>Apellidos:</label> <input type="text" name="apellidos" required>
-                <label>Cédula:</label> <input type="text" name="cedula" required>
-                <label>Correo:</label> <input type="email" name="correo" required>
-                <label>Teléfono:</label> <input type="text" name="telefono" required>
-                <label>Carrera:</label>
-                <select name="carrera_id" required>
-                    <option value="">Seleccione una carrera...</option>
-                    {% for c in carreras %}
-                        <option value="{{ c.id }}">{{ c.nombre_carrera }}</option>
-                    {% endfor %}
-                </select>
-                <div id="estudiante-error" class="error-text" style="display: none; color: red;"></div>
+            
+            <div class="modal-form-grid">
+                <div class="centered-group">
+                    <label class="modal-label">Nombres</label>
+                    <input type="text" name="nombres" class="modal-input" required placeholder="Nombres...">
+                </div>
+                <div class="centered-group">
+                    <label class="modal-label">Apellidos</label>
+                    <input type="text" name="apellidos" class="modal-input" required placeholder="Apellidos...">
+                </div>
+                <div class="centered-group">
+                    <label class="modal-label">Cédula</label>
+                    <input type="text" name="cedula" class="modal-input" required placeholder="Ej: 12345678">
+                </div>
+                <div class="centered-group">
+                    <label class="modal-label">Teléfono</label>
+                    <input type="text" name="telefono" class="modal-input" required placeholder="Ej: 0414...">
+                </div>
+                
+                <div class="centered-group full-width">
+                    <label class="modal-label">Correo</label>
+                    <input type="email" name="correo" class="modal-input" required placeholder="ejemplo@correo.com">
+                </div>
+                <div class="centered-group full-width">
+                    <label class="modal-label">Carrera</label>
+                    <select name="carrera_id" class="modal-input" required>
+                        <option value="">Seleccione una carrera...</option>
+                        {% for c in carreras %}
+                            <option value="{{ c.id }}">{{ c.nombre_carrera }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn-guardar">Guardar Estudiante</button>
+
+            <div id="error-estudiante-ajax" class="error-brigada-ajax" style="display: none;"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('estudiante-modal').style.display='none'">Cancelar</button>
+                <button type="submit" class="btn-save">Guardar Estudiante</button>
             </div>
         </form>
     </div>

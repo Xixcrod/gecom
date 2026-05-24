@@ -1,35 +1,427 @@
-/* Estilos del Modal */
-    .modal-sistema {
-        display: none; 
-        position: fixed;
-        z-index: 1000;
-        left: 0; top: 0; width: 100%; height: 100%;
-        background-color: rgba(0,0,0,0.6);
-        backdrop-filter: blur(2px);
+/* Cabecera Principal */
+.cabecera-proyecto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.titulo-proyecto {
+    color: var(--primary-color);
+    font-size: 2.3rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+
+
+/* ==========================================================================
+   BOTÓN DE EDITAR (LÁPIZ SVG)
+   ========================================================================== */
+
+.btn-lapiz {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent; /* Quita cualquier fondo */
+    border: none; /* Quita los bordes */
+    box-shadow: none; /* Quita las sombras */
+    color: var(--primary-color); /* Azul oscuro de tu paleta para que se vea bien sobre fondo claro */
+    padding: 5px; /* Un pequeño margen invisible para que sea fácil hacer click */
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Efecto Hover (Al pasar el mouse) */
+.btn-lapiz:hover {
+    transform: scale(1.15); /* Crece ligeramente para indicar que es clickeable */
+    color: var(--secondary-color); /* Cambia a un azul más claro/brillante de tu paleta */
+    background: transparent; /* Mantiene el fondo transparente */
+}
+
+/* Control del tamaño de tu SVG */
+.svg-lapiz {
+    width: 45px; /* Lo hacemos un poquito más grande ya que no tiene el círculo que le daba volumen */
+    height: 45px;
+    display: block;
+}
+
+/* ==========================================================================
+   SISTEMA GLOBAL DE VENTANAS MODALES
+   ========================================================================== */
+
+/* Fondo oscuro y desenfoque */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    /* Estas dos propiedades son las que obligan a la tarjeta a estar en el centro */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+/* Contenedor principal de la modal */
+.modal-content-light {
+    background: 
+        linear-gradient(#f4f8fb, #f4f8fb) padding-box, 
+        linear-gradient(to bottom, var(--primary-color, #1e3a8a), var(--secondary-color, #38bdf8)) border-box;
+    padding: 1.5rem 2rem;
+    border: 8px solid transparent;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+/* Sistema de Cuadrícula (Grid) */
+.modal-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem 1rem;
+    text-align: left;
+}
+
+.centered-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0; 
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Tipografía */
+.modal-title {
+    color: #1e3a8a;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.modal-subtitle {
+    color: #1e3a8a;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.modal-label {
+    color: #0f172a;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+/* Estilo unificado de Inputs y Selects */
+.modal-content-light input[type="text"],
+.modal-content-light input[type="number"],
+.modal-content-light input[type="email"],
+.modal-content-light input[type="date"],
+.modal-content-light select,
+.modal-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    background: #ffffff;
+    border: 2px solid #2563eb; 
+    border-radius: 0.5rem;
+    color: #333;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: left;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+.modal-content-light input:focus,
+.modal-content-light select:focus {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.modal-content-light input::placeholder {
+    color: #94a3b8;
+}
+
+/* Contenedor de Botones y Acciones */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.btn-cancel {
+    flex: 1;
+    background: #2e3b84; 
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-cancel:hover {
+    background: #1e295d;
+    transform: scale(1.02);
+}
+
+.btn-save {
+    flex: 1;
+    background: #38bdf8; 
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-save:hover {
+    background: #0284c7;
+    transform: scale(1.02);
+}
+
+/* Botón de Cerrar (X) */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.close-btn:hover {
+    color: #ef4444;
+    transform: scale(1.1);
+}
+
+/* Animaciones y mensajes de error */
+.error-brigada-ajax {
+    width: 100%;
+    margin-top: 1rem;
+    animation: shake 0.4s ease-in-out; 
+}
+
+.error-modal-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background-color: rgba(239, 68, 68, 0.15); 
+    color: #ef4444; 
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #ef4444;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    animation: fadeInError 0.3s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+@keyframes fadeInError {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 480px) {
+    .modal-form-grid {
+        grid-template-columns: 1fr;
     }
-    .modal-contenido {
-        background-color: #fff;
-        margin: 10% auto;
-        padding: 25px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 450px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .header-modal { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-    .footer-modal { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+}
     
-    /* Estética de las tarjetas de documentos */
-    .doc-card {
-        margin-bottom: 20px; 
-        padding: 15px; 
-        border: 1px solid #ddd; 
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+/* ==========================================================================
+   SECCIÓN DE DOCUMENTOS (Tarjetas Modernizadas)
+   ========================================================================== */
+
+/* Contenedor Grid: Organiza las tarjetas en 2 columnas en PC y 1 en móviles */
+.documentos-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Fuerza 2 columnas */
+    gap: 30px; /* Espacio entre tarjetas */
+    max-width: 900px; /* Controla el ancho máximo para que no "toque paredes" */
+    margin: 0 auto; /* Centra el bloque en el medio de la pantalla */
+    padding: 20px;
+}
+
+/* Tarjeta individual */
+.doc-card {
+    background-color: #ffffff;
+    padding: 20px 25px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    border-left: 6px solid #1e3a8a; /* Borde de acento azul oscuro */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-height: 120px; /* Asegura que todas las tarjetas tengan una altura base */
+    flex-direction: column; /* Apila el contenido si es necesario */
+    will-change: transform; /* Optimiza el renderizado del efecto */
+}
+
+.doc-card:hover {
+    transform: translateY(-4px); /* Efecto de salto suave */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+}
+
+/* Agrupación de texto dentro de la tarjeta */
+.doc-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+}
+
+.doc-info h3 {
+    color: #0f172a;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+/* Estilo del enlace para ver archivo */
+.doc-info a {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s;
+    margin: 0 auto; 
+}
+
+.doc-info a:hover {
+    color: #1e3a8a;
+    text-decoration: underline;
+}
+
+/* Píldora para estado "No cargado" */
+.doc-estado-vacio {
+    align-self: center; 
+    width: 100px;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    padding: 4px 4px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+}
+
+/* Para que en móviles se vea bien (1 sola columna) */
+@media (max-width: 768px) {
+    .documentos-container {
+        grid-template-columns: 1fr;
+        padding: 10px;
     }
-    
-    .btn-subir { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-    .btn-modificar { background: #ffc107; color: black; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-    .error-msg { color: #dc3545; font-size: 0.9em; margin-top: 15px; display: none; padding: 10px; background: #f8d7da; border-radius: 5px; border: 1px solid #f5c6cb; }
+}
+/* ==========================================================================
+   BOTONES DE DOCUMENTOS
+   ========================================================================== */
+
+.btn-subir, .btn-modificar {
+    padding: 0.7rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+/* Botón Subir (Llamado a la acción principal - Azul claro) */
+.btn-subir {
+    background: #38bdf8;
+    color: white;
+    box-shadow: 0 2px 4px rgba(56, 189, 248, 0.3);
+}
+
+.btn-subir:hover {
+    background: #0284c7;
+    transform: scale(1.05);
+}
+
+/* Botón Modificar (Acción secundaria - Gris/Azul) */
+.btn-modificar {
+    background: #f1f5f9;
+    color: #1e3a8a;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-modificar:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    transform: scale(1.05);
+}
+
+
+/* ==========================================================================
+   . BOTÓN PARA VOLVER
+   ========================================================================== */
+
+
+.back-icon {
+    position: absolute;
+    display: inline-flex;
+    color: #e9f6ff;
+    background-color: #2a346d;
+
+    left: 3%;
+    top: 12%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.back-icon:hover {
+    transform: scale(1.1);
+    background-color: #e9f6ff;
+    color: #2a346d;
+}
+
+/* Ajuste para móviles para que no se superponga al texto */
+@media (max-width: 768px) {
+    .back-icon {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin-bottom: 1rem;
+    }
+}
