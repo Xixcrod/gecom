@@ -9,10 +9,6 @@
 
 {% block content %}
 <div id="metadata-proyecto" data-id="{{ proyecto.id }}"></div>
-
-
-
-
 <div class="cabecera-proyecto">
 
     <!-- Botón para regresar-->
@@ -94,7 +90,7 @@
             <h3>Planilla de Inscripción</h3>
             {% if documents.planilla_inscripcion %}
                 <a href="{{ documents.planilla_inscripcion.url }}" target="_blank">
-                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                    📄 Ver archivo actual
                 </a>
             {% else %}
                 <span class="doc-estado-vacio">No cargado</span>
@@ -111,7 +107,7 @@
             <h3>Control de Horas</h3>
             {% if documents.control_horas %}
                 <a href="{{ documents.control_horas.url }}" target="_blank">
-                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                    📄 Ver archivo actual
                 </a>
             {% else %}
                 <span class="doc-estado-vacio">No cargado</span>
@@ -128,7 +124,7 @@
             <h3>Anteproyecto</h3>
             {% if documents.anteproyecto %}
                 <a href="{{ documents.anteproyecto.url }}" target="_blank">
-                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                    📄 Ver archivo actual
                 </a>
             {% else %}
                 <span class="doc-estado-vacio">No cargado</span>
@@ -145,7 +141,7 @@
             <h3>Informe Final</h3>
             {% if documents.informe_final %}
                 <a href="{{ documents.informe_final.url }}" target="_blank">
-                    <i class="fas fa-file-pdf"></i> Ver archivo actual
+                    📄 Ver archivo actual
                 </a>
             {% else %}
                 <span class="doc-estado-vacio">No cargado</span>

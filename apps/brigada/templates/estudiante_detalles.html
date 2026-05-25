@@ -10,99 +10,57 @@
 {% block content %}
 <div id="metadata-estudiante" data-id="{{ estudiante.id }}" style="display: none;"></div>
 
-<h2>Detalles del Estudiante</h2>
-<div><a href="{% url 'brigada_detalles' brigada.id %}"> ← Regresar</a></div>
+<div class="header-container">
+    <a href="{% url 'brigada_detalles' brigada.id %}" class="back-icon" title="Volver a la Brigada">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </a>
+    <h2 class="titulo-proyecto">Detalles del Estudiante</h2>
+    <div class="spacer-equilibrador"></div> 
+</div>
 
-<p><strong>Nombre:</strong> {{ estudiante.nombres }} {{ estudiante.apellidos }}</p>
-<p><strong>Cédula:</strong> {{ estudiante.cedula }}</p>
-<p><strong>Carrera:</strong> {{ estudiante.carrera.nombre_carrera }}</p>
-<p><strong>Correo Electrónico:</strong> {{ estudiante.correo }}</p>
-<p><strong>Teléfono:</strong> {{ estudiante.telefono }}</p>
-
-<h2>Certificado</h2>
-<p><strong>Fecha de entrega:</strong> {{ certificado.fecha_entrega|default:"Pendiente" }}</p>
-<p><strong>Fecha de actualización:</strong> {{ certificado.fecha_actualizacion|default:"No ha sido modificado" }}</p>
-<!-- Botón para abrir el modal de edición de estudiante-->
-<button class="btn-modificar" onclick="abrirModalEditar()">Editar Datos</button>
-
-<div id="modalEditarEstudiante" class="modal-sistema" style="display: none;">
-    <div class="modal-contenido">
-        <div class="header-modal">
-            <h3>Editar Datos del Estudiante</h3>
-        </div>
-        <form id="formEditarEstudiante">
-            {% csrf_token %} 
-            
-            <p>
-                <label>Nombres:</label><br>
-                <input type="text" name="nombres" value="{{ estudiante.nombres }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Apellidos:</label><br>
-                <input type="text" name="apellidos" value="{{ estudiante.apellidos }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Cédula:</label><br>
-                <input type="text" name="cedula" value="{{ estudiante.cedula }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Correo Electrónico:</label><br>
-                <input type="email" name="correo" value="{{ estudiante.correo }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Teléfono:</label><br>
-                <input type="text" name="telefono" value="{{ estudiante.telefono }}" required style="width: 100%;">
-            </p>
-            <p>
-                <label>Carrera:</label><br>
-                <select name="carrera_id" required style="width: 100%;">
-                    <option value="">Seleccione una carrera...</option>
-                    {% for carrera in carreras %}
-                        <option value="{{ carrera.id }}" {% if estudiante.carrera.id == carrera.id %}selected{% endif %}>
-                            {{ carrera.nombre_carrera }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </p>
-
-            <div id="errorAlertaEditar" class="error-msg" style="color: red; margin-bottom: 10px;"></div>
-            
-            <div class="footer-modal">
-                <button type="button" onclick="cerrarModalEditar()" style="padding: 8px 15px;">Cancelar</button>
-                <button type="submit" class="btn-subir" style="padding: 8px 15px;">Guardar Cambios</button>
-            </div>
-        </form>
+<div class="doc-card" style="max-width: 900px; margin: 0 auto 40px auto; flex-direction: column; align-items: flex-start; gap: 15px;">
+    <div class="modal-form-grid" style="width: 100%;">
+        <div><strong>Nombre:</strong> <br><span style="color: #64748b;">{{ estudiante.nombres }} {{ estudiante.apellidos }}</span></div>
+        <div><strong>Cédula:</strong> <br><span style="color: #64748b;">{{ estudiante.cedula }}</span></div>
+        <div><strong>Carrera:</strong> <br><span style="color: #64748b;">{{ estudiante.carrera.nombre_carrera }}</span></div>
+        <div><strong>Teléfono:</strong> <br><span style="color: #64748b;">{{ estudiante.telefono }}</span></div>
+        <div class="full-width"><strong>Correo Electrónico:</strong> <br><span style="color: #64748b;">{{ estudiante.correo }}</span></div>
+    </div>
+    <div style="width: 100%; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <button class="btn-modificar" onclick="abrirModalEditar()">Editar Datos</button>
     </div>
 </div>
 
-<!-- Sección de certificado -->
-<div class="certificados-container" style="display: grid; gap: 20px;">
-    
+
+<h2 style="text-align: center; color: #1e3a8a; margin-bottom: 10px;">Certificados</h2>
+<section class="documentos-container">
     <div class="doc-card">
-        <div>
-            <strong>1. Certificado Inicial (Original)</strong>
-            <p style="font-size: 0.8em; color: gray;">Subido el: {{ certificado.fecha_entrega|default:"Pendiente" }}</p>
+        <div class="doc-info">
+            <h3>1. Certificado Inicial</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">Subido el: {{ certificado.fecha_entrega|default:"Pendiente" }}</p>
             {% if certificado.archivo_inicial %}
-                <a href="{{ certificado.archivo_inicial.url }}" target="_blank" class="btn-link">📄 Ver Original</a>
+                <a href="{{ certificado.archivo_inicial.url }}" target="_blank">📄 Ver Original</a>
             {% else %}
-                <span style="color: #dc3545;">⚠️ No cargado</span>
+                <span class="doc-estado-vacio">No cargado</span>
             {% endif %}
         </div>
         <div>
             {% if not certificado.archivo_inicial %}
-                <button class="btn-subir" onclick="abrirModal('Certificado Inicial', '0')">Subir por primera vez</button>
+                <button class="btn-subir" onclick="abrirModal('Certificado Inicial', '0')">Subir Primera Vez</button>
             {% endif %}
         </div>
     </div>
 
     <div class="doc-card">
-        <div>
-            <strong>2. Certificado Actualizado</strong>
-            <p style="font-size: 0.8em; color: gray;">Última actualización: {{ certificado.fecha_actualizacion|default:"Sin modificaciones" }}</p>
+        <div class="doc-info">
+            <h3>2. Certificado Actualizado</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">Última act: {{ certificado.fecha_actualizacion|default:"Sin modificaciones" }}</p>
             {% if certificado.archivo_actualizado %}
-                <a href="{{ certificado.archivo_actualizado.url }}" target="_blank" class="btn-link">📄 Ver Actualizado</a>
+                <a href="{{ certificado.archivo_actualizado.url }}" target="_blank">📄 Ver Actualizado</a>
             {% else %}
-                <span style="color: gray;">No se ha subido una actualización aún.</span>
+                <span class="doc-estado-vacio">No cargado</span>
             {% endif %}
         </div>
         <div>
@@ -111,28 +69,81 @@
                     {% if certificado.archivo_actualizado %}Actualizar de nuevo{% else %}Subir actualización{% endif %}
                 </button>
             {% else %}
-                <button class="btn-modificar" disabled title="Debe subir el inicial primero" style="opacity: 0.5; cursor: not_allowed;">
+                <button class="btn-modificar" disabled title="Debe subir el inicial primero" style="opacity: 0.5; cursor: not-allowed;">
                     Actualizar
                 </button>
             {% endif %}
         </div>
     </div>
+</section>
+
+<div id="modalEditarEstudiante" class="modal-overlay">
+    <div class="modal-content-light">
+        <h3 class="modal-title">Editar Estudiante</h3>
+        <p class="modal-subtitle">Actualice los datos personales</p>
+
+        <form id="formEditarEstudiante">
+            {% csrf_token %} 
+            <div class="modal-form-grid">
+                <div class="centered-group">
+                    <label class="modal-label">Nombres:</label>
+                    <input type="text" name="nombres" class="modal-input" value="{{ estudiante.nombres }}" required>
+                </div>
+                <div class="centered-group">
+                    <label class="modal-label">Apellidos:</label>
+                    <input type="text" name="apellidos" class="modal-input" value="{{ estudiante.apellidos }}" required>
+                </div>
+                <div class="centered-group">
+                    <label class="modal-label">Cédula:</label>
+                    <input type="text" name="cedula" class="modal-input" value="{{ estudiante.cedula }}" required>
+                </div>
+                <div class="centered-group">
+                    <label class="modal-label">Teléfono:</label>
+                    <input type="text" name="telefono" class="modal-input" value="{{ estudiante.telefono }}" required>
+                </div>
+                <div class="centered-group full-width">
+                    <label class="modal-label">Correo Electrónico:</label>
+                    <input type="email" name="correo" class="modal-input" value="{{ estudiante.correo }}" required>
+                </div>
+                <div class="centered-group full-width">
+                    <label class="modal-label">Carrera:</label>
+                    <select name="carrera_id" class="modal-input" required>
+                        <option value="">Seleccione una carrera...</option>
+                        {% for carrera in carreras %}
+                            <option value="{{ carrera.id }}" {% if estudiante.carrera.id == carrera.id %}selected{% endif %}>
+                                {{ carrera.nombre_carrera }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div id="errorAlertaEditar" class="error-brigada-ajax error-modal-msg" style="display: none;"></div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
+                <button type="submit" class="btn-save">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<!-- Modal para subir/modificar certificado -->
-<div id="modalDocumento" class="modal-sistema">
-    <div class="modal-contenido">
-        <div class="header-modal">
-            <h3 id="modalTitulo">Subir Documento</h3>
-        </div>
+<div id="modalDocumento" class="modal-overlay">
+    <div class="modal-content-light">
+        <h3 id="modalTitulo" class="modal-title">Subir Documento</h3>
+        <p class="modal-subtitle">Seleccione el archivo PDF (Máx 5MB)</p>
+
         <form id="formDocumento" enctype="multipart/form-data">
             {% csrf_token %} 
-            <input type="file" name="documento" accept="application/pdf" required>
-            <div id="errorAlerta" class="error-msg"></div>
+            <div class="centered-group full-width" style="margin-top: 15px;">
+                <input type="file" name="documento" class="modal-input" accept="application/pdf" required>
+            </div>
             
-            <div class="footer-modal">
-                <button type="button" onclick="cerrarModal()" style="padding: 8px 15px;">Cancelar</button>
-                <button type="submit" id="btnConfirmar" class="btn-subir">Confirmar</button>
+            <div id="errorAlerta" class="error-brigada-ajax error-modal-msg" style="display: none;"></div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" id="btnConfirmar" class="btn-save">Confirmar Envío</button>
             </div>
         </form>
     </div>

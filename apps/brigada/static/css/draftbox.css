@@ -1,0 +1,208 @@
+/* ==========================================================================
+   SECCIÓN DRAFTBOX Y TARJETAS
+   ========================================================================== */
+
+.documentos-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.doc-card {
+    background-color: #ffffff;
+    padding: 20px 25px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    border-left: 6px solid #1e3a8a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 120px;
+}
+
+.doc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.doc-info a, .enlace-con-icono {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* Espacio entre el icono y la letra */
+}
+
+.doc-info h3 {
+    color: #0f172a;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.doc-info a {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.doc-info a:hover {
+    color: #1e3a8a;
+    text-decoration: underline;
+}
+
+.doc-estado-vacio {
+    font-size: 0.80rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   ESTILOS DE ICONOS SVG POR CATEGORÍA
+   ========================================================================== */
+
+.svg-categoria {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.color-docs { stroke: #2563eb; } /* Azul para textos/PDF */
+.color-data { stroke: #16a34a; } /* Verde para Excel/Data */
+.color-pres { stroke: #ea580c; } /* Naranja para Presentaciones */
+.color-img  { stroke: #9333ea; } /* Morado para Imágenes */
+.color-comp { stroke: #ca8a04; } /* Amarillo/Oro para Zips */
+.color-default { stroke: #64748b; } /* Gris por defecto */
+
+
+/* ==========================================================================
+   BOTONES
+   ========================================================================== */
+
+.btn-subir, .btn-eliminar {
+    padding: 0.7rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-subir {
+    background: #38bdf8;
+    color: white;
+    box-shadow: 0 2px 4px rgba(56, 189, 248, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espacio entre el icono y la letra */
+}
+.btn-subir:hover { background: #0284c7; transform: scale(1.05); }
+
+/* Botón Rojo para Eliminar (Tarjeta) */
+.btn-eliminar {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.btn-eliminar:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================================================
+   SISTEMA GLOBAL DE VENTANAS MODALES
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none; /* Asegurate de usar JS display: flex */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content-light {
+    background: 
+        linear-gradient(#f4f8fb, #f4f8fb) padding-box, 
+        linear-gradient(to bottom, var(--primary-color, #1e3a8a), var(--secondary-color, #38bdf8)) border-box;
+    padding: 1.5rem 2rem;
+    border: 8px solid transparent;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: left; /* General a la izquierda */
+    margin: 12vh auto; 
+}
+
+.modal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 1rem; }
+.centered-group { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0; }
+.full-width { grid-column: 1 / -1; }
+
+.modal-title { color: #1e3a8a; font-size: 1.8rem; font-weight: 800; margin-top: 0; margin-bottom: 0.5rem; text-align: center; }
+.modal-subtitle { color: #1e3a8a; font-size: 0.95rem; font-weight: 600; margin-bottom: 1.5rem; text-align: center;}
+.modal-label { color: #0f172a; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem; }
+
+.modal-content-light input, .modal-content-light select, .modal-input {
+    width: 100%; padding: 0.6rem 0.8rem; background: #ffffff;
+    border: 2px solid #2563eb; border-radius: 0.5rem; color: #333;
+    font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.modal-content-light input:focus, .modal-content-light select:focus {
+    border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; }
+
+.btn-cancel { flex: 1; background: #64748b; color: white; border: none; padding: 0.8rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+.btn-cancel:hover { background: #475569; transform: scale(1.02); }
+
+.btn-save { flex: 1; background: #38bdf8; color: white; border: none; padding: 0.8rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+.btn-save:hover { background: #0284c7; transform: scale(1.02); }
+
+/* Botón Rojo Peligro (Confirmar Eliminación Modal) */
+.btn-danger { flex: 1; background: #ef4444; color: white; border: none; padding: 0.8rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+.btn-danger:hover { background: #dc2626; transform: scale(1.02); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);}
+
+.close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; color: #94a3b8; cursor: pointer; transition: color 0.2s ease, transform 0.2s ease; }
+.close-btn:hover { color: #ef4444; transform: scale(1.1); }
+
+/* Errores */
+.error-brigada-ajax { width: 100%; margin-top: 1rem; animation: shake 0.4s ease-in-out; }
+.error-modal-msg { display: flex; align-items: center; gap: 0.6rem; background-color: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 0.75rem 1rem; border-radius: 0.5rem; border-left: 4px solid #ef4444; font-size: 0.875rem; margin-bottom: 0.5rem; animation: fadeInError 0.3s ease-out; }
+
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25%, 75% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
+@keyframes fadeInError { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Móviles */
+@media (max-width: 768px) {
+    .documentos-container { grid-template-columns: 1fr; padding: 10px; }
+    .modal-form-grid { grid-template-columns: 1fr; }
+}

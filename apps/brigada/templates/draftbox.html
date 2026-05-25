@@ -1,73 +1,109 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'css/draftbox.css' %}" /> 
+{% endblock extra_css %}
+
 {% block titulo_seccion %}Draftbox{% endblock %}
 
 {% block content %}
-<!-- Botón para abrir el modal de subir borrador -->
-<button class="btn-subir" onclick="abrirModalBorrador()">Subir Borrador</button>
+<div class="header-container" style="display: flex; justify-content: center; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto;">
+    <button class="btn-subir" onclick="abrirModalBorrador()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        Subir Nuevo Borrador
+    </button>
+</div>
 
-<!-- Lista de Borradores -->
-{% if borradores %}
-        <ul style="list-style-type: none; padding: 0;">
-            {% for borrador in borradores %}
-                <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                    <a href="{{ borrador.archivo.url }}" target="_blank">{{ borrador.nombre }}</a> 
-                    <small style="color: gray;">({{ borrador.get_categoria_display }})</small>
+<section class="documentos-container">
+    {% if borradores %}
+        {% for borrador in borradores %}
+            <div class="doc-card">
+                <div class="doc-info">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        
+                        {% if borrador.categoria == 'DOCS' %}
+                            <svg class="svg-categoria color-docs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        {% elif borrador.categoria == 'DATA' %}
+                            <svg class="svg-categoria color-data" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                        {% elif borrador.categoria == 'PRES' %}
+                            <svg class="svg-categoria color-pres" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        {% elif borrador.categoria == 'IMG' %}
+                            <svg class="svg-categoria color-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        {% elif borrador.categoria == 'COMP' %}
+                            <svg class="svg-categoria color-comp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        {% else %}
+                            <svg class="svg-categoria color-default" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                        {% endif %}
+                        
+                        <h3 style="word-break: break-word;">{{ borrador.nombre }}</h3>
+                    </div>
                     
-                    <button type="button" 
-                            style="background-color: #dc3545; color: white; border: none; padding: 3px 8px; cursor: pointer; border-radius: 4px; font-size: 0.8em;"
-                            onclick="abrirModalEliminarBorrador('{{ borrador.id }}', '{{ borrador.nombre|escapejs }}')">
-                        Eliminar
-                    </button>
-                </li>
-            {% endfor %}
-        </ul>
+                    <span class="doc-estado-vacio" style="background-color: #f1f5f9; color: #475569;">{{ borrador.get_categoria_display }}</span>
+                    
+                    <a href="{{ borrador.archivo.url }}" target="_blank" class="enlace-con-icono" style="margin-top: 5px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Abrir archivo
+                    </a>
+                </div>
+                
+                <button type="button" class="btn-eliminar" onclick="abrirModalEliminarBorrador('{{ borrador.id }}', '{{ borrador.nombre|escapejs }}')">
+                    Eliminar
+                </button>
+            </div>
+        {% endfor %}
     {% else %}
-        <p>No hay borradores disponibles.</p>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
+            <p style="color: #64748b; font-size: 1.1rem;">No hay borradores disponibles. Sube uno para comenzar.</p>
+        </div>
     {% endif %}
-    
-    <!-- Modal de Eliminación -->
-    <div id="modalEliminarBorrador" class="modal-sistema" style="display: none;">
-        <div class="modal-contenido">
-            <div class="header-modal">
-                <h3 style="color: #dc3545;">⚠️ Confirmar Eliminación</h3>
-            </div>
-            
-            <p>¿Estás seguro de que deseas eliminar el borrador <strong id="nombreBorradorAEliminar"></strong>?</p>
-            <p style="font-size: 0.9em; color: gray;">Esta acción no se puede deshacer.</p>
+</section>
 
-            <div id="errorAlertaEliminar" class="error-msg" style="display:none; color:red; margin-bottom: 10px; font-weight: bold;"></div>
+<div id="modalEliminarBorrador" class="modal-overlay">
+    <div class="modal-content-light" style="border-top: 8px solid #ef4444; background: #fff;">
+        <h3 class="modal-title" style="color: #dc2626;">⚠️ Confirmar Eliminación</h3>
+        <p class="modal-subtitle">Esta acción no se puede deshacer</p>
+        
+        <div class="modal-body" style="text-align: center; margin: 15px 0;">
+            <p style="color: #334155; font-size: 1.05rem;">¿Estás seguro de que deseas eliminar el borrador <br><strong id="nombreBorradorAEliminar" style="color: #0f172a;"></strong>?</p>
+        </div>
 
-            <div class="footer-modal" style="margin-top: 20px;">
-                {% csrf_token %}
-                
-                <input type="hidden" id="uuidBorradorAEliminar">
-                
-                <button type="button" onclick="cerrarModalEliminarBorrador()" style="padding: 8px 15px; background: gray; color: white; border: none; cursor: pointer;">Cancelar</button>
-                <button type="button" id="btnConfirmarEliminar" onclick="procesarEliminacionBorrador()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; cursor: pointer;">Sí, Eliminar</button>
-            </div>
+        <div id="errorAlertaEliminar" class="error-brigada-ajax error-modal-msg" style="display:none;"></div>
+
+        <div class="modal-actions">
+            {% csrf_token %}
+            <input type="hidden" id="uuidBorradorAEliminar">
+            <button type="button" class="btn-cancel" onclick="cerrarModalEliminarBorrador()">Cancelar</button>
+            <button type="button" id="btnConfirmarEliminar" class="btn-danger" onclick="procesarEliminacionBorrador()">Sí, Eliminar</button>
         </div>
     </div>
+</div>
 
-    <!-- Modal de Subir Borrador -->
-    <div id="modalBorrador" class="modal-sistema" style="display: none;">
-        <div class="modal-contenido">
-            <div class="header-modal">
-                <h3>Subir Nuevo Borrador</h3>
-            </div>
-            
-            <form id="formBorrador" enctype="multipart/form-data">
-                {% csrf_token %}
+<div id="modalBorrador" class="modal-overlay">
+    <div class="modal-content-light">
+        <h3 class="modal-title">Nuevo Borrador</h3>
+        <p class="modal-subtitle">Suba algún borrador</p>
+        
+        <form id="formBorrador" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-form-grid">
                 
-                <p>
-                    <label>Nombre del Borrador:</label><br>
-                    <input type="text" name="nombre" required style="width: 100%;" placeholder="Ej: Flyer para evento de brigada">
-                </p>
+                <div class="centered-group full-width">
+                    <label class="modal-label">Nombre del Borrador:</label>
+                    <input type="text" name="nombre" class="modal-input" required placeholder="Ej: Flyer para evento de brigada">
+                </div>
                 
-                <p>
-                    <label>Categoría:</label><br>
-                    <select name="categoria" id="selectCategoria" required style="width: 100%;">
+                <div class="centered-group full-width">
+                    <label class="modal-label">Categoría:</label>
+                    <select name="categoria" id="selectCategoria" class="modal-input" required>
                         <option value="">Seleccione una categoría...</option>
                         <option value="DOCS">Documentos (Word, PDF, RTF)</option>
                         <option value="DATA">Datos (Excel, CSV)</option>
@@ -75,22 +111,23 @@
                         <option value="IMG">Imágenes (JPG, PNG, SVG)</option>
                         <option value="COMP">Comprimidos (ZIP, RAR)</option>
                     </select>
-                </p>
-
-                <p>
-                    <label>Archivo (Máx 30MB):</label><br>
-                    <input type="file" name="archivo" required style="width: 100%;">
-                </p>
-
-                <div id="errorAlertaBorrador" class="error-msg" style="display:none; color:red; margin-bottom: 10px; font-weight: bold;"></div>
-
-                <div class="footer-modal" style="margin-top: 20px;">
-                    <button type="button" onclick="cerrarModalBorrador()" style="padding: 8px 15px; background: gray; color: white; border: none; cursor: pointer;">Cancelar</button>
-                    <button type="submit" class="btn-subir" style="padding: 8px 15px;">Guardar Borrador</button>
                 </div>
-            </form>
-        </div>
+
+                <div class="centered-group full-width">
+                    <label class="modal-label">Archivo (Máx 30MB):</label>
+                    <input type="file" name="archivo" class="modal-input" required>
+                </div>
+            </div>
+
+            <div id="errorAlertaBorrador" class="error-brigada-ajax error-modal-msg" style="display:none;"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="cerrarModalBorrador()">Cancelar</button>
+                <button type="submit" class="btn-save">Guardar Borrador</button>
+            </div>
+        </form>
     </div>
+</div>
 
 <!-- Scripts -->
 <script src="{% static 'js/modal_eliminar_borrador.js' %}"></script>
