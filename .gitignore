@@ -13,3 +13,4 @@ digest.txt
 client_secrets.json
 credentials.json
 temp_sessions/
+current_backup.zip
