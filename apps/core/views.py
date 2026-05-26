@@ -5,6 +5,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from .utils.servicios_respaldo import perform_system_backup, perform_system_restore
+from django.conf import settings
+import os
+
 # Create your views here.
 def signin(request):
     return render(request, 'login.html')
@@ -39,6 +42,13 @@ def trigger_backup(request):
 @login_required
 def trigger_restore(request):
     '''Ejecuta la lógica de restauración y muestra mensajes de éxito o error.'''
+    
+    # Verificación de pre-requisitos
+    client_secrets = os.path.join(settings.BASE_DIR, 'client_secrets.json')
+    if not os.path.exists(client_secrets):
+        messages.error(request, "Error: Falta el archivo client_secrets.json.")
+        return redirect('respaldo')
+    
     try:
         perform_system_restore(request)
         messages.success(request, "Sistema restaurado correctamente.")

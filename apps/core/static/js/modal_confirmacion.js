@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Verificamos si el botón presionado usa alguna de las nuevas clases rojas
             if (button.classList.contains('btn-danger') || button.classList.contains('btn-respaldo-peligro')) {
                 // Usamos la clase global roja (Si usaste el diseño autónomo, cambia esto a 'btn-respaldo-peligro')
-                confirmBtn.className = 'btn-danger'; 
+                confirmBtn.className = 'btn-respaldo-peligro'; 
             } else {
                 // Usamos la clase global azul (Si usaste el diseño autónomo, cambia esto a 'btn-respaldo-primario')
-                confirmBtn.className = 'btn-save'; 
+                confirmBtn.className = 'btn-respaldo-primario'; 
             }
 
             // Abrir modal nativo usando Flexbox en lugar de showModal()
