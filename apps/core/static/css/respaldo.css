@@ -1,39 +1,167 @@
-/* Contenedor de botones */
-.d-flex-custom { display: flex; gap: 15px; margin-top: 20px; }
+/* =========================================================
+   SECCIÓN: CENTRO DE RESPALDO (ESTILOS AUTÓNOMOS)
+   ========================================================= */
 
-/* Botones base */
-.btn-custom {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
+/* --- Cabecera y Contenedor Principal --- */
+.respaldo-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
     font-family: sans-serif;
-    display: inline-block;
 }
 
-.btn-primary-custom { background-color: #007bff; color: white; }
-.btn-danger-custom { background-color: #dc3545; color: white; }
-.btn-secondary { background-color: #6c757d; color: white; }
+.respaldo-header h2 {
+    color: #1e3a8a;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-/* Estilos del Modal (Dialog) */
-.custom-modal {
+/* --- Tarjeta de Respaldo --- */
+.respaldo-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    border-left: 6px solid #1e3a8a; /* Borde lateral de acento */
+    padding: 40px 30px;
+    max-width: 650px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.respaldo-info h3 {
+    color: #0f172a;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.respaldo-info p {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* --- Botones --- */
+.respaldo-acciones {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.btn-respaldo-primario, .btn-respaldo-peligro, .btn-respaldo-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
     border: none;
-    border-radius: 8px;
-    padding: 0;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* Botón Azul (Guardar/Respaldar) */
+.btn-respaldo-primario {
+    background: #38bdf8;
+    color: white;
+    box-shadow: 0 2px 4px rgba(56, 189, 248, 0.3);
+}
+.btn-respaldo-primario:hover { background: #0284c7; transform: scale(1.05); }
+
+/* Botón Rojo (Peligro/Restaurar) */
+.btn-respaldo-peligro {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+.btn-respaldo-peligro:hover { background: #dc2626; transform: scale(1.05); }
+
+/* Botón Gris (Cancelar) */
+.btn-respaldo-secundario {
+    background: #64748b;
+    color: white;
+}
+.btn-respaldo-secundario:hover { background: #475569; transform: scale(1.02); }
+
+
+/* --- Ventana Modal Autónoma --- */
+.respaldo-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none; /* Se activa con JS usando 'display: flex' */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.respaldo-modal-content {
+    background: 
+        linear-gradient(#f4f8fb, #f4f8fb) padding-box, 
+        linear-gradient(to bottom, #1e3a8a, #38bdf8) border-box; /* Borde degradado manual */
+    padding: 2rem;
+    border: 8px solid transparent;
+    border-radius: 0.5rem;
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-.custom-modal::backdrop {
-    background: rgba(0, 0, 0, 0.5); /* Oscurece el fondo */
+.respaldo-modal-title {
+    color: #1e3a8a;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
 }
 
-.modal-content { padding: 20px; }
-.modal-actions {
+.respaldo-modal-subtitle {
+    color: #1e3a8a;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.respaldo-modal-body p {
+    color: #334155;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 20px 0;
+}
+
+.respaldo-modal-footer {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.respaldo-close-btn {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 1.8rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.respaldo-close-btn:hover {
+    color: #ef4444;
+    transform: scale(1.1);
 }
