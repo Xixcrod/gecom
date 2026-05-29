@@ -124,7 +124,7 @@ def procesar_formulario_periodo(request):
             messages.error(request, "Error: Datos numéricos inválidos.")
 
 
-def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=16):
+def obtener_contexto_paginacion(numero_pagina_str, items_por_pagina=12):
     """
     Prepara los datos paginados y calcula el rango visible de los botones de paginación.
     Además, inyecta atributos temporales a cada objeto Periodo para facilitar

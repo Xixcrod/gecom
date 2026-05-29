@@ -1,57 +1,104 @@
 // static/js/periodo_scripts.js
 
+// ==========================================
+// 1. LÓGICA DE VENTANAS MODALES
+// ==========================================
+
+function abrirModalPeriodo(id = '', desdeSem = 'I', desdeAnio = '', hastaSem = 'II', hastaAnio = '') {
+    const modal = document.getElementById('modalPeriodo');
+    const titulo = document.getElementById('tituloModalPeriodo');
+    
+    // Inyectar los valores recibidos de Django en los inputs del formulario
+    document.getElementById('periodo_id').value = id;
+    document.getElementById('desde_semestre').value = desdeSem;
+    document.getElementById('desde_anio').value = desdeAnio;
+    document.getElementById('hasta_semestre').value = hastaSem;
+    document.getElementById('hasta_anio').value = hastaAnio;
+
+    // Cambiar dinámicamente el título según la acción
+    if (id) {
+        titulo.innerText = 'Modificar Periodo';
+    } else {
+        titulo.innerText = 'Añadir Nuevo Periodo';
+        
+        // Auto-completar años basándonos en el año actual (Opcional, mejora UX)
+        const anioActual = new Date().getFullYear();
+        document.getElementById('desde_anio').value = anioActual;
+        document.getElementById('hasta_anio').value = anioActual;
+    }
+
+    // Mostrar modal con display flex (como en tus brigadas)
+    modal.style.display = 'flex';
+}
+
+function cerrarModalPeriodo() {
+    const modal = document.getElementById('modalPeriodo');
+    modal.style.display = 'none';
+    document.getElementById('formPeriodo').reset(); // Limpia los datos
+}
+
+// Cierra el modal si el usuario hace clic fuera de la tarjeta blanca (en el fondo oscuro)
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('modalPeriodo');
+    if (event.target === modal) {
+        cerrarModalPeriodo();
+    }
+});
+
+
+// ==========================================
+// 2. LÓGICA DE PAGINACIÓN ANIMADA (AJAX)
+// ==========================================
+
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Escuchamos los clics en todo el documento
     document.addEventListener('click', function(e) {
-        // Buscamos si hicimos clic en un enlace del paginador
+        // Buscamos si el clic provino de un enlace de paginación
         const link = e.target.closest('.link-paginador');
         if (!link) return;
 
-        // Evitamos que la página se recargue bruscamente
         e.preventDefault();
         const url = link.getAttribute('href');
         const grid = document.getElementById('grid-periodos');
 
         if (!grid) return;
 
-        // 1. Animación de Salida: Deslizamos el grid actual hacia la izquierda y lo desvanecemos
+        // --- Animación de Salida ---
         grid.classList.remove('translate-x-0', 'opacity-100');
         grid.classList.add('-translate-x-10', 'opacity-0');
 
-        // 2. Esperamos que termine la animación (300ms) para traer la nueva página
+        // Esperamos la animación (300ms)
         setTimeout(() => {
             fetch(url)
             .then(respuesta => respuesta.text())
             .then(htmlStr => {
-                // Convertimos el texto HTML en elementos manejables
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlStr, 'text/html');
 
-                // 3. Extraemos el nuevo contenedor completo desde la respuesta y lo reemplazamos
                 const contenedorActual = document.getElementById('contenedor-periodos');
                 const nuevoContenedor = doc.getElementById('contenedor-periodos');
                 
                 if (contenedorActual && nuevoContenedor) {
+                    // Reemplazamos el HTML
                     contenedorActual.innerHTML = nuevoContenedor.innerHTML;
-
-                    // 4. Preparamos el nuevo Grid para la animación de entrada
-                    const nuevoGrid = document.getElementById('grid-periodos');
                     
-                    // Quitamos la transición momentáneamente para moverlo a la derecha invisiblemente
-                    nuevoGrid.style.transition = 'none';
-                    nuevoGrid.classList.remove('translate-x-0', 'opacity-100');
-                    nuevoGrid.classList.add('translate-x-10', 'opacity-0');
+                    const nuevoGrid = document.getElementById('grid-periodos');
+                    if (nuevoGrid) {
+                        // Preparamos para animación de entrada invisiblemente a la derecha
+                        nuevoGrid.style.transition = 'none';
+                        nuevoGrid.classList.remove('translate-x-0', 'opacity-100');
+                        nuevoGrid.classList.add('translate-x-10', 'opacity-0');
 
-                    // Forzamos al navegador a aplicar los cambios inmediatos (Reflow)
-                    void nuevoGrid.offsetWidth;
+                        // Forzamos al navegador a procesar el cambio (Reflow)
+                        void nuevoGrid.offsetWidth; 
 
-                    // 5. Devolvemos la transición y animamos hacia el centro
-                    nuevoGrid.style.transition = '';
-                    nuevoGrid.classList.remove('translate-x-10', 'opacity-0');
-                    nuevoGrid.classList.add('translate-x-0', 'opacity-100');
+                        // --- Animación de Entrada ---
+                        nuevoGrid.style.transition = '';
+                        nuevoGrid.classList.remove('translate-x-10', 'opacity-0');
+                        nuevoGrid.classList.add('translate-x-0', 'opacity-100');
+                    }
 
-                    // 6. Actualizamos la URL en el navegador sin recargar
+                    // Actualizamos la URL en el navegador silenciosamente
                     window.history.pushState({}, '', url);
                 }
             })
@@ -59,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
 
-    // Este evento asegura que el botón de "Atrás" del navegador funcione con nuestra animación
+    // Permite que funcione el botón de ir "atrás" en el navegador correctamente
     window.addEventListener('popstate', function() {
         window.location.reload();
     });
