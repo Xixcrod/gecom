@@ -6,39 +6,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
-    <title>GECOM</title>
+    <title>GECOM - Iniciar Sesión</title>
     <link rel="stylesheet" href="{% static 'css/_variables.css' %}" />
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-    <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> -->
 </head>
 
 <body>
-    <div>
-        <h2>Inicio de sesión</h2>
+    <div class="login-card">
+        
+        <div class="logos-container">
+            </div>
 
-        <!-- Mostrar mensaje de error si existe -->
+        <h2 class="login-title">Inicio de Sesión</h2>
+
         {% if error %}
-        <div>{{ error }}</div>
+        <div class="alert-msg alert-error">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;">
+                <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {{ error }}
+        </div>
         {% endif %}
 
-        <form action="{% url 'login-process' %}" method="POST">
+        {% if success %}
+        <div class="alert-msg alert-success">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            {{ success }}
+        </div>
+        {% endif %}
+
+        <form action="{% url 'login-process' %}" method="POST" class="login-form">
             {% csrf_token %}
 
-            <input type="text" name="username" id="username" placeholder="Cédula" required />
-
-            <input type="password" name="password" id="password" placeholder="Contraseña" required />
-
-            <button type="submit">Ingresar</button>
-
-            <div>
-                <a href="{% url 'recuperar_contrasena' %}">¿Has olvidado tú contraseña?</a>
+            <div class="input-group">
+                <input type="text" name="username" id="username" class="login-input" placeholder="Usuario" required />
             </div>
-            <!-- Mostrar mensaje de éxito si existe -->
-            {% if success %}
-            <div>
-                {{ success }}
+
+            <div class="input-group">
+                <input type="password" name="password" id="password" class="login-input" placeholder="Contraseña" required />
             </div>
-            {% endif %}
+
+            <button type="submit" class="btn-login">Ingresar</button>
+
+            <div class="forgot-container">
+                <a href="{% url 'recuperar_contrasena' %}" class="forgot-link">¿Has olvidado tu<br>Contraseña?</a>
+            </div>
         </form>
     </div>
 </body>

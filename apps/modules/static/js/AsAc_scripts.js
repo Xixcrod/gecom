@@ -1,6 +1,6 @@
 // static/js/AsAc_scripts.js
 
-// Función 1: Controla puramente lo visual (CSS y Tailwind)
+// Función 1: Controla visual y estado
 function cambiarPestana(pestana) {
     const btnActivos = document.getElementById('btn-activos');
     const btnInactivos = document.getElementById('btn-inactivos');
@@ -19,13 +19,9 @@ function cambiarPestana(pestana) {
         listaInactivos.classList.remove('grid');
         listaInactivos.classList.add('hidden');
         
-        // Estilos botón activos (Iluminado)
-        btnActivos.classList.add('bg-white', 'text-[#8b5cf6]', 'shadow-sm');
-        btnActivos.classList.remove('bg-transparent', 'text-gray-600', 'hover:text-gray-800');
-        
-        // Estilos botón inactivos (Apagado)
-        btnInactivos.classList.add('bg-transparent', 'text-gray-600', 'hover:text-gray-800');
-        btnInactivos.classList.remove('bg-white', 'text-[#8b5cf6]', 'shadow-sm');
+        // Cambiar únicamente el estado (Tailwind hará el resto)
+        btnActivos.dataset.active = 'true';
+        btnInactivos.dataset.active = 'false';
 
     } else {
         // Mostrar lista inactiva
@@ -36,13 +32,9 @@ function cambiarPestana(pestana) {
         listaActivos.classList.remove('grid');
         listaActivos.classList.add('hidden');
         
-        // Estilos botón inactivos (Iluminado)
-        btnInactivos.classList.add('bg-white', 'text-[#8b5cf6]', 'shadow-sm');
-        btnInactivos.classList.remove('bg-transparent', 'text-gray-600', 'hover:text-gray-800');
-        
-        // Estilos botón activos (Apagado)
-        btnActivos.classList.add('bg-transparent', 'text-gray-600', 'hover:text-gray-800');
-        btnActivos.classList.remove('bg-white', 'text-[#8b5cf6]', 'shadow-sm');
+        // Cambiar únicamente el estado
+        btnActivos.dataset.active = 'false';
+        btnInactivos.dataset.active = 'true';
     }
 }
 

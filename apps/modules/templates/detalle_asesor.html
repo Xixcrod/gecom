@@ -1,29 +1,36 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/brigadas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/brigada_periodo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/AsAc_styles.css' %}">
+{% endblock extra_css %}
+
 {% block titulo_seccion %}Detalle del Asesor{% endblock %}
 
 {% block content %}
 <div class="font-sans text-gray-800 flex flex-col relative min-h-[calc(100vh-120px)] items-center px-4 md:px-8">
 
     <div class="w-full max-w-5xl mb-6 mt-10">
-        <a href="{% url 'asesores_academicos' %}" class="btn btn-ghost text-gray-500 hover:bg-white/50 hover:text-[#8b5cf6] rounded-xl flex gap-2 w-fit transition-all duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        <a href="{% url 'asesores_academicos' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-300 w-fit">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             Volver a la lista
         </a>
     </div>
 
     <div class="w-full max-w-5xl flex flex-col gap-8">
         
-        <div class="w-full bg-white/40 backdrop-blur-xl border border-white/50 shadow-xl rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden flex flex-col lg:flex-row gap-10 items-center lg:items-stretch">
+        <div class="w-full bg-linear-to-b from-[#2a346d] to-[#28a9e0] border-8 border-[#2a346d] shadow-xl rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden flex flex-col lg:flex-row gap-10 items-center lg:items-stretch">
             
-            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-purple-300/30 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full pointer-events-none"></div>
 
             <div class="flex flex-col items-center lg:items-start text-center lg:text-left lg:w-1/3 shrink-0 relative z-10 justify-center">
-                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-linear-to-br from-purple-100 to-white text-[#8b5cf6] flex items-center justify-center font-bold text-5xl shadow-inner border-4 border-white mb-6">
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-(--white-color) text-[#2a346d] flex items-center justify-center font-bold text-5xl shadow-inner border-4 border-white mb-6">
                     {{ asesor.asesor.nombres|first|upper }}{{ asesor.asesor.apellidos|first|upper }}
                 </div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight leading-tight mb-2">{{ asesor.asesor.nombres }} <br> {{ asesor.asesor.apellidos }}</h2>
-                <p class="text-lg md:text-xl text-[#8b5cf6] font-medium mb-6">{{ asesor.profesion }}</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[#e9f6ff] tracking-tight leading-tight mb-2">{{ asesor.asesor.nombres }} <br> {{ asesor.asesor.apellidos }}</h2>
+                <p class="text-lg md:text-xl text-white font-medium mb-6">{{ asesor.profesion }}</p>
                 {% if asesor.activo %}
                     <span class="badge bg-green-100 text-green-600 border-none px-5 py-4 text-sm font-bold rounded-xl shadow-sm">Habilitado</span>
                 {% else %}
@@ -32,59 +39,59 @@
             </div>
 
             <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 relative z-10 content-center w-full">
-                <div class="bg-white/60 rounded-2xl p-5 shadow-sm border border-white/60">
-                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Cédula de Identidad</p>
+                <div class="bg-(--white-color) rounded-2xl p-5 shadow-sm border border-white/60">
+                    <p class="text-[14px] text-[#2a346d] font-bold uppercase tracking-wider mb-1">Cédula de Identidad</p>
                     <p class="text-lg font-medium text-gray-700">V-{{ asesor.asesor.cedula }}</p>
                 </div>
-                <div class="bg-white/60 rounded-2xl p-5 shadow-sm border border-white/60">
-                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Teléfono</p>
+                <div class="bg-(--white-color) rounded-2xl p-5 shadow-sm border border-white/60">
+                    <p class="text-[14px] text-[#2a346d] font-bold uppercase tracking-wider mb-1">Teléfono</p>
                     <p class="text-lg font-medium text-gray-700">{{ asesor.asesor.telefono }}</p>
                 </div>
-                <div class="bg-white/60 rounded-2xl p-5 shadow-sm border border-white/60 md:col-span-2">
-                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Correo Electrónico</p>
+                <div class="bg-(--white-color) rounded-2xl p-5 shadow-sm border border-white/60 md:col-span-2">
+                    <p class="text-[14px] text-[#2a346d] font-bold uppercase tracking-wider mb-1">Correo Electrónico</p>
                     <p class="text-lg font-medium text-gray-700">{{ asesor.asesor.correo }}</p>
                 </div>
-                <div class="bg-white/60 rounded-2xl p-5 shadow-sm border border-white/60">
-                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Cargo Académico</p>
+                <div class="bg-(--white-color) rounded-2xl p-5 shadow-sm border border-white/60">
+                    <p class="text-[14px] text-[#2a346d] font-bold uppercase tracking-wider mb-1">Cargo Académico</p>
                     <p class="text-lg font-medium text-gray-700">{{ asesor.cargo }}</p>
                 </div>
-                <div class="bg-white/60 rounded-2xl p-5 shadow-sm border border-white/60">
-                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Dependencia</p>
+                <div class="bg-(--white-color) rounded-2xl p-5 shadow-sm border border-white/60">
+                    <p class="text-[14px] text-[#2a346d] font-bold uppercase tracking-wider mb-1">Dependencia</p>
                     <p class="text-lg font-medium text-gray-700">{{ asesor.dependencia }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="w-full bg-white/40 backdrop-blur-xl border border-white/50 shadow-xl rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden mb-10">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Proyectos Vinculados</h3>
+        <div class="w-full bg-linear-to-b from-[#2a346d] to-[#28a9e0] border-8 border-[#2a346d] shadow-xl rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden mb-10">
+            <h3 class="text-4xl font-bold text-[#e9f6ff] mb-6">Proyectos Vinculados</h3>
             
             {% if proyectos %}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {% for proyecto in proyectos %}
-                    <div class="bg-white/80 rounded-2xl p-6 shadow-sm border border-white hover:shadow-md hover:border-[#8b5cf6]/40 transition-all duration-300 group flex flex-col justify-between">
+                    <div class="bg-[#e9f6ff]/80 rounded-2xl p-6 shadow-sm border border-[#e9f6ff] hover:shadow-md hover:border-[#e9f6ff]/40 transition-all duration-300 group flex flex-col justify-between">
                         
                         <div>
                             <div class="flex justify-between items-start mb-4 gap-2">
                                 <span class="bg-purple-100 text-[#8b5cf6] font-bold px-3 py-1.5 rounded-xl text-xs tracking-wide shadow-inner">
                                     Brigada {{ proyecto.brigada.nombre }}
                                 </span>
-                                <span class="text-xs font-bold text-gray-500 bg-white border border-gray-200 px-3 py-1.5 rounded-xl shadow-sm">
+                                <span class="text-xs font-bold text-[#e9f6ff] bg-(--primary-color) border border-gray-200 px-3 py-1.5 rounded-xl shadow-sm">
                                     {{ proyecto.brigada.periodo.nombre }}
                                 </span>
                             </div>
-                            <h4 class="font-bold text-gray-800 text-lg leading-snug group-hover:text-[#8b5cf6] transition-colors duration-300 line-clamp-3">
+                            <h4 class="font-bold text-[#2a346d]/70 text-lg leading-snug group-hover:text-[#2a346d] transition-colors duration-300 line-clamp-3">
                                 {{ proyecto.nombre_proyecto }}
                             </h4>
                         </div>
 
                         <div class="mt-6 flex justify-end gap-2">
-                            <button type="button" class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-colors duration-300 shadow-sm" onclick="document.getElementById('modal_documentos_{{ proyecto.id }}').showModal()" title="Ver Documentos">
+                            <button type="button" class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-500 hover:text-white transition-colors duration-300 shadow-sm" onclick="abrirModal('modal_documentos_{{ proyecto.id }}')" title="Ver Documentos">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                 </svg>
                             </button>
                             
-                            <button type="button" class="w-10 h-10 rounded-xl bg-purple-50 text-[#8b5cf6] flex items-center justify-center hover:bg-[#8b5cf6] hover:text-white transition-colors duration-300 shadow-sm" onclick="document.getElementById('modal_estudiantes_{{ proyecto.id }}').showModal()" title="Ver Estudiantes">
+                            <button type="button" class="w-10 h-10 rounded-xl bg-purple-50 text-[#8b5cf6] flex items-center justify-center hover:bg-[#8b5cf6] hover:text-white transition-colors duration-300 shadow-sm" onclick="abrirModal('modal_estudiantes_{{ proyecto.id }}')" title="Ver Estudiantes">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
                                 </svg>
@@ -92,104 +99,117 @@
                         </div>
                     </div>
 
-                    <dialog id="modal_documentos_{{ proyecto.id }}" class="modal">
-                        <div class="modal-box bg-white text-gray-800 rounded-3xl max-w-3xl">
-                            <h3 class="font-bold text-2xl text-blue-500 mb-2 text-center">Documentos del Asesor</h3>
-                            <p class="text-center text-gray-500 mb-8">Proyecto: <span class="font-semibold text-gray-700">{{ proyecto.nombre_proyecto|truncatechars:45 }}</span></p>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                                <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col">
-                                    <div class="flex items-center gap-3 mb-4">
-                                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center shadow-inner">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
-                                        </div>
-                                        <h4 class="font-bold text-gray-700 text-lg">Constancia de Asesor</h4>
-                                    </div>
-
-                                    {% if proyecto.constancia_asesor %}
-                                        <div class="mb-5 flex flex-col gap-3 bg-white p-4 rounded-xl border border-green-200 shadow-sm">
-                                            <div class="flex items-center justify-center gap-2 text-sm text-green-600 font-bold">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                                                Documento Cargado Exitosamente
-                                            </div>
-                                            <a href="{% if proyecto.constancia_asesor %}{{ proyecto.constancia_asesor.url }}{% endif %}" target="_blank" class="btn btn-sm btn-outline text-blue-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 w-full transition-colors">
-                                                Abrir Documento PDF
-                                            </a>
-                                        </div>
-                                    {% else %}
-                                        <div class="mb-5 flex items-center justify-center gap-2 text-sm text-gray-500 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                            Aún pendiente por subir
-                                        </div>
-                                    {% endif %}
-
-                                    <form method="POST" enctype="multipart/form-data" class="mt-auto">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="accion" value="subir_doc_asesor">
-                                        <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
-                                        <input type="hidden" name="tipo_documento" value="constancia_asesor">
-                                        <input type="file" name="documento" accept=".pdf" class="file-input file-input-bordered file-input-sm w-full bg-white mb-3 text-gray-600 focus:border-blue-500" required>
-                                        <button type="submit" class="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white border-none w-full shadow-md">
-                                            {% if proyecto.constancia_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
-                                        </button>
-                                    </form>
-                                </div>
-
-                                <div class="bg-purple-50/50 p-6 rounded-2xl border border-purple-100 flex flex-col">
-                                    <div class="flex items-center gap-3 mb-4">
-                                        <div class="w-10 h-10 rounded-full bg-purple-100 text-[#8b5cf6] flex items-center justify-center shadow-inner">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                                        </div>
-                                        <h4 class="font-bold text-gray-700 text-lg">Certificado de Asesor</h4>
-                                    </div>
-
-                                    {% if proyecto.certificado_asesor %}
-                                        <div class="mb-5 flex flex-col gap-3 bg-white p-4 rounded-xl border border-green-200 shadow-sm">
-                                            <div class="flex items-center justify-center gap-2 text-sm text-green-600 font-bold">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                                                Documento Cargado Exitosamente
-                                            </div>
-                                            <a href="{% if proyecto.certificado_asesor %}{{ proyecto.certificado_asesor.url }}{% endif %}" target="_blank" class="btn btn-sm btn-outline text-[#8b5cf6] hover:bg-[#8b5cf6] hover:text-white hover:border-[#8b5cf6] w-full transition-colors">
-                                                Abrir Documento PDF
-                                            </a>
-                                        </div>
-                                    {% else %}
-                                        <div class="mb-5 flex items-center justify-center gap-2 text-sm text-gray-500 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                            Aún pendiente por subir
-                                        </div>
-                                    {% endif %}
-
-                                    <form method="POST" enctype="multipart/form-data" class="mt-auto">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="accion" value="subir_doc_asesor">
-                                        <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
-                                        <input type="hidden" name="tipo_documento" value="certificado_asesor">
-                                        <input type="file" name="documento" accept=".pdf" class="file-input file-input-bordered file-input-sm w-full bg-white mb-3 text-gray-600 focus:border-[#8b5cf6]" required>
-                                        <button type="submit" class="btn btn-sm bg-[#8b5cf6] hover:bg-[#7c3aed] text-white border-none w-full shadow-md">
-                                            {% if proyecto.certificado_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
-                                        </button>
-                                    </form>
-                                </div>
-
+                    <div id="modal_documentos_{{ proyecto.id }}" class="modal-overlay" style="display: none;">
+                        <div class="modal-content-light flex flex-col" style="max-width: 800px; width: 90%; max-height: 90vh;">
+                            
+                            <div class="shrink-0 mb-4 text-center">
+                                <h3 class="modal-title" style="color: #3b82f6;">Documentos del Asesor</h3>
+                                <p class="modal-subtitle">Proyecto: <span class="font-semibold text-gray-700">{{ proyecto.nombre_proyecto|truncatechars:45 }}</span></p>
                             </div>
 
-                            <div class="modal-action mt-8 flex justify-center w-full">
-                                <form method="dialog">
-                                    <button class="btn btn-ghost text-gray-500 hover:bg-gray-100 rounded-xl px-12 border-none shadow-sm transition-colors">Cerrar Panel</button>
-                                </form>
+                            <div class="overflow-y-auto custom-scrollbar flex-1 pr-2 pb-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+
+                                    <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col h-full justify-between">
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center shadow-inner">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
+                                                </div>
+                                                <h4 class="font-bold text-gray-700 text-lg">Constancia de Asesor</h4>
+                                            </div>
+
+                                            {% if proyecto.constancia_asesor %}
+                                                <div class="mb-5 flex flex-col gap-3 bg-white p-4 rounded-xl border border-green-200 shadow-sm text-center">
+                                                    <div class="flex items-center justify-center gap-2 text-sm text-green-600 font-bold">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                                        Documento Cargado Exitosamente
+                                                    </div>
+                                                    <a href="{{ proyecto.constancia_asesor.url }}" target="_blank" class="block py-2 px-4 rounded-xl text-blue-600 border border-blue-600 hover:bg-blue-600 hover:text-white transition-colors text-sm font-semibold">
+                                                        Abrir Documento PDF
+                                                    </a>
+                                                </div>
+                                            {% else %}
+                                                <div class="mb-5 flex items-center justify-center gap-2 text-sm text-gray-500 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                                                    Aún pendiente por subir
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="accion" value="subir_doc_asesor">
+                                            <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
+                                            <input type="hidden" name="tipo_documento" value="constancia_asesor">
+                                            
+                                            <input type="file" name="documento" accept=".pdf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 mb-3 bg-white border border-gray-200 rounded-xl" required>
+                                            
+                                            <button type="submit" class="btn-save w-full" style="background-color: #3b82f6; border-color: #3b82f6;">
+                                                {% if proyecto.constancia_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div class="bg-purple-50/50 p-6 rounded-2xl border border-purple-100 flex flex-col h-full justify-between">
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <div class="w-10 h-10 rounded-full bg-purple-100 text-[#8b5cf6] flex items-center justify-center shadow-inner">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                                </div>
+                                                <h4 class="font-bold text-gray-700 text-lg">Certificado de Asesor</h4>
+                                            </div>
+
+                                            {% if proyecto.certificado_asesor %}
+                                                <div class="mb-5 flex flex-col gap-3 bg-white p-4 rounded-xl border border-green-200 shadow-sm text-center">
+                                                    <div class="flex items-center justify-center gap-2 text-sm text-green-600 font-bold">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                                        Documento Cargado Exitosamente
+                                                    </div>
+                                                    <a href="{{ proyecto.certificado_asesor.url }}" target="_blank" class="block py-2 px-4 rounded-xl text-[#8b5cf6] border border-[#8b5cf6] hover:bg-[#8b5cf6] hover:text-white transition-colors text-sm font-semibold">
+                                                        Abrir Documento PDF
+                                                    </a>
+                                                </div>
+                                            {% else %}
+                                                <div class="mb-5 flex items-center justify-center gap-2 text-sm text-gray-500 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                                                    Aún pendiente por subir
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="accion" value="subir_doc_asesor">
+                                            <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
+                                            <input type="hidden" name="tipo_documento" value="certificado_asesor">
+                                            
+                                            <input type="file" name="documento" accept=".pdf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-purple-100 file:text-[#8b5cf6] hover:file:bg-purple-200 mb-3 bg-white border border-gray-200 rounded-xl" required>
+                                            
+                                            <button type="submit" class="btn-save w-full" style="background-color: #8b5cf6; border-color: #8b5cf6;">
+                                                {% if proyecto.certificado_asesor %}Reemplazar Documento{% else %}Subir Documento{% endif %}
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="modal-actions shrink-0 mt-6" style="justify-content: center;">
+                                <button type="button" class="btn-cancel px-12" onclick="cerrarModal('modal_documentos_{{ proyecto.id }}')">Cerrar Panel</button>
                             </div>
                         </div>
-                        <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
-                    </dialog>
+                    </div>
                     
-                    <dialog id="modal_estudiantes_{{ proyecto.id }}" class="modal">
-                        <div class="modal-box bg-white text-gray-800 rounded-3xl max-w-4xl">
-                            <h3 class="font-bold text-2xl text-[#8b5cf6] mb-2 text-center">Estudiantes Vinculados</h3>
-                            <p class="text-center text-gray-500 mb-6">Brigada: <span class="font-semibold text-gray-700">{{ proyecto.brigada.nombre }}</span></p>
+                    <div id="modal_estudiantes_{{ proyecto.id }}" class="modal-overlay" style="display: none;">
+                        <div class="modal-content-light flex flex-col" style="max-width: 900px; width: 90%; max-height: 90vh;">
+                            
+                            <div class="shrink-0 mb-4 text-center">
+                                <h3 class="modal-title" style="color: #8b5cf6;">Estudiantes Vinculados</h3>
+                                <p class="modal-subtitle">Brigada: <span class="font-semibold text-gray-700">{{ proyecto.brigada.nombre }}</span></p>
+                            </div>
 
-                            <div class="overflow-y-auto custom-scrollbar max-h-96 pr-2 mb-4">
+                            <div class="overflow-y-auto custom-scrollbar flex-1 pr-2 pb-2 text-left">
                                 
                                 {% if proyecto.brigada.estudiantes.all %}
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -237,24 +257,23 @@
 
                             </div>
 
-                            <div class="modal-action flex justify-center w-full mt-2">
-                                <form method="dialog"><button class="btn btn-ghost text-gray-500 hover:bg-gray-100 rounded-xl px-12 border-none shadow-sm transition-colors">Cerrar Panel</button></form>
+                            <div class="modal-actions shrink-0 mt-6" style="justify-content: center;">
+                                <button type="button" class="btn-cancel px-12" onclick="cerrarModal('modal_estudiantes_{{ proyecto.id }}')">Cerrar Panel</button>
                             </div>
                         </div>
-                        <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
-                    </dialog>
+                    </div>
                     
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="w-full border-2 border-dashed border-gray-300 bg-white/30 rounded-3xl p-12 flex flex-col items-center justify-center text-center transition-colors hover:border-purple-300 hover:bg-white/50 group">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4 shadow-inner group-hover:text-[#8b5cf6] transition-colors duration-300">
+                <div class="w-full border-2 border-dashed border-gray-300 bg-white/30 rounded-3xl p-12 flex flex-col items-center justify-center text-center transition-colors hover:border-[#2a346d] hover:bg-white/50 group">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4 shadow-inner group-hover:text-[#2a346d] transition-colors duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                     </div>
-                    <h4 class="text-xl font-bold text-gray-600 mb-2">Sin proyectos vinculados</h4>
-                    <p class="text-gray-500 max-w-md">
+                    <h4 class="text-xl font-bold text-gray-900 mb-2">Sin proyectos vinculados</h4>
+                    <p class="text-gray-800 max-w-md">
                         Este asesor aún no ha sido asignado como tutor o evaluador a ninguna brigada de servicio comunitario.
                     </p>
                 </div>
@@ -263,4 +282,30 @@
 
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+    function abrirModal(idModal) {
+        const modal = document.getElementById(idModal);
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    function cerrarModal(idModal) {
+        const modal = document.getElementById(idModal);
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Cerrar al hacer clic fuera de la tarjeta blanca del modal
+    window.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal-overlay')) {
+            event.target.style.display = 'none';
+        }
+    });
+</script>
+{% endblock extra_js %}
+
 {% endblock content %}

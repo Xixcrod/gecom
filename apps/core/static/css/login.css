@@ -1,0 +1,156 @@
+/* =========================================================
+   GECOM - PANTALLA DE INICIO DE SESIÓN
+   ========================================================= */
+
+/* Fondo de pantalla completa con degradado (Azul oscuro a claro) */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, #1e3a8a 0%, #0ea5e9 100%);
+    font-family: Arial, sans-serif;
+}
+
+/* Tarjeta principal con borde celeste exterior */
+.login-card {
+    background-color: #f4f8fb;
+    border: 4px solid #38bdf8; /* Borde exterior que rodea la tarjeta blanca */
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Contenedor para imágenes de logos en la cabecera */
+.logos-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.login-logo {
+    height: 85px; /* Ajusta según la altura deseada de tus logos */
+    object-fit: contain;
+}
+
+/* Tipografía del Título */
+.login-title {
+    color: #000000;
+    font-size: 1.8rem;
+    font-weight: 900; /* Extra bold como en la imagen */
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+/* Agrupación de inputs */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: 1.2rem;
+    width: 100%;
+}
+
+/* Inputs de texto y contraseña (Bordes gruesos y texto centrado) */
+.login-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background-color: #ffffff;
+    border: 3px solid #2e3b84; /* Borde grueso azul oscuro */
+    border-radius: 6px;
+    color: #334155;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center; /* Alineación al centro requerida por el diseño */
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.login-input:focus {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
+.login-input::placeholder {
+    color: #888888; /* Gris oscuro para el placeholder */
+    font-weight: 700;
+}
+
+/* Botón Principal (Con degradado vertical) */
+.btn-login {
+    width: 100%;
+    background: linear-gradient(to bottom, #2e3b84 0%, #0ea5e9 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.9rem;
+    font-weight: 800;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.1s ease, filter 0.2s ease;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-login:hover {
+    filter: brightness(1.1); /* Hace que el degradado brille ligeramente */
+    transform: translateY(-2px);
+}
+
+/* Enlace de Olvidé Contraseña */
+.forgot-container {
+    text-align: center;
+}
+
+.forgot-link {
+    color: #1e3a8a; /* Azul oscuro */
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.3;
+    display: inline-block;
+    transition: color 0.2s;
+}
+
+.forgot-link:hover {
+    color: #0ea5e9;
+    text-decoration: underline;
+}
+
+/* =========================================================
+   MENSAJES DE ALERTA 
+   ========================================================= */
+.alert-msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-left: 4px solid #ef4444;
+}
+
+.alert-success {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+    border-left: 4px solid #16a34a;
+}
