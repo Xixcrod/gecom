@@ -229,13 +229,31 @@
     }
 
     /********************************** CONTENIDO PRINCIPAL *******************************************/
-    .gcm-page-wrapper {
-        flex: 1;
-        padding: 80px 0 0 0;
-        min-height: calc(100vh - 90px);
-        background-color: var(--white-color);
-    }
+.gcm-page-wrapper {
+    flex: 1;
+    padding: 80px 0 0 0;
+    min-height: calc(100vh - 90px);
+    background-color: var(--white-color);
+    position: relative; /* Necesario para posicionar la marca de agua */
+    z-index: 1;         /* Asegura que el contenido esté por encima */
+}
 
+/* Usamos un pseudo-elemento para la marca de agua */
+.gcm-page-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../img/logo.png');
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: 750px;
+    opacity: 0.5;      /* Aquí la transparencia solo afecta al logo */
+    z-index: -1;       /* Envía el logo detrás del contenido */
+    pointer-events: none; /* Evita que el logo bloquee clics en botones */
+}
     .gcm-logout-btn {
         background-color: #2a346d; /* Tu azul más oscuro para el contraste */
         color: #ffffff;
