@@ -5,40 +5,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/_variables.css' %}"> -->
-    <link rel="stylesheet" href="{% static 'css/maintenance.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> -->
-    <title>GECOM en Mantenimiento</title>
+    <title>GECOM - En Mantenimiento</title>
     <style>
+        /* =========================================================
+           GECOM - PANTALLA DE MANTENIMIENTO (Estilos Integrados)
+           ========================================================= */
+
+        /* Fondo de pantalla completa con degradado (Azul oscuro a claro) */
         body {
-            font-family: sans-serif;
-            text-align: center;
-            padding: 50px;
-            background: #f4f4f9;
-            color: #333;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #1e3a8a 0%, #0ea5e9 100%); /* [cite: 1052] */
+            font-family: Arial, sans-serif; /* [cite: 1052] */
         }
 
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
+        /* Tarjeta principal con borde celeste exterior */
+        .maintenance-card {
+            background-color: #f4f8fb;
+            border: 4px solid #38bdf8; /* Borde exterior cyan característico */ /* [cite: 1043] */
+            border-radius: 12px; /* [cite: 1054] */
+            width: 90%;
+            max-width: 450px; /* Un poco más ancha para el texto */
+            padding: 3rem 2rem; /* [cite: 1054] */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); /* [cite: 1054] */
+            text-align: center; /* [cite: 1055] */
+            box-sizing: border-box; /* [cite: 1055] */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        h1 {
-            color: #d9534f;
+        /* Contenedor del ícono SVG */
+        .icon-container {
+            background-color: rgba(56, 189, 248, 0.15); /* Fondo cyan transparente */
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: #1e3a8a; /* Color del ícono */
+        }
+
+        /* Tipografía del Título */
+        .maintenance-title {
+            color: #000000; /* [cite: 1056] */
+            font-size: 1.8rem; /* [cite: 1056] */
+            font-weight: 900; /* Extra bold */ /* [cite: 1056, 1057] */
+            margin-top: 0; /* [cite: 1057] */
+            margin-bottom: 1rem;
+        }
+
+        /* Tipografía del Subtítulo/Texto descriptivo */
+        .maintenance-text {
+            color: #334155;
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+        
+        /* Animación suave de "latido" para el ícono */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite ease-in-out;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Estamos actualizando GECOM</h1>
-        <p>El sistema se está restaurando desde una copia de seguridad.<br>Por favor, vuelve a intentarlo en unos
-            minutos.</p>
-    </div>
-</body>
+    <div class="maintenance-card">
+        
+        <div class="icon-container pulse-animation">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </div>
 
-<script src="{% static 'js/quitar_mantenimiento.js' %}"></script>
+        <h1 class="maintenance-title">Estamos actualizando GECOM</h1>
+        <p class="maintenance-text">
+            El sistema se está restaurando desde una copia de seguridad.<br>
+            <span style="color: #1e3a8a; display: block; margin-top: 10px;">Por favor espere unos minutos mientras se restaura, esta ventana se quitara sola.</span>
+        </p>
+
+    </div>
+
+    <script src="{% static 'js/quitar_mantenimiento.js' %}"></script>
+</body>
 </html>
