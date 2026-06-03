@@ -326,31 +326,49 @@ def guardar_estudiante_ajax(request, brigada_id, carrera_id):
             'message': 'Faltan campos obligatorios (Nombres, Apellidos y Cédula).'
         }, status=400)
 
-    # 2. Validación de Cédula Duplicada (Requerimiento principal)
-    if Estudiante.objects.filter(cedula=cedula).exists():
-        return JsonResponse({
-            'success': False,
-            'message': f'La cédula {cedula} ya está registrada en el sistema.'
-        }, status=400)
-
     try:
-        # 3. Obtener las instancias de los objetos por ID (vienen de la URL)
         brigada = get_object_or_404(Brigada, id=brigada_id)
         carrera = get_object_or_404(Carrera, id=carrera_id)
 
-        # 4. Crear el registro del estudiante
-        Estudiante.objects.create(
-            nombres=nombres,
-            apellidos=apellidos,
-            cedula=cedula,
-            correo=correo,
-            telefono=telefono,
-            brigada=brigada,
-            carrera=carrera
-        )
+        # 1. Buscar si el estudiante ya existe en la base de datos por su cédula
+        estudiante = Estudiante.objects.filter(cedula=cedula).first()
 
-        # 5. Respuesta exitosa con los datos necesarios para actualizar el HTML
-        messages.success(request, 'Estudiante agregado correctamente.')
+        if estudiante:
+            # VALIDACIÓN A: ¿Ya está registrado en esta misma brigada?
+            if estudiante.brigada.filter(id=brigada.id).exists():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'El estudiante ya se encuentra registrado en esta brigada.'
+                }, status=400)
+            
+            # VALIDACIÓN B: ¿Está en OTRA brigada de ESTE MISMO periodo académico?
+            if estudiante.brigada.filter(periodo=brigada.periodo).exists():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'El estudiante ya está inscrito en otra brigada dentro de este mismo periodo académico.'
+                }, status=400)
+
+            # --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+            # No se sobrescribe nada. Mantenemos sus datos intactos y solo añadimos la nueva brigada 
+            # en la tabla intermedia de la relación ManyToMany.
+            estudiante.brigada.add(brigada)
+            mensaje_exito = f'El estudiante ya registrado (C.I. {cedula}) ha sido asignado a la nueva brigada correctamente.'
+
+        else:
+            # 2. Si no existe, se crea el registro desde cero con los datos del formulario
+            estudiante = Estudiante.objects.create(
+                nombres=nombres,
+                apellidos=apellidos,
+                cedula=cedula,
+                correo=correo,
+                telefono=telefono,
+                carrera=carrera
+            )
+            # Lo vinculamos a la brigada actual
+            estudiante.brigada.add(brigada)
+            mensaje_exito = 'Estudiante creado y agregado a la brigada correctamente.'
+
+        messages.success(request, mensaje_exito)
         return JsonResponse({'success': True})
 
     except Exception as e:

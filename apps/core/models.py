@@ -139,7 +139,7 @@ class Estudiante(models.Model):
     correo = models.EmailField()
     telefono = models.CharField(max_length=20)
     
-    brigada = models.ForeignKey(Brigada, on_delete=models.SET_NULL, null=True, blank=True, related_name='estudiantes')
+    brigada = models.ManyToManyField(Brigada, related_name='estudiantes')
     carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True, related_name='estudiantes')
 
     def __str__(self):
