@@ -149,7 +149,7 @@ def guardar_asesor_comunitario(request, brigada_id):
 
                 asesor_objetivo = asesor_existente
                 AsesorComunitario.objects.get_or_create(asesor=asesor_objetivo)
-                mensaje_exito = "Asesor comunitario asignado a la brigada."
+                mensaje_exito = "Asesor comunitario existente y asignado a la brigada."
 
             else:
                 # Si no existe en absoluto, se crea

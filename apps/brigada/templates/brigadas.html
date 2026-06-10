@@ -108,12 +108,12 @@
 <div id="modalBrigada" class="modal-overlay" onclick="handleOutsideClick(event)">
     <div class="modal-content-light">
         <h2 class="modal-title">Nueva Brigada</h2>
-        <p class="modal-subtitle">Ingrese Numero Correspondiente.</p>
+        <p class="modal-subtitle">Ingrese Número Correspondiente.</p>
         
         <form method="POST" action="{% url 'crear_brigada' periodo.id %}" id="formNuevaBrigada">
             {% csrf_token %}
             <div class="form-group centered-group">
-                <label class="modal-label">Numero de Brigada</label>
+                <label class="modal-label">Número de Brigada</label>
                 {{ form.nombre }}
                 
                 <div id="error-brigada-ajax" class="error-brigada-ajax" style="display: none;"></div>
