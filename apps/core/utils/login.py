@@ -7,6 +7,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
+import socket
+import smtplib
 
 # @login_excluded('dashboard') 
 def loginProcess(request):
@@ -44,11 +46,30 @@ def loginProcess(request):
 
 # @login_excluded('dashboard') para evitar regresar (por acomodar)
 
+def tiene_conexion_internet(host="8.8.8.8", port=53, timeout=3):
+    """
+    Verifica si la PC local tiene conexión a internet intentando
+    conectar al DNS de Google. Retorna True si hay conexión, False en caso contrario.
+    """
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except socket.error:
+        return False
+
 def recovering_password(request):
     """
     Recupera la contraseña del administrador verificando cédula (username) y email.
     """
     if request.method == 'POST':
+
+        #Verificación temprana de Internet de la PC local
+        if not tiene_conexion_internet():
+            return render(request, 'recuperar_contrasena.html', {
+                'error': 'Tu equipo no tiene conexión a internet en este momento. Verifica tu red para poder enviar el correo.'
+            })
+
         cedula_input = request.POST.get('username')
         email_input = request.POST.get('email')
 
@@ -80,9 +101,16 @@ def recovering_password(request):
                 f'Este enlace es de un solo uso y expirará pronto.'
             )
             
-            send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, [email_input])
-
-            return render(request, 'login.html', {'success': 'Se ha enviado un enlace de recuperación a tu correo.'})
+            try:
+                # Intento de envío a través del SMTP configurado
+                send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, [email_input])
+                return render(request, 'login.html', {'success': 'Se ha enviado un enlace de recuperación a tu correo.'})
+            
+            except (smtplib.SMTPException, socket.error):
+                # Capturamos errores de red o del servidor SMTP al momento exacto de enviar
+                return render(request, 'recuperar_contrasena.html', {
+                    'error': 'Hubo un problema de red al intentar enviar el correo. Por favor, verifica tu conexión e intenta de nuevo.'
+                })
 
         except User.DoesNotExist:
             return render(request, 'recuperar_contrasena.html', {'error': 'Datos incorrectos.'})
