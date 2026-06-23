@@ -137,7 +137,7 @@
                                             {% endif %}
                                         </div>
 
-                                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                                        <form method="POST" enctype="multipart/form-data" class="mt-4" onsubmit="guardarEstadoModal('modal_documentos_{{ proyecto.id }}')">
                                             {% csrf_token %}
                                             <input type="hidden" name="accion" value="subir_doc_asesor">
                                             <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
@@ -178,7 +178,7 @@
                                             {% endif %}
                                         </div>
 
-                                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                                        <form method="POST" enctype="multipart/form-data" class="mt-4" onsubmit="guardarEstadoModal('modal_documentos_{{ proyecto.id }}')">
                                             {% csrf_token %}
                                             <input type="hidden" name="accion" value="subir_doc_asesor">
                                             <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
@@ -303,6 +303,21 @@
     window.addEventListener('click', function(event) {
         if (event.target.classList.contains('modal-overlay')) {
             event.target.style.display = 'none';
+        }
+    });
+
+    // 1. Guarda el ID del modal justo antes de que la página se recargue por el formulario
+    function guardarEstadoModal(idModal) {
+        sessionStorage.setItem('modal_para_reabrir', idModal);
+    }
+
+    // 2. Al terminar de recargar la página, verifica si debe reabrir algún modal
+    document.addEventListener("DOMContentLoaded", function() {
+        const modalGuardado = sessionStorage.getItem('modal_para_reabrir');
+        
+        if (modalGuardado) {
+            abrirModal(modalGuardado); // Abre el modal automáticamente
+            sessionStorage.removeItem('modal_para_reabrir'); // Lo limpia para no abrirlo por error en futuras recargas
         }
     });
 </script>
