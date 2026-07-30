@@ -45,7 +45,7 @@ def obtener_contexto_brigadas(periodo_id, query_search, numero_pagina_str, filtr
         filtros = Q(nombre__icontains=query_search)
 
         # Solo agregamos la búsqueda por cédula si tiene 7 o más caracteres
-        if len(query_search) >= 7:
+        if len(query_search) >= 3:
             filtros |= Q(estudiantes__cedula__icontains=query_search) | \
                 Q(asesores__cedula__icontains=query_search)
 

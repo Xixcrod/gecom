@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 # --- MODELOS BASE ---
 class Borrador(models.Model):
@@ -111,18 +112,19 @@ class Proyecto(models.Model):
         related_name='proyectos_asignados'
     )
     
-    constancia_asesor = models.FileField(upload_to='asesores/constancias/', blank=True, null=True)
-    certificado_asesor = models.FileField(upload_to='asesores/certificados/', blank=True, null=True)
+    constancia_asesor = models.FileField(upload_to='asesores/constancias/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
+    certificado_asesor = models.FileField(upload_to='asesores/certificados/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
 
     def __str__(self):
         return self.nombre_proyecto
 
 class GrupoDocumentos(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    planilla_inscripcion = models.FileField(upload_to='proyectos/planillas/', blank=True, null=True)
-    control_horas = models.FileField(upload_to='proyectos/horas/', blank=True, null=True)
-    anteproyecto = models.FileField(upload_to='proyectos/anteproyectos/', blank=True, null=True)
-    informe_final = models.FileField(upload_to='proyectos/informes/', blank=True, null=True)
+    planilla_inscripcion = models.FileField(upload_to='proyectos/planillas/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
+    control_horas = models.FileField(upload_to='proyectos/horas/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
+    anteproyecto = models.FileField(upload_to='proyectos/anteproyectos/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
+    informe_final = models.FileField(upload_to='proyectos/informes/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
+    constancia_entrega = models.FileField(upload_to='proyectos/constanciaentrega/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
     
     proyecto = models.OneToOneField(Proyecto, on_delete=models.CASCADE, related_name='documentos')
 
@@ -149,8 +151,8 @@ class Certificado(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     fecha_entrega = models.DateField(null=True, blank=True)
     fecha_actualizacion = models.DateField(null=True, blank=True)
-    archivo_inicial = models.FileField(upload_to='estudiantes/certificados/iniciales/', blank=True, null=True)
-    archivo_actualizado = models.FileField(upload_to='estudiantes/certificados/actualizados/', blank=True, null=True)
+    archivo_inicial = models.FileField(upload_to='estudiantes/certificados/iniciales/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
+    archivo_actualizado = models.FileField(upload_to='estudiantes/certificados/actualizados/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
     
     estudiante = models.OneToOneField(Estudiante, on_delete=models.CASCADE, related_name='certificado')
 

@@ -60,7 +60,7 @@ def tiene_conexion_internet(host="8.8.8.8", port=53, timeout=3):
 
 def recovering_password(request):
     """
-    Recupera la contraseña del administrador verificando cédula (username) y email.
+    Recupera la contraseña del administrador verificando username y email.
     """
     if request.method == 'POST':
 
@@ -122,7 +122,9 @@ def recovering_password(request):
 # @login_excluded('dashboard') para evitar regresar (por acomodar)
 def reset_password_confirm(request, uidb64, token):
     """
-    función para manejar la confirmación del restablecimiento de contraseña. Verifica el token y permite al usuario ingresar una nueva contraseña. De acuerdo si es GET o POST, muestra el formulario o procesa la nueva contraseña respectivamente.
+    Función para manejar la confirmación del restablecimiento de contraseña. 
+    Verifica el token y permite al usuario actualizar su usuario y su nueva contraseña.
+    De acuerdo si es GET o POST, muestra el formulario o procesa los datos respectivamente.
     """
     try:
         # Decodificar el ID del usuario
@@ -134,17 +136,31 @@ def reset_password_confirm(request, uidb64, token):
     # Validar que el usuario existe y el token es válido
     if user is not None and default_token_generator.check_token(user, token):
         if request.method == 'POST':
+            # 1. Capturar los datos del formulario HTML
+            nuevo_usuario = request.POST.get('new_username') 
             nueva_pass = request.POST.get('password')
             confirm_pass = request.POST.get('confirm_password')
 
+            # 2. Validar que el nuevo usuario no venga vacío
+            if not nuevo_usuario:
+                return render(request, 'nueva_contrasena.html', {'error': 'El campo de nuevo usuario no puede estar vacío.'})
+
+            # 3. Validar que la nueva cédula no pertenezca a OTRO administrador
+            if User.objects.filter(username=nuevo_usuario).exclude(pk=user.pk).exists():
+                return render(request, 'nueva_contrasena.html', {'error': f'La cédula {nuevo_usuario} ya está registrada en el sistema.'})
+
+            # 4. Validar que las contraseñas coincidan
             if nueva_pass == confirm_pass:
+                # --- ACTUALIZACIÓN DE DATOS ---
+                user.username = nuevo_usuario
                 user.set_password(nueva_pass)
                 user.save()
-                return render(request, 'login.html', {'success': 'Contraseña actualizada correctamente.'})
+                
+                return render(request, 'login.html', {'success': 'Usuario y contraseña actualizados correctamente.'})
             else:
                 return render(request, 'nueva_contrasena.html', {'error': 'Las contraseñas no coinciden.'})
         
-        # Si es GET, mostramos el formulario para escribir la clave
+        # Si es GET, mostramos el formulario para escribir la clave y el usuario
         return render(request, 'nueva_contrasena.html')
     else:
         return render(request, 'login.html', {'error': 'El enlace ha expirado o es inválido.'})

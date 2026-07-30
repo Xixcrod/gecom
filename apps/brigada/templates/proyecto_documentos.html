@@ -104,7 +104,7 @@
 
     <div class="doc-card">
         <div class="doc-info">
-            <h3>Control de Horas</h3>
+            <h3>Control de horas</h3>
             {% if documents.control_horas %}
                 <a href="{{ documents.control_horas.url }}" target="_blank">
                     📄 Ver archivo actual
@@ -116,6 +116,23 @@
         <button class="{% if documents.control_horas %}btn-modificar{% else %}btn-subir{% endif %}" 
                 onclick="abrirModal('control_horas', 'Control de Horas', '{{ documents.control_horas|yesno:'1,0' }}')">
             {% if documents.control_horas %}Modificar{% else %}Subir{% endif %}
+        </button>
+    </div>
+
+        <div class="doc-card">
+        <div class="doc-info">
+            <h3>Constancia de entrega</h3>
+            {% if documents.constancia_entrega %}
+                <a href="{{ documents.constancia_entrega.url }}" target="_blank">
+                    📄 Ver archivo actual
+                </a>
+            {% else %}
+                <span class="doc-estado-vacio">No cargado</span>
+            {% endif %}
+        </div>
+        <button class="{% if documents.constancia_entrega %}btn-modificar{% else %}btn-subir{% endif %}" 
+                onclick="abrirModal('constancia_entrega', 'Constancia de entrega', '{{ documents.constancia_entrega|yesno:'1,0' }}')">
+            {% if documents.constancia_entrega %}Modificar{% else %}Subir{% endif %}
         </button>
     </div>
 
@@ -166,8 +183,8 @@
             {% csrf_token %}
             
             <div class="centered-group full-width">
-                <label id="instruccionModal" class="modal-label">Seleccione el archivo PDF (Máx 5MB):</label>
-                <input type="file" name="documento" id="inputArchivo" class="modal-input" accept="application/pdf" required>
+                <label id="instruccionModal" class="modal-label">Seleccione el archivo (PDF, JPG, PNG - Máx 15MB):</label>
+                <input type="file" name="documento" id="inputArchivo" class="modal-input" accept="application/pdf, image/jpeg, image/png, image/webp" required>
             </div>
             
             <div id="errorAlerta" class="error-brigada-ajax error-modal-msg" style="display: none;"></div>

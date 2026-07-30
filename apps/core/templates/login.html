@@ -34,15 +34,15 @@
         </div>
         {% endif %}
 
-        <form action="{% url 'login-process' %}" method="POST" class="login-form">
+        <form action="{% url 'login-process' %}" method="POST" class="login-form" autocomplete="off">
             {% csrf_token %}
 
             <div class="input-group">
-                <input type="text" name="username" id="username" class="login-input" placeholder="Usuario" required />
+                <input type="text" name="username" id="username" class="login-input" placeholder="Usuario" required autocomplete="off" />
             </div>
 
             <div class="input-group">
-                <input type="password" name="password" id="password" class="login-input" placeholder="Contraseña" required />
+                <input type="password" name="password" id="password" class="login-input" placeholder="Contraseña" required autocomplete="new-password" />
             </div>
 
             <button type="submit" class="btn-login">Ingresar</button>

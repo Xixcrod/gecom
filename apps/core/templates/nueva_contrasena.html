@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
-    <title>GECOM - Restablecer Contraseña</title>
+    <title>GECOM - Actualizar Datos del administrador</title>
     <link rel="stylesheet" href="{% static 'css/_variables.css' %}">
     <link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
 </head>
@@ -14,9 +14,9 @@
 <body>
     <div class="login-card" style="max-width: 450px;">
 
-        <h2 class="login-title" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Restablecer Contraseña</h2>
+        <h2 class="login-title" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Actualizar Credenciales</h2>
         <p style="color: #334155; font-size: 0.95rem; margin-bottom: 1.5rem; font-weight: 600;">
-            Ingresa tu nueva contraseña para acceder al sistema GECOM.
+            Ingresa tu nuevo usuario y tu nueva contraseña para acceder al sistema GECOM.
         </p>
 
         {% if error %}
@@ -32,6 +32,10 @@
             {% csrf_token %}
 
             <div class="input-group">
+                <input type="text" name="new_username" class="login-input" placeholder="Nuevo Usuario" required>
+            </div>
+
+            <div class="input-group">
                 <input type="password" name="password" class="login-input" placeholder="Nueva Contraseña" required minlength="8">
             </div>
             
@@ -39,7 +43,7 @@
                 <input type="password" name="confirm_password" class="login-input" placeholder="Confirmar Contraseña" required minlength="8">
             </div>
             
-            <button type="submit" class="btn-login">Actualizar Contraseña</button>
+            <button type="submit" class="btn-login">Actualizar Datos</button>
             
             <div class="forgot-container" style="margin-top: 10px;">
                 <a href="{% url 'login' %}" class="forgot-link" style="display: flex; align-items: center; justify-content: center; gap: 5px;">

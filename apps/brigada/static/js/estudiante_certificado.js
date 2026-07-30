@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         btnConfirmar.disabled = true;
         const textoOriginal = btnConfirmar.innerText;
-        btnConfirmar.innerText = "Validando PDF...";
+        btnConfirmar.innerText = "Validando Archivo...";
         errorAlerta.style.display = 'none';
 
         const url = `/brigada/estudiante/${estudianteId}/subir-certificado/`; 

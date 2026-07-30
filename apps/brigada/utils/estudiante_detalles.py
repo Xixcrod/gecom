@@ -11,89 +11,105 @@ from django.contrib.auth.decorators import login_required
 from apps.core.models import Estudiante, Certificado, Carrera
 from django.http import JsonResponse
 from django.contrib import messages
+from PIL import Image  #Manipulación de imágenes (JPG, PNG, WEBP)
 
 # Configuraciones
-MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 * 1024 KB * 1024 Bytes
+MAX_FILE_SIZE = 15 * 1024 * 1024  # 5 * 1024 KB * 1024 Bytes
 MAX_FILENAME_LENGTH = 50
 
 def procesar_y_validar_pdf(archivo):
     """
-    Valida, sanea y elimina los metadatos de un archivo PDF.
+    Valida, sanea y elimina los metadatos de un archivo (PDF o Imagen).
     Retorna: (bool, archivo_limpio_o_mensaje_de_error)
     """
     # 1. Límite de tamaño
     if archivo.size > MAX_FILE_SIZE:
-        return False, "El archivo supera el límite de tamaño permitido (5MB)."
+        return False, "El archivo supera el límite de tamaño permitido (15MB)."
 
     # 2. Límite de longitud del nombre original
     if len(archivo.name) > MAX_FILENAME_LENGTH:
         return False, f"El nombre del archivo excede los {MAX_FILENAME_LENGTH} caracteres."
 
-    # 3. Evitar más de una extensión (ej. archivo.php.pdf)
+    # 3. Evitar más de una extensión
     if archivo.name.count('.') > 1:
         return False, "El nombre del archivo no puede contener múltiples puntos/extensiones."
 
     # 4. Verificar la extensión completa
-    #Obteniendo la extensión del archivo separando el nombre del archivo por el punto y tomando la parte final, luego se convierte a minúscula para evitar problemas de mayúsculas/minúsculas.
-    #['archivo', 'pdf'] -> 'pdf'
     ext = os.path.splitext(archivo.name)[1].lower()
-    if ext != '.pdf':
-        return False, "Extensión inválida. Solo se permiten archivos .pdf."
+    extensiones_permitidas = ['.pdf', '.jpg', '.jpeg', '.png', '.webp']
+    if ext not in extensiones_permitidas:
+        return False, "Extensión inválida. Solo se permiten PDF o imágenes (JPG, PNG, WEBP)."
 
-    # 5. Evaluar Content-Type y Magic Bytes (Cabecera real del archivo)
-    if archivo.content_type != 'application/pdf':
-        return False, "El Content-Type no corresponde a un PDF."
-    
-    # Leer los primeros bytes para verificar la cabecera PDF (Magic Bytes) y asegurarnos de que el archivo no esté corrupto
-    cabecera = archivo.read(4)
-    archivo.seek(0) # Regresar el puntero al inicio
-    if cabecera != b'%PDF':
-        return False, "El archivo está corrupto o no es un PDF válido."
-
-    # 6. Evitar caracteres neutros/peligrosos (Sanitización del nombre)
+    # 5. Sanear nombre del archivo
     base_name = os.path.splitext(archivo.name)[0]
-    # Solo permitimos letras, números, guiones y guiones bajos
     clean_name = re.sub(r'[^a-zA-Z0-9_-]', '', base_name)
     if not clean_name:
         clean_name = "documento"
+    
+    nombre_unico = f"{clean_name}_{uuid.uuid4().hex[:8]}{ext}"
+    nombre_del_campo = getattr(archivo, 'field_name', 'documento')
 
-    # 7. Evitar sobreescritura (Generar nombre único con UUID)
-    nombre_unico = f"{clean_name}_{uuid.uuid4().hex[:8]}.pdf"
+    # ==========================================
+    # LÓGICA PARA ARCHIVOS PDF
+    # ==========================================
+    if ext == '.pdf':
+        if archivo.content_type != 'application/pdf':
+            return False, "El Content-Type no corresponde a un PDF."
+        
+        cabecera = archivo.read(4)
+        archivo.seek(0)
+        if cabecera != b'%PDF':
+            return False, "El archivo está corrupto o no es un PDF válido."
 
-    # 8. Borrar metadatos reescribiendo el PDF
-    try:
-        reader = pypdf.PdfReader(archivo)
-        writer = pypdf.PdfWriter()
-        
-        for page in reader.pages:
-            writer.add_page(page)
-        
-        # Inyectar un diccionario de metadatos vacío
-        writer.add_metadata({})
-        
-        # Guardar en memoria
-        pdf_limpio = BytesIO()
-        writer.write(pdf_limpio)
-        pdf_limpio.seek(0)
-        
-        tamano_nuevo = pdf_limpio.getbuffer().nbytes
-        nombre_del_campo = getattr(archivo, 'field_name', 'documento')
-        
-        # Crear un nuevo objeto de archivo de Django
-        archivo_final = InMemoryUploadedFile(
-            file=pdf_limpio,
-            field_name=nombre_del_campo,
-            name=nombre_unico,
-            content_type='application/pdf',
-            size=tamano_nuevo,
-            charset=None
-        )
-        return True, archivo_final
+        try:
+            reader = pypdf.PdfReader(archivo)
+            writer = pypdf.PdfWriter()
+            for page in reader.pages:
+                writer.add_page(page)
+            
+            writer.add_metadata({}) # Borrar metadatos
+            
+            pdf_limpio = BytesIO()
+            writer.write(pdf_limpio)
+            pdf_limpio.seek(0)
+            
+            archivo_final = InMemoryUploadedFile(
+                file=pdf_limpio, field_name=nombre_del_campo, name=nombre_unico,
+                content_type='application/pdf', size=pdf_limpio.getbuffer().nbytes, charset=None
+            )
+            return True, archivo_final
+        except Exception:
+            return False, "Error al procesar el PDF. Puede estar dañado o encriptado."
 
-    except pypdf.errors.PdfReadError:
-        return False, "No se pudo leer el PDF. Puede estar encriptado o dañado."
-    except Exception as e:
-        return False, f"Error interno al procesar el documento."
+    # ==========================================
+    # LÓGICA PARA ARCHIVOS DE IMAGEN
+    # ==========================================
+    else:
+        if not archivo.content_type.startswith('image/'):
+            return False, "El Content-Type no corresponde a una imagen."
+            
+        try:
+            img = Image.open(archivo)
+            img.verify()  # Verifica los Magic Bytes de la imagen
+            
+            archivo.seek(0)
+            img = Image.open(archivo) # Reabrir
+            
+            # Convertir a RGB si tiene transparencia y se guarda como JPEG
+            if img.mode in ("RGBA", "P") and ext in ['.jpg', '.jpeg']:
+                img = img.convert("RGB")
+
+            img_limpia = BytesIO()
+            img.save(img_limpia, format=img.format) # Al guardar en BytesIO, Pillow limpia los EXIF
+            img_limpia.seek(0)
+            
+            archivo_final = InMemoryUploadedFile(
+                file=img_limpia, field_name=nombre_del_campo, name=nombre_unico,
+                content_type=archivo.content_type, size=img_limpia.getbuffer().nbytes, charset=None
+            )
+            return True, archivo_final
+        except Exception:
+            return False, "Error al procesar la imagen. El archivo está corrupto."
 
 
 @login_required
@@ -106,7 +122,7 @@ def subir_certificado_estudiante(request, estudiante_id):
             'success': False, 
             'message': 'No se adjuntó ningún archivo en la solicitud.'
         }, status=400)
-    # Reutilizamos tu función procesar_y_validar_pdf
+    # procesar_y_validar_pdf
     es_valido, resultado = procesar_y_validar_pdf(archivo)
     
     if not es_valido:

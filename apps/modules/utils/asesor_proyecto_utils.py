@@ -34,13 +34,13 @@ def procesar_documento_asesor(request):
         return
 
     if not archivo:
-        messages.error(request, "Error: No se seleccionó ningún archivo PDF.")
+        messages.error(request, "Error: No se seleccionó ningún archivo.")
         return
 
     # Escáner de seguridad
     es_valido, resultado = procesar_y_validar_pdf(archivo)
     if not es_valido:
-        messages.error(request, f"Error en el PDF: {resultado}")
+        messages.error(request, f"Error en el archivo: {resultado}")
         return
 
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
