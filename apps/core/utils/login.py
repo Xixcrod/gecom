@@ -114,6 +114,12 @@ def recovering_password(request):
 
         except User.DoesNotExist:
             return render(request, 'recuperar_contrasena.html', {'error': 'Datos incorrectos.'})
+
+        except Exception as e:
+            # Capturamos cualquier otro error inesperado
+            return render(request, 'recuperar_contrasena.html', {
+                'error': f'Ocurrió un error inesperado: {str(e)}'
+            })
     
     return render(request, 'recuperar_contrasena.html')
 
