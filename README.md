@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Arial&size=28&duration=3000&pause=8000&color=F7F7F7&width=480&lines=Gecom+%7C+Gest%C3%B3n+de+Servicio+Comunitario)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Arial&size=28&duration=3000&pause=8000&color=F7F7F7&width=480&lines=Gecom+%7C+Gest%C3%B3n+Comunitaria)](https://git.io/typing-svg)
 
 ### *“Digitalización, control y trazabilidad en la gestión académica del Servicio Comunitario”*[cite: 13, 15]
 
