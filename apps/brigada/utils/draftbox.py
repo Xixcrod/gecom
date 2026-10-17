@@ -134,12 +134,13 @@ def eliminar_borrador(request, uuid_borrador):
         # 1. Buscar el borrador. Si no existe, lanza 404
         borrador = get_object_or_404(Borrador, id=uuid_borrador)
         
-        # 2. Eliminar el archivo físico del sistema de archivos
-        # Comprobamos que el archivo exista antes de intentar borrarlo
-        if borrador.archivo and os.path.isfile(borrador.archivo.path):
-            os.remove(borrador.archivo.path)
+        # 2. Eliminar el archivo del almacenamiento remoto (Supabase/S3)
+        # borrador.archivo.delete() elimina el objeto del bucket de Supabase.
+        # save=False evita que se ejecute una consulta de guardado intermedia en la BD.
+        if borrador.archivo:
+            borrador.archivo.delete(save=False)
             
-        # 3. Eliminar el registro de la base de datos
+        # 3. Eliminar el registro de la base de datos (Neon)
         borrador.delete()
         
         messages.success(request, f'Borrador "{borrador.nombre}" eliminado.') 
@@ -147,5 +148,4 @@ def eliminar_borrador(request, uuid_borrador):
         
     except Exception as e:
         messages.error(request, 'No se pudo eliminar el borrador.')
-        # CAMBIO: 'message' y status=500
         return JsonResponse({'success': False, 'message': str(e)}, status=500)

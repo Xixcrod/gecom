@@ -16,7 +16,7 @@ def ejecutar_inicializacion():
     # ----------------------------------------------------
     # CREACIÓN DEL SUPERUSUARIO
     # ----------------------------------------------------
-    username_admin = os.getenv('SUPERUSER_USERNAME', 'admin')
+    username_admin = os.getenv('SUPERUSER_USERNAME', '12345678')
     email_admin = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')
     password_admin = os.getenv('SUPERUSER_PASSWORD', 'user12345')
     first_name_admin = os.getenv('SUPERUSER_FIRST_NAME', 'Admin')
